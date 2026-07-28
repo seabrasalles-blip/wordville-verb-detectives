@@ -19,6 +19,16 @@
  */
 
 @theme inline {
+  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Baloo 2", "Nunito", ui-sans-serif, sans-serif;
+  --color-investigacao: var(--investigacao);
+  --color-investigacao-foreground: var(--investigacao-foreground);
+  --color-pista: var(--pista);
+  --color-pista-foreground: var(--pista-foreground);
+  --color-acerto: var(--acerto);
+  --color-acerto-foreground: var(--acerto-foreground);
+  --color-reorienta: var(--reorienta);
+  --color-reorienta-foreground: var(--reorienta-foreground);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -26,6 +36,7 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -62,26 +73,35 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --radius: 1rem;
+  --background: oklch(0.98 0.015 240);
+  --foreground: oklch(0.28 0.06 255);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --card-foreground: oklch(0.28 0.06 255);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --popover-foreground: oklch(0.28 0.06 255);
+  --primary: oklch(0.55 0.16 250);
+  --primary-foreground: oklch(0.99 0.005 240);
+  --secondary: oklch(0.94 0.04 245);
+  --secondary-foreground: oklch(0.35 0.09 255);
+  --muted: oklch(0.95 0.02 245);
+  --muted-foreground: oklch(0.5 0.05 255);
+  --accent: oklch(0.92 0.09 95);
+  --accent-foreground: oklch(0.33 0.07 70);
+  --destructive: oklch(0.7 0.15 55);
+  --destructive-foreground: oklch(0.99 0.005 240);
+  --investigacao: oklch(0.55 0.16 250);
+  --investigacao-foreground: oklch(0.99 0.005 240);
+  --pista: oklch(0.88 0.14 95);
+  --pista-foreground: oklch(0.33 0.07 70);
+  --acerto: oklch(0.62 0.15 150);
+  --acerto-foreground: oklch(0.99 0.005 150);
+  --reorienta: oklch(0.72 0.15 60);
+  --reorienta-foreground: oklch(0.28 0.08 60);
+  --border: oklch(0.89 0.03 245);
+  --input: oklch(0.89 0.03 245);
+  --ring: oklch(0.55 0.16 250);
+
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -140,5 +160,79 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
   }
 }
+
+@keyframes lex-tremula {
+  0%,
+  100% {
+    transform: rotate(-1.5deg) translateY(0);
+  }
+  50% {
+    transform: rotate(1.5deg) translateY(-3px);
+  }
+}
+
+@keyframes lex-pulsa {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 color-mix(in oklch, var(--color-investigacao) 45%, transparent);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 10px color-mix(in oklch, var(--color-investigacao) 0%, transparent);
+  }
+}
+
+@keyframes lex-medalha {
+  0% {
+    transform: translateY(-120px) scale(0.4) rotate(-25deg);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(10px) scale(1.08) rotate(6deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes lex-surge {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility tremula {
+  animation: lex-tremula 1.1s ease-in-out infinite;
+}
+
+@utility pulsa {
+  animation: lex-pulsa 1s ease-in-out infinite;
+}
+
+@utility medalha-anima {
+  animation: lex-medalha 1.1s cubic-bezier(0.22, 1.2, 0.36, 1) both;
+}
+
+@utility surge {
+  animation: lex-surge 0.35s ease-out both;
+}
+
