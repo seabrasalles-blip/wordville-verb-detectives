@@ -88,7 +88,7 @@ export function CacaPalavras() {
                     onPointerDown={(e) => {
                       e.preventDefault();
                       arrastando.current = true;
-                      setSelecao([k]);
+                      atualizarSelecao([k]);
                     }}
                     onPointerEnter={() => {
                       if (arrastando.current) marcar(l, c);
