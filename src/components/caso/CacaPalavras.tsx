@@ -30,27 +30,35 @@ export function CacaPalavras() {
   const { estado, despachar, fala } = useCaso();
   const [selecao, setSelecao] = useState<string[]>([]);
   const arrastando = useRef(false);
+  const selecaoRef = useRef<string[]>([]);
 
   const encontradas = new Set<string>(
     estado.encontradas.flatMap((p) => POSICOES_CACA[p].map(([l, c]) => chave(l, c))),
   );
 
+  const atualizarSelecao = (proxima: string[]) => {
+    selecaoRef.current = proxima;
+    setSelecao(proxima);
+  };
+
   const finalizar = useCallback(() => {
+    if (!arrastando.current) return;
     arrastando.current = false;
-    setSelecao((atual) => {
-      const palavra = palavraDaSelecao(atual);
-      if (palavra) {
-        despachar({ tipo: "encontrou", palavra });
-        fala.falar(EVIDENCIAS[palavra].fala, `evid-${palavra}`);
-      }
-      return [];
-    });
+    const palavra = palavraDaSelecao(selecaoRef.current);
+    selecaoRef.current = [];
+    setSelecao([]);
+    if (palavra) {
+      despachar({ tipo: "encontrou", palavra });
+      fala.falar(EVIDENCIAS[palavra].fala, `evid-${palavra}`);
+    }
   }, [despachar, fala]);
 
   const marcar = (l: number, c: number) => {
     const k = chave(l, c);
-    setSelecao((atual) => (atual.includes(k) ? atual : [...atual, k]));
+    if (selecaoRef.current.includes(k)) return;
+    atualizarSelecao([...selecaoRef.current, k]);
   };
+
 
   const completo = estado.encontradas.length === PALAVRAS_CACA.length;
 
