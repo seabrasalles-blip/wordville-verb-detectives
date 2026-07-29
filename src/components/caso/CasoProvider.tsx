@@ -53,9 +53,11 @@ const inicial: EstadoCaso = {
 
 
 type Acao =
+  | { tipo: "iniciar" }
   | { tipo: "ir"; tela: number }
   | { tipo: "avancar" }
   | { tipo: "voltar" }
+
   | { tipo: "encontrou"; palavra: PalavraCaca; caminho: { linha: number; coluna: number }[] }
   | { tipo: "novaGrade" }
   | { tipo: "responder"; id: string; valor: string }
@@ -184,7 +186,9 @@ function sanear(dados: unknown): EstadoCaso {
       : GRADES_CACA[0].id;
 
   return {
+    iniciou: d.iniciou === true,
     tela,
+
     encontradas: encontradas.filter((p) => caminhos[p]),
     gradeId,
     caminhos,
