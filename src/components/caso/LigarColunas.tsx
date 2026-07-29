@@ -24,8 +24,8 @@ export function LigarColunas() {
       setDica(null);
       setAcerto(
         par.forma === "goes"
-          ? `Conexão feita! '${par.sujeito}' combina com 'goes'. E olhe: 'I', 'We' e 'They' todos combinam com 'go'. Será que existe um padrão aqui?`
-          : `Conexão feita! '${par.sujeito}' combina com 'go'. E 'He' e 'She' combinam com 'goes'. Será que existe um padrão aqui?`,
+          ? `Certo! '${par.sujeito}' está no grupo de he, she e it: usamos 'goes'.`
+          : `Certo! '${par.sujeito}' está no grupo de I, you, we e they: usamos 'go'.`,
       );
       setSujeito(null);
       return;
@@ -36,9 +36,10 @@ export function LigarColunas() {
     setAcerto(null);
     setDica(
       tentativas === 0
-        ? `Espera aí... '${par.sujeito}' e '${forma}'? Lembra da nossa pista: quando falamos de outra pessoa (he, she, it), o verbo muda. Qual forma tem o som a mais no final?`
-        : `Compare com as conexões que você já fez. Você ligou 'I' a 'go' — certo! Agora, '${par.sujeito}' é parecido com 'I' ou com 'He'?`,
+        ? `Observe quem pratica a ação: '${par.sujeito}'. Ele está no grupo de I, you, we, they ou no grupo de he, she, it?`
+        : `Lembre: I, you, we, they → go. He, she, it → goes. Tente novamente.`,
     );
+
   };
 
   const formasUsadas = new Set(Object.values(estado.conexoes));
