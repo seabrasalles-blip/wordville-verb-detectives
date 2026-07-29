@@ -4,11 +4,13 @@ import {
   EVIDENCIAS,
   PALAVRAS_CACA,
   gradePorId,
-  type PalavraCaca,
+  mesmoCaminho,
+  prefixoDeCaminho,
 } from "@/lib/caso-conteudo";
 import { useCaso } from "./CasoProvider";
 import { BotaoAudio } from "./BotaoAudio";
 import { AreaFeedback, Feedback } from "./Feedback";
+
 
 type Celula = { linha: number; coluna: number };
 
