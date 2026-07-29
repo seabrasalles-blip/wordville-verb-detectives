@@ -5,6 +5,7 @@ import { useCaso } from "./CasoProvider";
 import { BotaoAudio } from "./BotaoAudio";
 import { AreaFeedback, Feedback } from "./Feedback";
 import { Fantasma, useArrasto } from "./useArrasto";
+import { familiaDaPalavra, feedbackLacuna } from "@/lib/caso-conteudo";
 import type { Lacuna, TipoDica } from "@/lib/caso-conteudo";
 
 const ORDEM_DICAS: TipoDica[] = ["conceitual", "procedimental", "atencional"];
@@ -24,6 +25,7 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
   const [dica, setDica] = useState<{ id: string; texto: string } | null>(null);
   const [ultimoAcerto, setUltimoAcerto] = useState<Lacuna | null>(null);
   const [processando, setProcessando] = useState(false);
+  const bancoMisto = new Set(banco.map(familiaDaPalavra)).size > 1;
 
   const soltar = (idLacuna: string, palavra: string) => {
     if (processando) return;
