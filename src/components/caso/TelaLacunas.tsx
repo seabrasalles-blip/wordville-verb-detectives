@@ -45,11 +45,17 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
 
     const tentativas = estado.tentativas[lacuna.id] ?? 0;
     despachar({ tipo: "errar", id: lacuna.id });
-    const disponiveis = ORDEM_DICAS.filter((t) => lacuna.dicas[t]);
-    const escolhida = disponiveis[Math.min(tentativas, disponiveis.length - 1)];
-    setDica({ id: lacuna.id, texto: lacuna.dicas[escolhida] ?? "Observe quem pratica a ação." });
+    if (bancoMisto) {
+      // revisão mista: separa erro de significado (go × play) de erro de concordância
+      setDica({ id: lacuna.id, texto: feedbackLacuna(lacuna, palavra, tentativas) });
+    } else {
+      const disponiveis = ORDEM_DICAS.filter((t) => lacuna.dicas[t]);
+      const escolhida = disponiveis[Math.min(tentativas, disponiveis.length - 1)];
+      setDica({ id: lacuna.id, texto: lacuna.dicas[escolhida] ?? "Observe quem pratica a ação." });
+    }
     setUltimoAcerto(null);
   };
+
 
   const arrasto = useArrasto(soltar);
   const tudoCerto = lacunas.every(
