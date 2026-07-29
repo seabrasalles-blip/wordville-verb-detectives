@@ -550,7 +550,7 @@ function Tela10() {
             despachar({ tipo: "medalha" });
             fala.falar("He goes to school.", "final-1");
           }}
-          className="mx-auto block rounded-full bg-acerto px-6 py-1.5 text-[17px] font-bold text-acerto-foreground shadow-lg transition-transform hover:scale-105"
+          className="botao-fofo mx-auto block bg-acerto px-7 py-2 text-[17px] text-acerto-foreground"
         >
           Receber medalha!
         </button>
