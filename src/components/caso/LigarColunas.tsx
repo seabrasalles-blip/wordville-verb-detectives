@@ -44,13 +44,13 @@ export function LigarColunas() {
   const formasUsadas = new Set(Object.values(estado.conexoes));
 
   return (
-    <div className="space-y-6">
-      <p className="text-xl font-semibold">
+    <div className="space-y-3">
+      <p className="text-base font-semibold">
         Clique em um sujeito e depois na forma verbal correta para conectá-los.
       </p>
 
-      <div className="grid grid-cols-2 gap-4 sm:gap-8">
-        <ul className="space-y-3">
+      <div className="grid grid-cols-2 gap-3 sm:gap-5">
+        <ul className="space-y-2">
           {PARES_TELA5.map((par) => {
             const ligado = Boolean(estado.conexoes[par.id]);
             return (
@@ -60,7 +60,7 @@ export function LigarColunas() {
                   disabled={ligado}
                   onClick={() => setSujeito(par.id)}
                   className={cn(
-                    "flex w-full items-center gap-3 rounded-2xl border-4 bg-card px-4 py-3 text-xl font-bold shadow-sm transition-colors",
+                    "flex w-full items-center gap-2 rounded-xl border-2 bg-card px-3 py-2 text-base font-bold shadow-sm transition-colors",
                     ligado
                       ? "border-acerto bg-acerto/15 text-acerto"
                       : sujeito === par.id
@@ -68,28 +68,28 @@ export function LigarColunas() {
                         : "border-investigacao hover:bg-investigacao/10",
                   )}
                 >
-                  <span aria-hidden="true" className="text-2xl">
+                  <span aria-hidden="true" className="text-lg">
                     {par.icone}
                   </span>
                   {par.sujeito}
-                  {ligado ? <Check className="ml-auto size-5" aria-hidden="true" /> : null}
+                  {ligado ? <Check className="ml-auto size-4" aria-hidden="true" /> : null}
                 </button>
               </li>
             );
           })}
         </ul>
 
-        <ul className="space-y-3">
+        <ul className="space-y-2">
           {FORMAS_TELA5.map((forma) => {
             const usada = formasUsadas.has(forma.id);
             return (
-              <li key={forma.id} className="flex items-center gap-2">
+              <li key={forma.id} className="flex items-center gap-1.5">
                 <button
                   type="button"
                   disabled={usada}
                   onClick={() => conectar(forma.id, forma.texto)}
                   className={cn(
-                    "flex-1 rounded-2xl border-4 border-dashed bg-card px-4 py-3 text-xl font-bold shadow-sm transition-colors",
+                    "flex-1 rounded-xl border-2 border-dashed bg-card px-3 py-2 text-base font-bold shadow-sm transition-colors",
                     usada
                       ? "border-acerto border-solid bg-acerto/15 text-acerto"
                       : "border-investigacao/60 hover:bg-investigacao/10",
@@ -107,7 +107,7 @@ export function LigarColunas() {
       {dica ? (
         <BalaoLex tom="reorienta">
           <p className="flex items-start gap-2">
-            <Search className="mt-1 size-5 shrink-0 text-reorienta" aria-hidden="true" />
+            <Search className="mt-0.5 size-4 shrink-0 text-reorienta" aria-hidden="true" />
             <span>{dica}</span>
           </p>
         </BalaoLex>

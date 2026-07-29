@@ -46,10 +46,10 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
   const tudoCerto = lacunas.every((l) => estado.respostas[l.id] === l.resposta);
 
   return (
-    <div className="space-y-6">
-      <p className="text-xl font-semibold text-foreground">{comando}</p>
+    <div className="space-y-3">
+      <p className="text-base font-semibold text-foreground">{comando}</p>
 
-      <div className="grid gap-5">
+      <div className={cn("grid gap-2.5", lacunas.length >= 4 && "sm:grid-cols-2")}>
         {lacunas.map((lacuna) => {
           const resposta = estado.respostas[lacuna.id];
           const certo = resposta === lacuna.resposta;
@@ -57,15 +57,15 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
             <div
               key={lacuna.id}
               className={cn(
-                "rounded-3xl border-4 bg-card p-4 shadow-sm transition-colors sm:p-5",
+                "rounded-2xl border-2 bg-card p-2.5 shadow-sm transition-colors",
                 certo ? "border-acerto bg-acerto/10" : "border-investigacao/30",
               )}
             >
-              <div className="flex flex-wrap items-center gap-3">
-                <span aria-hidden="true" className="text-3xl">
+              <div className="flex flex-wrap items-center gap-2">
+                <span aria-hidden="true" className="text-xl">
                   {lacuna.ilustracao}
                 </span>
-                <p className="flex flex-wrap items-center gap-2 text-xl font-semibold sm:text-2xl">
+                <p className="flex flex-wrap items-center gap-1.5 text-base font-semibold sm:text-lg">
                   <span>{lacuna.antes}</span>
                   <button
                     type="button"
@@ -73,7 +73,7 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
                     onClick={() => arrasto.aoClicarLacuna(lacuna.id)}
                     aria-label={`Lacuna da frase ${lacuna.antes} ... ${lacuna.depois}`}
                     className={cn(
-                      "min-w-28 rounded-xl border-4 border-dashed px-3 py-1.5 text-center transition-colors",
+                      "min-w-24 rounded-lg border-2 border-dashed px-2.5 py-1 text-center text-sm transition-colors",
                       certo
                         ? "border-acerto border-solid bg-acerto text-acerto-foreground"
                         : "border-investigacao/60 bg-investigacao/5 text-muted-foreground",
@@ -85,27 +85,27 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
                   <span>{lacuna.depois}</span>
                 </p>
                 {certo ? (
-                  <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-acerto px-3 py-1 text-sm font-bold text-acerto-foreground">
-                    <Check className="size-4" aria-hidden="true" /> Consertado
+                  <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-acerto px-2.5 py-0.5 text-xs font-bold text-acerto-foreground">
+                    <Check className="size-3.5" aria-hidden="true" /> Consertado
                   </span>
                 ) : null}
               </div>
 
               {certo ? (
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-2 flex flex-wrap gap-2">
                   <BotaoAudio
                     texto={`${lacuna.antes} ${lacuna.resposta} ${lacuna.depois}`}
                     id={`frase-${lacuna.id}`}
-                    rotulo="Repetir comigo"
+                    rotulo="Repetir"
                     tamanho="sm"
                   />
                 </div>
               ) : null}
 
               {dica?.id === lacuna.id ? (
-                <BalaoLex tom="reorienta" className="mt-4">
+                <BalaoLex tom="reorienta" className="mt-2">
                   <p className="flex items-start gap-2">
-                    <Search className="mt-1 size-5 shrink-0 text-reorienta" aria-hidden="true" />
+                    <Search className="mt-0.5 size-4 shrink-0 text-reorienta" aria-hidden="true" />
                     <span>{dica.texto}</span>
                   </p>
                 </BalaoLex>
@@ -115,20 +115,20 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
         })}
       </div>
 
-      <div className="rounded-3xl border-4 border-dashed border-investigacao/40 bg-secondary/60 p-4">
-        <p className="mb-3 text-base font-semibold text-muted-foreground">
+      <div className="rounded-2xl border-2 border-dashed border-investigacao/40 bg-secondary/60 p-2.5">
+        <p className="mb-2 text-xs font-semibold text-muted-foreground">
           Blocos de palavras — arraste até a lacuna ou toque no bloco e depois na lacuna. Ouça
           antes de decidir!
         </p>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2">
           {banco.map((palavra) => (
-            <div key={palavra} className="flex items-center gap-2">
+            <div key={palavra} className="flex items-center gap-1.5">
               <button
                 type="button"
                 {...arrasto.propsBloco(palavra)}
                 aria-pressed={arrasto.selecionado === palavra}
                 className={cn(
-                  "cursor-grab rounded-2xl border-4 bg-card px-5 py-2.5 text-xl font-bold text-investigacao shadow-md transition-transform select-none active:scale-95",
+                  "cursor-grab rounded-xl border-2 bg-card px-4 py-1.5 text-base font-bold text-investigacao shadow-md transition-transform select-none active:scale-95",
                   arrasto.selecionado === palavra
                     ? "border-pista bg-pista/40"
                     : "border-investigacao",

@@ -63,14 +63,14 @@ export function CacaPalavras() {
   const completo = estado.encontradas.length === PALAVRAS_CACA.length;
 
   return (
-    <div className="space-y-6">
-      <p className="text-xl font-semibold">
+    <div className="space-y-3">
+      <p className="text-base font-semibold">
         Arraste o dedo (ou o mouse) sobre as letras para encontrar as palavras escondidas.
       </p>
 
-      <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
+      <div className="grid gap-4 lg:grid-cols-[auto_1fr]">
         <div
-          className="mx-auto w-full max-w-md touch-none rounded-3xl border-4 border-investigacao bg-card p-3 shadow-md select-none"
+          className="mx-auto w-full max-w-[260px] touch-none rounded-2xl border-2 border-investigacao bg-card p-2 shadow-md select-none"
           onPointerUp={finalizar}
           onPointerLeave={finalizar}
         >
@@ -94,7 +94,7 @@ export function CacaPalavras() {
                       if (arrastando.current) marcar(l, c);
                     }}
                     className={cn(
-                      "aspect-square rounded-lg text-base font-bold transition-colors sm:text-lg",
+                      "aspect-square rounded-md text-sm font-bold transition-colors",
                       achada
                         ? "bg-acerto text-acerto-foreground"
                         : ativa
@@ -108,34 +108,34 @@ export function CacaPalavras() {
               }),
             )}
           </div>
-          <p className="mt-3 text-center text-sm text-muted-foreground">
+          <p className="mt-2 text-center text-xs text-muted-foreground">
             Procurando: GO · GOES · PLAY · PLAYS
           </p>
         </div>
 
-        <div className="rounded-3xl border-4 border-dashed border-pista bg-pista/15 p-4">
-          <h2 className="mb-3 text-xl font-bold">🔎 Mural de evidências</h2>
+        <div className="rounded-2xl border-2 border-dashed border-pista bg-pista/15 p-2.5">
+          <h2 className="mb-2 text-base font-bold">🔎 Mural de evidências</h2>
           {estado.encontradas.length === 0 ? (
-            <p className="text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Nenhuma evidência ainda. Encontre as palavras na grade!
             </p>
           ) : (
-            <ul className="space-y-3">
+            <ul className="space-y-2">
               {estado.encontradas.map((palavra) => {
                 const ev = EVIDENCIAS[palavra];
                 return (
                   <li
                     key={palavra}
-                    className="surge flex items-start gap-3 rounded-2xl bg-card p-3 shadow-sm"
+                    className="surge flex items-start gap-2 rounded-xl bg-card p-2 shadow-sm"
                   >
-                    <span aria-hidden="true" className="text-3xl">
+                    <span aria-hidden="true" className="text-xl">
                       {ev.icone}
                     </span>
                     <div className="flex-1">
-                      <p className="text-lg font-bold text-investigacao">
+                      <p className="text-sm font-bold text-investigacao">
                         {palavra.toLowerCase()}
                       </p>
-                      <p className="text-base">{ev.texto}</p>
+                      <p className="text-xs">{ev.texto}</p>
                     </div>
                     <BotaoAudio texto={ev.fala} id={`evid-${palavra}`} tamanho="sm" />
                   </li>
@@ -150,7 +150,7 @@ export function CacaPalavras() {
         <BalaoLex tom="acerto">
           <p>
             Excelente trabalho, detetive! Agora temos nossas evidências. Reparou que 'goes' e
-            'plays' têm um som parecido no final? Isso vai ser importante. Vamos investigar!
+            'plays' têm um som parecido no final? Vai ser importante. Vamos investigar!
           </p>
         </BalaoLex>
       ) : null}
