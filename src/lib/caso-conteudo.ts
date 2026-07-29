@@ -29,44 +29,125 @@ export const EVIDENCIAS: Record<
   },
 };
 
-/** Grade 8x8 com GO, GOES, PLAY e PLAYS escondidas. */
-export const GRADE_CACA: string[][] = [
-  ["G", "O", "E", "S", "R", "T", "M", "B"],
-  ["K", "P", "L", "A", "Y", "S", "D", "N"],
-  ["W", "C", "F", "H", "J", "V", "Z", "Q"],
-  ["G", "O", "X", "R", "L", "T", "P", "E"],
-  ["N", "B", "M", "K", "W", "C", "L", "H"],
-  ["P", "L", "A", "Y", "D", "F", "R", "S"],
-  ["V", "Z", "Q", "T", "N", "B", "K", "M"],
-  ["H", "J", "C", "W", "X", "R", "D", "F"],
+export type GradeCaca = { id: string; letras: string[][] };
+
+/** 8 grades 8x8 pré-validadas: cada uma contém GO, GOES, PLAY e PLAYS. */
+export const GRADES_CACA: GradeCaca[] = [
+  {
+    id: "g1",
+    letras: [
+    ["P", "L", "A", "Y", "V", "K", "W", "B"],
+    ["M", "X", "Z", "M", "G", "T", "M", "M"],
+    ["X", "Q", "B", "W", "O", "F", "J", "Q"],
+    ["F", "R", "W", "K", "E", "Q", "Q", "Z"],
+    ["V", "C", "Z", "M", "S", "V", "W", "J"],
+    ["T", "T", "D", "X", "O", "F", "J", "V"],
+    ["T", "Z", "B", "G", "Z", "C", "Q", "V"],
+    ["J", "J", "M", "S", "Y", "A", "L", "P"],
+    ],
+  },
+  {
+    id: "g2",
+    letras: [
+    ["Y", "J", "R", "J", "H", "T", "J", "X"],
+    ["A", "G", "O", "E", "S", "W", "T", "T"],
+    ["L", "T", "X", "J", "V", "X", "M", "Z"],
+    ["P", "N", "Z", "T", "X", "X", "T", "X"],
+    ["Z", "L", "M", "R", "J", "N", "Z", "Q"],
+    ["Q", "W", "A", "Q", "K", "Z", "T", "D"],
+    ["R", "B", "K", "Y", "F", "C", "G", "C"],
+    ["N", "M", "F", "H", "S", "N", "O", "M"],
+    ],
+  },
+  {
+    id: "g3",
+    letras: [
+    ["B", "N", "J", "R", "F", "K", "N", "Q"],
+    ["F", "D", "Z", "Z", "D", "T", "S", "D"],
+    ["W", "H", "B", "G", "Q", "E", "W", "W"],
+    ["F", "C", "O", "C", "O", "P", "V", "S"],
+    ["R", "N", "M", "G", "L", "C", "Q", "Y"],
+    ["B", "D", "F", "A", "C", "K", "W", "A"],
+    ["Q", "N", "Y", "H", "C", "R", "R", "L"],
+    ["T", "H", "V", "V", "X", "V", "F", "P"],
+    ],
+  },
+  {
+    id: "g4",
+    letras: [
+    ["Q", "K", "W", "W", "P", "Q", "W", "X"],
+    ["J", "S", "M", "Q", "S", "L", "N", "C"],
+    ["D", "E", "C", "X", "Y", "N", "A", "Z"],
+    ["R", "O", "G", "H", "A", "K", "D", "Y"],
+    ["W", "G", "K", "O", "L", "X", "N", "J"],
+    ["T", "W", "R", "K", "P", "R", "F", "C"],
+    ["M", "N", "M", "F", "R", "J", "Q", "X"],
+    ["B", "C", "T", "D", "Q", "R", "B", "R"],
+    ],
+  },
+  {
+    id: "g5",
+    letras: [
+    ["J", "V", "J", "S", "D", "H", "X", "H"],
+    ["H", "B", "E", "B", "K", "P", "K", "J"],
+    ["J", "O", "Q", "R", "K", "L", "K", "O"],
+    ["G", "J", "K", "V", "Y", "A", "G", "Q"],
+    ["B", "T", "W", "J", "A", "Y", "H", "N"],
+    ["D", "R", "Q", "B", "L", "S", "R", "D"],
+    ["Q", "T", "Q", "Z", "P", "R", "J", "Z"],
+    ["Z", "J", "C", "N", "B", "T", "V", "B"],
+    ],
+  },
+  {
+    id: "g6",
+    letras: [
+    ["K", "N", "P", "L", "A", "Y", "S", "D"],
+    ["W", "R", "D", "T", "W", "N", "X", "F"],
+    ["K", "Q", "F", "C", "K", "T", "Z", "K"],
+    ["B", "Y", "T", "M", "W", "Q", "T", "F"],
+    ["D", "A", "K", "F", "N", "Q", "O", "K"],
+    ["V", "L", "Z", "M", "H", "G", "K", "B"],
+    ["K", "P", "J", "B", "R", "Q", "T", "V"],
+    ["V", "S", "E", "O", "G", "Q", "H", "Z"],
+    ],
+  },
+  {
+    id: "g7",
+    letras: [
+    ["Y", "A", "L", "P", "Z", "W", "R", "X"],
+    ["X", "G", "O", "E", "S", "T", "Q", "M"],
+    ["J", "P", "M", "D", "Q", "Z", "R", "X"],
+    ["Q", "D", "L", "F", "W", "J", "R", "H"],
+    ["Z", "O", "W", "A", "C", "D", "R", "R"],
+    ["T", "G", "Z", "X", "Y", "D", "D", "N"],
+    ["Z", "D", "C", "Q", "X", "S", "Q", "V"],
+    ["T", "B", "X", "T", "J", "F", "Z", "C"],
+    ],
+  },
+  {
+    id: "g8",
+    letras: [
+    ["F", "C", "R", "M", "D", "Z", "K", "H"],
+    ["D", "C", "Z", "K", "H", "X", "X", "Q"],
+    ["T", "W", "O", "G", "H", "J", "S", "F"],
+    ["P", "R", "T", "Z", "K", "Q", "E", "H"],
+    ["L", "T", "Q", "D", "M", "T", "O", "M"],
+    ["A", "B", "Q", "R", "M", "N", "G", "C"],
+    ["Y", "W", "N", "Y", "A", "L", "P", "V"],
+    ["S", "Q", "W", "J", "V", "F", "J", "B"],
+    ],
+  },
 ];
 
-/** Posições (linha, coluna) de cada palavra na grade. */
-export const POSICOES_CACA: Record<PalavraCaca, [number, number][]> = {
-  GOES: [
-    [0, 0],
-    [0, 1],
-    [0, 2],
-    [0, 3],
-  ],
-  PLAYS: [
-    [1, 1],
-    [1, 2],
-    [1, 3],
-    [1, 4],
-    [1, 5],
-  ],
-  GO: [
-    [3, 0],
-    [3, 1],
-  ],
-  PLAY: [
-    [5, 0],
-    [5, 1],
-    [5, 2],
-    [5, 3],
-  ],
-};
+export function sortearGradeId(atual?: string) {
+  const opcoes = GRADES_CACA.filter((g) => g.id !== atual);
+  const lista = opcoes.length > 0 ? opcoes : GRADES_CACA;
+  return lista[Math.floor(Math.random() * lista.length)].id;
+}
+
+export function gradePorId(id: string): GradeCaca {
+  return GRADES_CACA.find((g) => g.id === id) ?? GRADES_CACA[0];
+}
 
 /** Os dois grupos de sujeitos, usados na observação e na síntese final. */
 export const GRUPOS = [
