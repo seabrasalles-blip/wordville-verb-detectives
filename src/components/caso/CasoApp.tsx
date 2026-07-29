@@ -52,6 +52,8 @@ function Casca() {
     switch (tela) {
       case 2:
         return estado.encontradas.length === PALAVRAS_CACA.length;
+      case 3:
+        return estado.observou;
       case 4:
         return LACUNAS_TELA4.every((l) => estado.respostas[l.id] === l.resposta);
       case 5:
@@ -62,10 +64,13 @@ function Casca() {
         return LACUNAS_TELA7.every((l) => estado.respostas[l.id] === l.resposta);
       case 8:
         return PERGUNTAS_TELA8.every((q) => estado.metacognicao[q.id] !== undefined);
+      case 9:
+        return MONTAGENS.every((m) => estado.montagens[m.id] === m.correta);
       default:
         return true;
     }
   })();
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-black/5 p-2 sm:p-4">
