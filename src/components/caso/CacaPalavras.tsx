@@ -2,44 +2,35 @@ import { useCallback, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   EVIDENCIAS,
-  GRADE_CACA,
   PALAVRAS_CACA,
-  POSICOES_CACA,
+  gradePorId,
   type PalavraCaca,
 } from "@/lib/caso-conteudo";
 import { useCaso } from "./CasoProvider";
 import { BotaoAudio } from "./BotaoAudio";
 import { AreaFeedback, Feedback } from "./Feedback";
 
-type Celula = { l: number; c: number };
+type Celula = { linha: number; coluna: number };
 
 function chave(l: number, c: number) {
   return `${l}-${c}`;
 }
 
-/** Confere caminho exato: mesma ordem, mesma sequência de células. */
-function palavraDoCaminho(caminho: Celula[]): PalavraCaca | null {
-  if (caminho.length < 2) return null;
-  for (const palavra of PALAVRAS_CACA) {
-    const alvo = POSICOES_CACA[palavra];
-    if (alvo.length !== caminho.length) continue;
-    const igual = alvo.every(([l, c], i) => caminho[i].l === l && caminho[i].c === c);
-    if (igual) return palavra;
-  }
-  return null;
-}
-
 export function CacaPalavras() {
   const { estado, despachar, fala } = useCaso();
+  const grade = gradePorId(estado.gradeId);
   const [caminho, setCaminho] = useState<Celula[]>([]);
-  const [erro, setErro] = useState<string | null>(null);
+  const [aviso, setAviso] = useState<{ tipo: "success" | "error" | "hint"; texto: string } | null>(
+    null,
+  );
   const arrastando = useRef(false);
   const caminhoRef = useRef<Celula[]>([]);
   const direcao = useRef<{ dl: number; dc: number } | null>(null);
   const limpando = useRef<number | null>(null);
+  const contínuo = useRef(true);
 
   const encontradas = new Set<string>(
-    estado.encontradas.flatMap((p) => POSICOES_CACA[p].map(([l, c]) => chave(l, c))),
+    Object.values(estado.caminhos).flatMap((cs) => cs.map((p) => chave(p.linha, p.coluna))),
   );
 
   const atualizar = (proximo: Celula[]) => {
@@ -47,69 +38,106 @@ export function CacaPalavras() {
     setCaminho(proximo);
   };
 
+  const limparDepois = (ms = 1600) => {
+    if (limpando.current) window.clearTimeout(limpando.current);
+    limpando.current = window.setTimeout(() => {
+      caminhoRef.current = [];
+      setCaminho([]);
+      setAviso(null);
+    }, ms);
+  };
+
   const finalizar = useCallback(() => {
     if (!arrastando.current) return;
     arrastando.current = false;
     const atual = caminhoRef.current;
-    const palavra = palavraDoCaminho(atual);
     direcao.current = null;
-
-    if (palavra && !estado.encontradas.includes(palavra)) {
+    if (atual.length < 2) {
       caminhoRef.current = [];
       setCaminho([]);
-      setErro(null);
-      despachar({ tipo: "encontrou", palavra });
+      return;
+    }
+
+    const texto = atual.map((p) => grade.letras[p.linha][p.coluna]).join("").toUpperCase();
+
+    if (!contínuo.current) {
+      setAviso({ tipo: "error", texto: "As letras precisam estar ligadas e na ordem." });
+      limparDepois();
+      return;
+    }
+
+    const palavra = (PALAVRAS_CACA as readonly string[]).includes(texto)
+      ? (texto as PalavraCaca)
+      : null;
+
+    if (palavra && estado.encontradas.includes(palavra)) {
+      setAviso({ tipo: "hint", texto: "Essa evidência já está no mural. Procure outra palavra." });
+      limparDepois();
+      return;
+    }
+
+    if (palavra) {
+      caminhoRef.current = [];
+      setCaminho([]);
+      setAviso({ tipo: "success", texto: `Você encontrou ${palavra}!` });
+      despachar({ tipo: "encontrou", palavra, caminho: atual });
       fala.falar(EVIDENCIAS[palavra].fala, `evid-${palavra}`);
       return;
     }
 
-    if (atual.length > 1) {
-      setErro("Essas letras ainda não formam o verbo. Procure uma sequência ligada, na ordem.");
-      if (limpando.current) window.clearTimeout(limpando.current);
-      limpando.current = window.setTimeout(() => {
-        caminhoRef.current = [];
-        setCaminho([]);
-        setErro(null);
-      }, 1500);
-      return;
-    }
+    const prefixo = PALAVRAS_CACA.some((p) => p.startsWith(texto) && p !== texto);
+    setAviso(
+      prefixo
+        ? {
+            tipo: "hint",
+            texto: "Você encontrou o começo de uma palavra. Observe se falta alguma letra.",
+          }
+        : {
+            tipo: "error",
+            texto:
+              "Essa sequência ainda não é uma das palavras do mural. Observe as letras e tente novamente.",
+          },
+    );
+    limparDepois();
+  }, [despachar, estado.encontradas, fala, grade]);
 
-    caminhoRef.current = [];
-    setCaminho([]);
-  }, [despachar, estado.encontradas, fala]);
-
-  const marcar = (l: number, c: number) => {
+  const marcar = (linha: number, coluna: number) => {
     const atual = caminhoRef.current;
     const ultima = atual[atual.length - 1];
     if (!ultima) return;
-    if (atual.some((p) => p.l === l && p.c === c)) return;
+    if (atual.some((p) => p.linha === linha && p.coluna === coluna)) return;
 
-    const dl = l - ultima.l;
-    const dc = c - ultima.c;
-    // sem saltos e apenas horizontal/vertical
-    if (Math.abs(dl) + Math.abs(dc) !== 1) return;
+    const dl = linha - ultima.linha;
+    const dc = coluna - ultima.coluna;
+    const vizinha = Math.abs(dl) <= 1 && Math.abs(dc) <= 1;
 
+    if (!vizinha) {
+      contínuo.current = false;
+      atualizar([...atual, { linha, coluna }]);
+      return;
+    }
     if (!direcao.current) {
       direcao.current = { dl, dc };
     } else if (direcao.current.dl !== dl || direcao.current.dc !== dc) {
-      return; // mudança de direção no meio da palavra não é permitida
+      contínuo.current = false;
     }
-
-    atualizar([...atual, { l, c }]);
+    atualizar([...atual, { linha, coluna }]);
   };
 
-  const iniciar = (l: number, c: number) => {
+  const iniciar = (linha: number, coluna: number) => {
     if (limpando.current) window.clearTimeout(limpando.current);
-    setErro(null);
+    setAviso(null);
     arrastando.current = true;
     direcao.current = null;
-    atualizar([{ l, c }]);
+    contínuo.current = true;
+    atualizar([{ linha, coluna }]);
   };
 
   const total = PALAVRAS_CACA.length;
   const achadas = estado.encontradas.length;
   const completo = achadas === total;
-  const selecionadas = new Set(caminho.map((p) => chave(p.l, p.c)));
+  const selecionadas = new Set(caminho.map((p) => chave(p.linha, p.coluna)));
+  const erroAtivo = aviso?.tipo === "error";
 
   return (
     <div className="space-y-2">
@@ -124,7 +152,7 @@ export function CacaPalavras() {
           onPointerLeave={finalizar}
         >
           <div className="grid grid-cols-8 gap-1">
-            {GRADE_CACA.map((linha, l) =>
+            {grade.letras.map((linha, l) =>
               linha.map((letra, c) => {
                 const k = chave(l, c);
                 const achada = encontradas.has(k);
@@ -146,7 +174,7 @@ export function CacaPalavras() {
                       achada
                         ? "bg-acerto text-acerto-foreground"
                         : ativa
-                          ? erro
+                          ? erroAtivo
                             ? "bg-reorienta text-reorienta-foreground"
                             : "bg-pista text-pista-foreground"
                           : "bg-secondary text-secondary-foreground hover:bg-investigacao/15",
@@ -197,13 +225,13 @@ export function CacaPalavras() {
       </div>
 
       <AreaFeedback>
-        {erro ? (
-          <Feedback type="error" message={erro} />
-        ) : completo ? (
+        {completo ? (
           <Feedback
             type="success"
             message="Todas as evidências reunidas! Repare no final de 'goes' e 'plays'."
           />
+        ) : aviso ? (
+          <Feedback type={aviso.tipo} message={aviso.texto} onClose={() => setAviso(null)} />
         ) : null}
       </AreaFeedback>
     </div>

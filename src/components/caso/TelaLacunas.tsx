@@ -5,6 +5,7 @@ import { useCaso } from "./CasoProvider";
 import { BotaoAudio } from "./BotaoAudio";
 import { AreaFeedback, Feedback } from "./Feedback";
 import { Fantasma, useArrasto } from "./useArrasto";
+import { familiaDaPalavra, feedbackLacuna } from "@/lib/caso-conteudo";
 import type { Lacuna, TipoDica } from "@/lib/caso-conteudo";
 
 const ORDEM_DICAS: TipoDica[] = ["conceitual", "procedimental", "atencional"];
@@ -24,6 +25,7 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
   const [dica, setDica] = useState<{ id: string; texto: string } | null>(null);
   const [ultimoAcerto, setUltimoAcerto] = useState<Lacuna | null>(null);
   const [processando, setProcessando] = useState(false);
+  const bancoMisto = new Set(banco.map(familiaDaPalavra)).size > 1;
 
   const soltar = (idLacuna: string, palavra: string) => {
     if (processando) return;
@@ -45,11 +47,17 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
 
     const tentativas = estado.tentativas[lacuna.id] ?? 0;
     despachar({ tipo: "errar", id: lacuna.id });
-    const disponiveis = ORDEM_DICAS.filter((t) => lacuna.dicas[t]);
-    const escolhida = disponiveis[Math.min(tentativas, disponiveis.length - 1)];
-    setDica({ id: lacuna.id, texto: lacuna.dicas[escolhida] ?? "Observe quem pratica a ação." });
+    if (bancoMisto) {
+      // revisão mista: separa erro de significado (go × play) de erro de concordância
+      setDica({ id: lacuna.id, texto: feedbackLacuna(lacuna, palavra, tentativas) });
+    } else {
+      const disponiveis = ORDEM_DICAS.filter((t) => lacuna.dicas[t]);
+      const escolhida = disponiveis[Math.min(tentativas, disponiveis.length - 1)];
+      setDica({ id: lacuna.id, texto: lacuna.dicas[escolhida] ?? "Observe quem pratica a ação." });
+    }
     setUltimoAcerto(null);
   };
+
 
   const arrasto = useArrasto(soltar);
   const tudoCerto = lacunas.every(

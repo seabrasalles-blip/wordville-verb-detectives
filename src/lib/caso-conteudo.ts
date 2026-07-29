@@ -29,44 +29,125 @@ export const EVIDENCIAS: Record<
   },
 };
 
-/** Grade 8x8 com GO, GOES, PLAY e PLAYS escondidas. */
-export const GRADE_CACA: string[][] = [
-  ["G", "O", "E", "S", "R", "T", "M", "B"],
-  ["K", "P", "L", "A", "Y", "S", "D", "N"],
-  ["W", "C", "F", "H", "J", "V", "Z", "Q"],
-  ["G", "O", "X", "R", "L", "T", "P", "E"],
-  ["N", "B", "M", "K", "W", "C", "L", "H"],
-  ["P", "L", "A", "Y", "D", "F", "R", "S"],
-  ["V", "Z", "Q", "T", "N", "B", "K", "M"],
-  ["H", "J", "C", "W", "X", "R", "D", "F"],
+export type GradeCaca = { id: string; letras: string[][] };
+
+/** 8 grades 8x8 pré-validadas: cada uma contém GO, GOES, PLAY e PLAYS. */
+export const GRADES_CACA: GradeCaca[] = [
+  {
+    id: "g1",
+    letras: [
+    ["P", "L", "A", "Y", "V", "K", "W", "B"],
+    ["M", "X", "Z", "M", "G", "T", "M", "M"],
+    ["X", "Q", "B", "W", "O", "F", "J", "Q"],
+    ["F", "R", "W", "K", "E", "Q", "Q", "Z"],
+    ["V", "C", "Z", "M", "S", "V", "W", "J"],
+    ["T", "T", "D", "X", "O", "F", "J", "V"],
+    ["T", "Z", "B", "G", "Z", "C", "Q", "V"],
+    ["J", "J", "M", "S", "Y", "A", "L", "P"],
+    ],
+  },
+  {
+    id: "g2",
+    letras: [
+    ["Y", "J", "R", "J", "H", "T", "J", "X"],
+    ["A", "G", "O", "E", "S", "W", "T", "T"],
+    ["L", "T", "X", "J", "V", "X", "M", "Z"],
+    ["P", "N", "Z", "T", "X", "X", "T", "X"],
+    ["Z", "L", "M", "R", "J", "N", "Z", "Q"],
+    ["Q", "W", "A", "Q", "K", "Z", "T", "D"],
+    ["R", "B", "K", "Y", "F", "C", "G", "C"],
+    ["N", "M", "F", "H", "S", "N", "O", "M"],
+    ],
+  },
+  {
+    id: "g3",
+    letras: [
+    ["B", "N", "J", "R", "F", "K", "N", "Q"],
+    ["F", "D", "Z", "Z", "D", "T", "S", "D"],
+    ["W", "H", "B", "G", "Q", "E", "W", "W"],
+    ["F", "C", "O", "C", "O", "P", "V", "S"],
+    ["R", "N", "M", "G", "L", "C", "Q", "Y"],
+    ["B", "D", "F", "A", "C", "K", "W", "A"],
+    ["Q", "N", "Y", "H", "C", "R", "R", "L"],
+    ["T", "H", "V", "V", "X", "V", "F", "P"],
+    ],
+  },
+  {
+    id: "g4",
+    letras: [
+    ["Q", "K", "W", "W", "P", "Q", "W", "X"],
+    ["J", "S", "M", "Q", "S", "L", "N", "C"],
+    ["D", "E", "C", "X", "Y", "N", "A", "Z"],
+    ["R", "O", "G", "H", "A", "K", "D", "Y"],
+    ["W", "G", "K", "O", "L", "X", "N", "J"],
+    ["T", "W", "R", "K", "P", "R", "F", "C"],
+    ["M", "N", "M", "F", "R", "J", "Q", "X"],
+    ["B", "C", "T", "D", "Q", "R", "B", "R"],
+    ],
+  },
+  {
+    id: "g5",
+    letras: [
+    ["J", "V", "J", "S", "D", "H", "X", "H"],
+    ["H", "B", "E", "B", "K", "P", "K", "J"],
+    ["J", "O", "Q", "R", "K", "L", "K", "O"],
+    ["G", "J", "K", "V", "Y", "A", "G", "Q"],
+    ["B", "T", "W", "J", "A", "Y", "H", "N"],
+    ["D", "R", "Q", "B", "L", "S", "R", "D"],
+    ["Q", "T", "Q", "Z", "P", "R", "J", "Z"],
+    ["Z", "J", "C", "N", "B", "T", "V", "B"],
+    ],
+  },
+  {
+    id: "g6",
+    letras: [
+    ["K", "N", "P", "L", "A", "Y", "S", "D"],
+    ["W", "R", "D", "T", "W", "N", "X", "F"],
+    ["K", "Q", "F", "C", "K", "T", "Z", "K"],
+    ["B", "Y", "T", "M", "W", "Q", "T", "F"],
+    ["D", "A", "K", "F", "N", "Q", "O", "K"],
+    ["V", "L", "Z", "M", "H", "G", "K", "B"],
+    ["K", "P", "J", "B", "R", "Q", "T", "V"],
+    ["V", "S", "E", "O", "G", "Q", "H", "Z"],
+    ],
+  },
+  {
+    id: "g7",
+    letras: [
+    ["Y", "A", "L", "P", "Z", "W", "R", "X"],
+    ["X", "G", "O", "E", "S", "T", "Q", "M"],
+    ["J", "P", "M", "D", "Q", "Z", "R", "X"],
+    ["Q", "D", "L", "F", "W", "J", "R", "H"],
+    ["Z", "O", "W", "A", "C", "D", "R", "R"],
+    ["T", "G", "Z", "X", "Y", "D", "D", "N"],
+    ["Z", "D", "C", "Q", "X", "S", "Q", "V"],
+    ["T", "B", "X", "T", "J", "F", "Z", "C"],
+    ],
+  },
+  {
+    id: "g8",
+    letras: [
+    ["F", "C", "R", "M", "D", "Z", "K", "H"],
+    ["D", "C", "Z", "K", "H", "X", "X", "Q"],
+    ["T", "W", "O", "G", "H", "J", "S", "F"],
+    ["P", "R", "T", "Z", "K", "Q", "E", "H"],
+    ["L", "T", "Q", "D", "M", "T", "O", "M"],
+    ["A", "B", "Q", "R", "M", "N", "G", "C"],
+    ["Y", "W", "N", "Y", "A", "L", "P", "V"],
+    ["S", "Q", "W", "J", "V", "F", "J", "B"],
+    ],
+  },
 ];
 
-/** Posições (linha, coluna) de cada palavra na grade. */
-export const POSICOES_CACA: Record<PalavraCaca, [number, number][]> = {
-  GOES: [
-    [0, 0],
-    [0, 1],
-    [0, 2],
-    [0, 3],
-  ],
-  PLAYS: [
-    [1, 1],
-    [1, 2],
-    [1, 3],
-    [1, 4],
-    [1, 5],
-  ],
-  GO: [
-    [3, 0],
-    [3, 1],
-  ],
-  PLAY: [
-    [5, 0],
-    [5, 1],
-    [5, 2],
-    [5, 3],
-  ],
-};
+export function sortearGradeId(atual?: string) {
+  const opcoes = GRADES_CACA.filter((g) => g.id !== atual);
+  const lista = opcoes.length > 0 ? opcoes : GRADES_CACA;
+  return lista[Math.floor(Math.random() * lista.length)].id;
+}
+
+export function gradePorId(id: string): GradeCaca {
+  return GRADES_CACA.find((g) => g.id === id) ?? GRADES_CACA[0];
+}
 
 /** Os dois grupos de sujeitos, usados na observação e na síntese final. */
 export const GRUPOS = [
@@ -88,11 +169,17 @@ export const GRUPOS = [
 
 export type TipoDica = "conceitual" | "procedimental" | "atencional";
 
+export type FamiliaVerbal = "go" | "play";
+
 export type Lacuna = {
   id: string;
   antes: string;
   depois: string;
   resposta: string;
+  /** Verbo pedido pelo significado da frase. */
+  familia: FamiliaVerbal;
+  /** Ação descrita pela frase, usada nos feedbacks de significado. */
+  acao: string;
   ilustracao: string;
   acertoTexto: string;
   dicas: Partial<Record<TipoDica, string>>;
@@ -107,6 +194,8 @@ export const LACUNAS_TELA4: Lacuna[] = [
     antes: "He",
     depois: "to the park on Sundays.",
     resposta: "goes",
+    familia: "go",
+    acao: "ir ao parque",
     ilustracao: "👦",
     acertoTexto: "Muito bem! 'He' está no grupo de he, she e it. Por isso: go recebe ES → goes.",
     dicas: {
@@ -120,6 +209,8 @@ export const LACUNAS_TELA4: Lacuna[] = [
     antes: "We",
     depois: "to the park on Sundays.",
     resposta: "go",
+    familia: "go",
+    acao: "ir ao parque",
     ilustracao: "👨‍👩‍👧",
     acertoTexto: "Muito bem! 'We' está no grupo de I, you, we e they. O verbo fica 'go'.",
     dicas: {
@@ -133,6 +224,8 @@ export const LACUNAS_TELA4: Lacuna[] = [
     antes: "She",
     depois: "to the park on Sundays.",
     resposta: "goes",
+    familia: "go",
+    acao: "ir ao parque",
     ilustracao: "👧",
     acertoTexto: "Muito bem! 'She' está no grupo de he, she e it. Por isso: go recebe ES → goes.",
     dicas: {
@@ -149,6 +242,8 @@ export const LACUNAS_TELA6: Lacuna[] = [
     antes: "She",
     depois: "soccer every weekend.",
     resposta: "plays",
+    familia: "play",
+    acao: "jogar futebol",
     ilustracao: "👧⚽️",
     acertoTexto: "Isso! 'She' está no grupo de he, she e it. Na escrita, play recebe S → plays.",
     dicas: {
@@ -161,6 +256,8 @@ export const LACUNAS_TELA6: Lacuna[] = [
     antes: "I",
     depois: "soccer every weekend.",
     resposta: "play",
+    familia: "play",
+    acao: "jogar futebol",
     ilustracao: "🧒⚽️",
     acertoTexto: "Isso! 'I' está no grupo de I, you, we e they. O verbo fica 'play'.",
     dicas: {
@@ -173,6 +270,8 @@ export const LACUNAS_TELA6: Lacuna[] = [
     antes: "It",
     depois: "in the garden.",
     resposta: "plays",
+    familia: "play",
+    acao: "brincar no jardim",
     ilustracao: "🐶",
     acertoTexto: "Isso mesmo! Com it, usamos plays.",
     dicas: {
@@ -188,6 +287,8 @@ export const LACUNAS_TELA7: Lacuna[] = [
     antes: "He",
     depois: "to school every day.",
     resposta: "goes",
+    familia: "go",
+    acao: "ir à escola",
     ilustracao: "👦🏫",
     acertoTexto: "Cartaz consertado! 'He' pede 'goes'.",
     dicas: {
@@ -200,6 +301,8 @@ export const LACUNAS_TELA7: Lacuna[] = [
     antes: "We",
     depois: "to the park on Sundays.",
     resposta: "go",
+    familia: "go",
+    acao: "ir ao parque",
     ilustracao: "👨‍👩‍👧🌳",
     acertoTexto: "Cartaz consertado! 'We' pede 'go'.",
     dicas: {
@@ -212,6 +315,8 @@ export const LACUNAS_TELA7: Lacuna[] = [
     antes: "She",
     depois: "soccer every weekend.",
     resposta: "plays",
+    familia: "play",
+    acao: "jogar futebol",
     ilustracao: "👧⚽️",
     acertoTexto: "Cartaz consertado! 'She' pede 'plays'.",
     dicas: {
@@ -224,6 +329,8 @@ export const LACUNAS_TELA7: Lacuna[] = [
     antes: "I",
     depois: "soccer every weekend.",
     resposta: "play",
+    familia: "play",
+    acao: "jogar futebol",
     ilustracao: "🧒⚽️",
     acertoTexto: "Cartaz consertado! 'I' pede 'play'.",
     dicas: {
@@ -233,7 +340,14 @@ export const LACUNAS_TELA7: Lacuna[] = [
   },
 ];
 
-export const PARES_TELA5: { id: string; sujeito: string; icone: string; forma: string }[] = [
+export type FormaVerbal = "go" | "goes";
+
+export const PARES_TELA5: {
+  id: string;
+  sujeito: string;
+  icone: string;
+  forma: FormaVerbal;
+}[] = [
   { id: "p-i", sujeito: "I", icone: "🙋", forma: "go" },
   { id: "p-she", sujeito: "She", icone: "👧", forma: "goes" },
   { id: "p-we", sujeito: "We", icone: "👨‍👩‍👧", forma: "go" },
@@ -242,25 +356,17 @@ export const PARES_TELA5: { id: string; sujeito: string; icone: string; forma: s
 ];
 
 /**
- * Alvos da tela 5: cada alvo tem identificador próprio e pertence a um único par.
- * A validação usa `parId`, nunca o texto (que se repete entre alvos).
+ * Cartões da tela 5. O `id` serve só para controlar qual cartão foi usado;
+ * a correção linguística usa exclusivamente a `forma` (go / goes).
  */
-export const ALVOS_TELA5: { id: string; texto: string; parId: string }[] = [
-  { id: "a1", texto: "goes", parId: "p-she" },
-  { id: "a2", texto: "go", parId: "p-i" },
-  { id: "a3", texto: "goes", parId: "p-he" },
-  { id: "a4", texto: "go", parId: "p-they" },
-  { id: "a5", texto: "go", parId: "p-we" },
+export const CARTOES_TELA5: { id: string; forma: FormaVerbal }[] = [
+  { id: "c1", forma: "goes" },
+  { id: "c2", forma: "go" },
+  { id: "c3", forma: "goes" },
+  { id: "c4", forma: "go" },
+  { id: "c5", forma: "go" },
 ];
 
-/** Grupo a que cada sujeito pertence, para feedbacks dinâmicos. */
-export const GRUPO_DO_SUJEITO: Record<string, string> = {
-  "p-i": "I pertence ao grupo de you, we e they.",
-  "p-we": "We pertence ao grupo de I, you e they.",
-  "p-they": "They pertence ao grupo de I, you e we.",
-  "p-she": "She pertence ao grupo de he e it.",
-  "p-he": "He pertence ao grupo de she e it.",
-};
 
 /** Tela 9: montar a frase com blocos ordenados. */
 export type Montagem = {
@@ -365,3 +471,45 @@ export const PERGUNTAS_TELA8: {
   },
 ];
 
+
+/** Grupo do sujeito, para os feedbacks de concordância. */
+export function grupoDoSujeito(sujeito: string): "base" | "terceira" {
+  return ["he", "she", "it"].includes(sujeito.trim().toLowerCase()) ? "terceira" : "base";
+}
+
+export function familiaDaPalavra(palavra: string): FamiliaVerbal {
+  const p = palavra.trim().toLowerCase();
+  return p === "go" || p === "goes" ? "go" : "play";
+}
+
+/**
+ * Feedback da revisão mista: analisa significado (família do verbo) e
+ * concordância (forma) separadamente, com dicas graduais por tentativa.
+ */
+export function feedbackLacuna(lacuna: Lacuna, palavra: string, tentativa: number) {
+  const escolha = palavra.trim().toLowerCase();
+  const familiaEscolhida = familiaDaPalavra(escolha);
+  const familiaCorreta = familiaEscolhida === lacuna.familia;
+  const sujeito = lacuna.antes.trim().toLowerCase();
+  const base = lacuna.familia;
+  const flexionada = base === "go" ? "goes" : "plays";
+  const terceira = grupoDoSujeito(sujeito) === "terceira";
+
+  if (familiaCorreta) {
+    return `O verbo está certo, mas com ${sujeito} usamos ${lacuna.resposta}.`;
+  }
+
+  // família errada, mas a terminação já combina com o sujeito
+  const marcada = escolha === "goes" || escolha === "plays";
+  if (marcada === terceira && tentativa === 0) {
+    return `A terminação combina com ${sujeito}, mas o verbo não combina com a ação. ${lacuna.acao} pede ${base}.`;
+  }
+
+  if (tentativa === 0) {
+    return `A frase fala em ${lacuna.acao}. Procure uma forma do verbo ${base}.`;
+  }
+  if (tentativa === 1) {
+    return `Primeiro escolha o verbo ${base}. Agora observe o sujeito ${sujeito}.`;
+  }
+  return `Para essa frase, escolha entre ${base} e ${flexionada}.`;
+}

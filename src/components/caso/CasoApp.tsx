@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import wordville from "@/assets/wordville.jpg";
 import medalha from "@/assets/medalha.png";
 import {
-  ALVOS_TELA5,
+  CARTOES_TELA5,
   GRUPOS,
   LACUNAS_TELA4,
   LACUNAS_TELA6,
@@ -60,8 +60,8 @@ function telaConcluida(tela: number, estado: ReturnType<typeof useCaso>["estado"
       return LACUNAS_TELA4.every((l) => estado.respostas[l.id] === l.resposta);
     case 5:
       return PARES_TELA5.every((p) => {
-        const alvo = ALVOS_TELA5.find((a) => a.id === estado.conexoes[p.id]);
-        return alvo?.parId === p.id;
+        const cartao = CARTOES_TELA5.find((c) => c.id === estado.conexoes[p.id]);
+        return cartao?.forma === p.forma;
       });
     case 6:
       return LACUNAS_TELA6.every((l) => estado.respostas[l.id] === l.resposta);
@@ -324,7 +324,10 @@ function Tela1() {
 function Tela3() {
   const { estado, despachar } = useCaso();
   const [erro, setErro] = useState(false);
+  const [escolha, setEscolha] = useState<"certa" | "errada" | null>(null);
   const revelado = estado.observou;
+  const neutro =
+    "rounded-full border-2 border-investigacao/40 bg-card px-4 py-1.5 text-[18px] font-bold text-investigacao transition-colors hover:bg-investigacao/10";
 
   return (
     <div className="space-y-2">
@@ -340,19 +343,32 @@ function Tela3() {
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              onClick={() => despachar({ tipo: "observou" })}
-              className="rounded-full bg-pista px-4 py-1.5 text-[18px] font-bold text-pista-foreground shadow-md"
+              aria-pressed={escolha === "certa"}
+              onClick={() => {
+                setEscolha("certa");
+                setErro(false);
+                despachar({ tipo: "observou" });
+              }}
+              className={cn(neutro, escolha === "certa" && "border-pista bg-pista text-pista-foreground")}
             >
               go virou goes
             </button>
             <button
               type="button"
-              onClick={() => setErro(true)}
-              className="rounded-full border-2 border-investigacao/40 px-4 py-1.5 text-[18px] font-bold text-investigacao"
+              aria-pressed={escolha === "errada"}
+              onClick={() => {
+                setEscolha("errada");
+                setErro(true);
+              }}
+              className={cn(
+                neutro,
+                escolha === "errada" && "border-reorienta bg-reorienta/20 text-reorienta",
+              )}
             >
               nada mudou
             </button>
           </div>
+
           <AreaFeedback>
             {erro ? (
               <Feedback
