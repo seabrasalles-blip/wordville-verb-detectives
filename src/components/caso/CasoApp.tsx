@@ -332,20 +332,23 @@ function Tela3() {
 function Tela6() {
   return (
     <div className="space-y-2.5">
-      <div className="grid gap-2 sm:grid-cols-[auto_1fr] sm:items-center">
-        <Cartaz
-          frase="The dog plays in the garden."
-          legenda="It plays in the garden."
-          icone="🐶"
-          audioId="t6-dog"
-        />
-        <BalaoLex>
-          <p>
-            O cachorro é <Ingles>it</Ingles>. Na escrita, algumas palavras recebem S e outras
-            recebem ES: play → plays, go → goes.
-          </p>
-        </BalaoLex>
+      <div className="flex flex-wrap items-center gap-2 rounded-2xl border-2 border-investigacao bg-card px-3 py-2 shadow-sm">
+        <span aria-hidden="true" className="text-2xl">
+          🐶
+        </span>
+        <p className="text-base font-bold text-investigacao">
+          <Ingles>The dog plays in the garden.</Ingles>
+        </p>
+        <BotaoAudio texto="The dog plays in the garden." id="t6-dog" tamanho="sm" />
+        <p className="text-base font-bold text-investigacao">
+          <Ingles>It plays in the garden.</Ingles>
+        </p>
+        <BotaoAudio texto="It plays in the garden." id="t6-it-frase" tamanho="sm" />
+        <p className="w-full text-xs font-semibold text-muted-foreground">
+          Na escrita, algumas palavras recebem S e outras recebem ES: play → plays, go → goes.
+        </p>
       </div>
+
       <TelaLacunas
         lacunas={LACUNAS_TELA6}
         banco={["play", "plays"]}
