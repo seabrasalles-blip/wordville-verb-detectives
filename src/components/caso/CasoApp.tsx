@@ -176,12 +176,14 @@ function Cartaz({
   icone,
   tremulando,
   audioId,
+  semAudio,
 }: {
   frase: string;
   legenda?: string;
   icone: string;
   tremulando?: boolean;
   audioId?: string;
+  semAudio?: boolean;
 }) {
   return (
     <div
@@ -197,14 +199,43 @@ function Cartaz({
         <Ingles>{frase}</Ingles>
       </p>
       {legenda ? <p className="mt-0.5 text-xs text-muted-foreground">{legenda}</p> : null}
-      <div className="mt-2 flex justify-center">
-        <BotaoAudio texto={frase} id={audioId} tamanho="sm" />
-      </div>
+      {semAudio ? null : (
+        <div className="mt-2 flex justify-center">
+          <BotaoAudio texto={frase} id={audioId} tamanho="sm" />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Os dois grupos de sujeitos, base da regra. */
+function Grupos() {
+  return (
+    <div className="grid gap-2 sm:grid-cols-2">
+      {GRUPOS.map((g) => (
+        <div key={g.id} className="rounded-2xl border-2 border-investigacao bg-card p-2.5">
+          <p className="text-sm font-bold text-investigacao">
+            <span aria-hidden="true">{g.icone}</span> {g.titulo}
+          </p>
+          <p className="mt-0.5 text-base font-bold">
+            <Ingles>{g.formas}</Ingles>
+          </p>
+          <ul className="mt-1 space-y-0.5">
+            {g.exemplos.map((ex) => (
+              <li key={ex} className="flex items-center gap-2 text-sm font-semibold">
+                <span>{ex}</span>
+                <BotaoAudio texto={ex} tamanho="sm" />
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }
 
 function Tela1() {
+  const [visto, setVisto] = useState(false);
   return (
     <div className="space-y-3">
       <img
@@ -214,66 +245,85 @@ function Tela1() {
         height={768}
         className="h-24 w-full rounded-2xl border-2 border-investigacao object-cover shadow-md sm:h-28"
       />
-      <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
-        <Cartaz frase="He go to school" icone="🏫" tremulando audioId="cartaz-1" />
-        <span aria-hidden="true" className="mx-auto text-4xl">
-          🔍
-        </span>
+      <div className="grid gap-3 sm:grid-cols-2 sm:items-center">
+        <div className="space-y-1.5">
+          <Cartaz frase="He go to school." icone="🏫" tremulando semAudio />
+          <p className="text-center text-xs font-semibold text-reorienta">
+            Algo está errado nesta frase. Você consegue descobrir o quê?
+          </p>
+          {!visto ? (
+            <button
+              type="button"
+              onClick={() => setVisto(true)}
+              className="mx-auto block rounded-full bg-pista px-4 py-1.5 text-sm font-bold text-pista-foreground shadow-md"
+            >
+              Ver a frase correta
+            </button>
+          ) : (
+            <Cartaz frase="He goes to school." icone="✅" audioId="cartaz-correto" />
+          )}
+        </div>
+        <BalaoLex>
+          <p>
+            Olá! Eu sou a Inspetora Lex, detetive de Wordville. Os verbos dos cartazes estão
+            errados.
+          </p>
+          <p>Preciso de um assistente-detetive. Você topa?</p>
+        </BalaoLex>
       </div>
-      <BalaoLex>
-        <p>
-          Olá! Eu sou a Inspetora Lex, detetive de Wordville. Algo estranho está acontecendo: as
-          palavras nos cartazes estão mudando de forma! Olha só esse cartaz:{" "}
-          <Ingles>He go to school</Ingles>. Tem algo esquisito, não tem?
-        </p>
-        <p>Preciso de um assistente-detetive esperto para me ajudar. Você topa?</p>
-      </BalaoLex>
     </div>
   );
 }
 
 function Tela3() {
-  const [revelado, setRevelado] = useState(false);
+  const { estado, despachar } = useCaso();
+  const [erro, setErro] = useState(false);
+  const revelado = estado.observou;
+
   return (
-    <div className="space-y-3">
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Cartaz
-          frase="I go to school every day."
-          legenda="Uma menina apontando para si mesma"
-          icone="🙋‍♀️"
-          audioId="t3-a"
-        />
-        <Cartaz
-          frase="She goes to school every day."
-          legenda="Outra menina, vista de longe"
-          icone="👧"
-          audioId="t3-b"
-        />
+    <div className="space-y-2.5">
+      <p className="text-base font-semibold">Observe as frases. Quem pratica a ação?</p>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <Cartaz frase="I go to school." icone="🙋‍♀️" audioId="t3-a" />
+        <Cartaz frase="She goes to school." icone="👧" audioId="t3-b" />
       </div>
-      <BalaoLex>
-        <p>
-          Olhe estas duas pistas com atenção. Ouça as duas frases. Nas duas, alguém vai para a
-          escola. Mas repare no verbo: em uma está <Ingles>go</Ingles> e na outra está{" "}
-          <Ingles>goes</Ingles>. O que mudou entre as duas frases? Quem faz a ação é a mesma
-          pessoa?
-        </p>
-      </BalaoLex>
+
       {!revelado ? (
-        <button
-          type="button"
-          onClick={() => setRevelado(true)}
-          className="rounded-full bg-pista px-5 py-2 text-sm font-bold text-pista-foreground shadow-md"
-        >
-          Entendi, continuar.
-        </button>
+        <div className="space-y-2">
+          <p className="text-sm font-semibold">Compare os dois exemplos. O que mudou no verbo?</p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => despachar({ tipo: "observou" })}
+              className="rounded-full bg-pista px-4 py-1.5 text-sm font-bold text-pista-foreground shadow-md"
+            >
+              go virou goes
+            </button>
+            <button
+              type="button"
+              onClick={() => setErro(true)}
+              className="rounded-full border-2 border-investigacao/40 px-4 py-1.5 text-sm font-bold text-investigacao"
+            >
+              nada mudou
+            </button>
+          </div>
+          {erro ? (
+            <BalaoLex tom="reorienta">
+              <p>Olhe o verbo das duas frases. Compare go e goes. Tente novamente.</p>
+            </BalaoLex>
+          ) : null}
+        </div>
       ) : (
-        <BalaoLex tom="pista">
-          <p>
-            Reparou? Quando falamos de nós mesmos (<Ingles>I</Ingles>), usamos <Ingles>go</Ingles>.
-            Quando falamos de outra pessoa (<Ingles>She</Ingles>), a palavra ganhou algo no final e
-            virou <Ingles>goes</Ingles>. Primeira pista do caso!
-          </p>
-        </BalaoLex>
+        <>
+          <Grupos />
+          <BalaoLex tom="pista">
+            <p>
+              Com <Ingles>he</Ingles>, <Ingles>she</Ingles> e <Ingles>it</Ingles>, o verbo muda.
+              Play vira plays e go vira goes. Com <Ingles>I</Ingles>, <Ingles>you</Ingles>,{" "}
+              <Ingles>we</Ingles> e <Ingles>they</Ingles>, usamos play e go sem mudança.
+            </p>
+          </BalaoLex>
+        </>
       )}
     </div>
   );
@@ -281,21 +331,30 @@ function Tela3() {
 
 function Tela6() {
   return (
-    <div className="space-y-3">
-      <BalaoLex>
-        <p>
-          Lembra do som da Tela 2? <Ingles>Goes</Ingles> e <Ingles>plays</Ingles> têm um final
-          parecido. Será que a mesma regra vale aqui? Ouça as opções antes de arrastar.
-        </p>
-      </BalaoLex>
+    <div className="space-y-2.5">
+      <div className="grid gap-2 sm:grid-cols-[auto_1fr] sm:items-center">
+        <Cartaz
+          frase="The dog plays in the garden."
+          legenda="It plays in the garden."
+          icone="🐶"
+          audioId="t6-dog"
+        />
+        <BalaoLex>
+          <p>
+            O cachorro é <Ingles>it</Ingles>. Na escrita, algumas palavras recebem S e outras
+            recebem ES: play → plays, go → goes.
+          </p>
+        </BalaoLex>
+      </div>
       <TelaLacunas
         lacunas={LACUNAS_TELA6}
         banco={["play", "plays"]}
-        comando="Complete os cartazes com 'play' ou 'plays'."
+        comando="Observe quem pratica a ação e escolha o verbo correto."
       />
     </div>
   );
 }
+
 
 function Tela8() {
   const { estado, despachar } = useCaso();
