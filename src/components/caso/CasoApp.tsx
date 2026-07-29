@@ -324,7 +324,10 @@ function Tela1() {
 function Tela3() {
   const { estado, despachar } = useCaso();
   const [erro, setErro] = useState(false);
+  const [escolha, setEscolha] = useState<"certa" | "errada" | null>(null);
   const revelado = estado.observou;
+  const neutro =
+    "rounded-full border-2 border-investigacao/40 bg-card px-4 py-1.5 text-[18px] font-bold text-investigacao transition-colors hover:bg-investigacao/10";
 
   return (
     <div className="space-y-2">
@@ -340,19 +343,32 @@ function Tela3() {
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              onClick={() => despachar({ tipo: "observou" })}
-              className="rounded-full bg-pista px-4 py-1.5 text-[18px] font-bold text-pista-foreground shadow-md"
+              aria-pressed={escolha === "certa"}
+              onClick={() => {
+                setEscolha("certa");
+                setErro(false);
+                despachar({ tipo: "observou" });
+              }}
+              className={cn(neutro, escolha === "certa" && "border-pista bg-pista text-pista-foreground")}
             >
               go virou goes
             </button>
             <button
               type="button"
-              onClick={() => setErro(true)}
-              className="rounded-full border-2 border-investigacao/40 px-4 py-1.5 text-[18px] font-bold text-investigacao"
+              aria-pressed={escolha === "errada"}
+              onClick={() => {
+                setEscolha("errada");
+                setErro(true);
+              }}
+              className={cn(
+                neutro,
+                escolha === "errada" && "border-reorienta bg-reorienta/20 text-reorienta",
+              )}
             >
               nada mudou
             </button>
           </div>
+
           <AreaFeedback>
             {erro ? (
               <Feedback
