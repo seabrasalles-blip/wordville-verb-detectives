@@ -7,7 +7,7 @@ import {
   useReducer,
   type ReactNode,
 } from "react";
-import { TOTAL_TELAS, type PalavraCaca } from "@/lib/caso-conteudo";
+import { PALAVRAS_CACA, TOTAL_TELAS, type PalavraCaca } from "@/lib/caso-conteudo";
 import { useFala } from "@/hooks/use-fala";
 
 const CHAVE = "caso-verbos-desaparecidos-v1";
@@ -101,6 +101,53 @@ type ContextoCaso = {
 
 const Contexto = createContext<ContextoCaso | null>(null);
 
+/** Aceita apenas dados salvos com a forma esperada; ignora o que estiver corrompido. */
+function sanear(dados: unknown): EstadoCaso {
+  if (!dados || typeof dados !== "object") return inicial;
+  const d = dados as Record<string, unknown>;
+
+  const registro = (v: unknown): Record<string, string> => {
+    if (!v || typeof v !== "object") return {};
+    const saida: Record<string, string> = {};
+    for (const [k, valor] of Object.entries(v as Record<string, unknown>)) {
+      if (typeof valor === "string") saida[k] = valor;
+    }
+    return saida;
+  };
+
+  const numeros = (v: unknown): Record<string, number> => {
+    if (!v || typeof v !== "object") return {};
+    const saida: Record<string, number> = {};
+    for (const [k, valor] of Object.entries(v as Record<string, unknown>)) {
+      if (typeof valor === "number" && Number.isFinite(valor)) saida[k] = valor;
+    }
+    return saida;
+  };
+
+  const tela =
+    typeof d.tela === "number" && Number.isInteger(d.tela) && d.tela >= 1 && d.tela <= TOTAL_TELAS
+      ? d.tela
+      : 1;
+
+  const encontradas = Array.isArray(d.encontradas)
+    ? (d.encontradas.filter(
+        (p): p is PalavraCaca => typeof p === "string" && (PALAVRAS_CACA as readonly string[]).includes(p),
+      ) as PalavraCaca[])
+    : [];
+
+  return {
+    tela,
+    encontradas,
+    respostas: registro(d.respostas),
+    tentativas: numeros(d.tentativas),
+    conexoes: registro(d.conexoes),
+    montagens: registro(d.montagens),
+    metacognicao: numeros(d.metacognicao),
+    observou: d.observou === true,
+    medalha: d.medalha === true,
+  };
+}
+
 export function CasoProvider({ children }: { children: ReactNode }) {
   const [estado, despachar] = useReducer(reducer, inicial);
   const fala = useFala();
@@ -109,11 +156,10 @@ export function CasoProvider({ children }: { children: ReactNode }) {
     try {
       const salvo = window.localStorage.getItem(CHAVE);
       if (salvo) {
-        const dados = JSON.parse(salvo) as Partial<EstadoCaso>;
-        despachar({ tipo: "restaurar", estado: { ...inicial, ...dados } });
+        despachar({ tipo: "restaurar", estado: sanear(JSON.parse(salvo)) });
       }
     } catch {
-      /* localStorage indisponível: segue sem retomada */
+      /* localStorage indisponível ou corrompido: começa do início */
     }
   }, []);
 
@@ -128,19 +174,18 @@ export function CasoProvider({ children }: { children: ReactNode }) {
   const avancar = useCallback(() => {
     fala.parar();
     despachar({ tipo: "avancar" });
-    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [fala]);
 
   const voltar = useCallback(() => {
     fala.parar();
     despachar({ tipo: "voltar" });
-    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [fala]);
 
   const reiniciar = useCallback(() => {
     fala.parar();
     despachar({ tipo: "reiniciar" });
   }, [fala]);
+
 
   const valor = useMemo(
     () => ({ estado, despachar, avancar, voltar, reiniciar, fala }),
