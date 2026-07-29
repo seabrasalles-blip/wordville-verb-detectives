@@ -29,123 +29,273 @@ export const EVIDENCIAS: Record<
   },
 };
 
-export type GradeCaca = { id: string; letras: string[][] };
-/** 8 grades 8x8 pré-validadas: GO, GOES, PLAY e PLAYS aparecem apenas na horizontal (esquerda→direita) ou na vertical (cima→baixo), sem ocorrências acidentais em outras direções. */
+export type CelulaGrade = { linha: number; coluna: number };
+export type PalavraNaGrade = { palavra: PalavraCaca; caminho: CelulaGrade[] };
+export type GradeCaca = { id: string; letras: string[][]; palavras: PalavraNaGrade[] };
+
+/**
+ * 8 grades 8x8 pré-validadas: cada palavra tem um caminho planejado próprio e
+ * disjunto (nenhuma célula compartilhada), sempre na horizontal esquerda→direita
+ * ou na vertical cima→baixo. GO e GOES (assim como PLAY e PLAYS) ocupam posições
+ * diferentes: a palavra curta nunca é registrada dentro do caminho da longa.
+ */
 export const GRADES_CACA: GradeCaca[] = [
   {
     id: "g1",
     letras: [
-      ["D", "M", "D", "W", "C", "F", "M", "C"],
-      ["V", "C", "M", "C", "H", "Q", "G", "W"],
-      ["H", "F", "Q", "J", "F", "K", "O", "T"],
-      ["P", "L", "A", "Y", "F", "D", "C", "K"],
-      ["Z", "W", "R", "X", "X", "T", "Q", "M"],
-      ["J", "M", "D", "Q", "G", "O", "E", "S"],
-      ["Z", "R", "X", "P", "L", "A", "Y", "S"],
-      ["Q", "D", "F", "W", "J", "R", "H", "Z"],
+      ["X", "R", "R", "T", "K", "N", "C", "F"],
+      ["W", "B", "Z", "Q", "T", "W", "M", "X"],
+      ["Z", "P", "L", "A", "Y", "N", "F", "Z"],
+      ["C", "C", "C", "J", "X", "N", "P", "J"],
+      ["Q", "G", "O", "E", "S", "X", "L", "T"],
+      ["B", "V", "Q", "V", "N", "R", "A", "B"],
+      ["T", "Q", "G", "D", "W", "J", "Y", "B"],
+      ["J", "Z", "O", "F", "X", "D", "S", "M"],
+    ],
+    palavras: [
+      { palavra: "GO", caminho: [{ linha: 6, coluna: 2 }, { linha: 7, coluna: 2 }] },
+      { palavra: "GOES", caminho: [{ linha: 4, coluna: 1 }, { linha: 4, coluna: 2 }, { linha: 4, coluna: 3 }, { linha: 4, coluna: 4 }] },
+      { palavra: "PLAY", caminho: [{ linha: 2, coluna: 1 }, { linha: 2, coluna: 2 }, { linha: 2, coluna: 3 }, { linha: 2, coluna: 4 }] },
+      { palavra: "PLAYS", caminho: [{ linha: 3, coluna: 6 }, { linha: 4, coluna: 6 }, { linha: 5, coluna: 6 }, { linha: 6, coluna: 6 }, { linha: 7, coluna: 6 }] },
     ],
   },
   {
     id: "g2",
     letras: [
-      ["Z", "G", "D", "C", "Q", "X", "Q", "V"],
-      ["T", "O", "P", "L", "A", "Y", "S", "B"],
-      ["X", "T", "J", "F", "Z", "G", "C", "K"],
-      ["Q", "H", "M", "V", "V", "O", "Z", "D"],
-      ["J", "X", "V", "N", "H", "E", "W", "P"],
-      ["N", "W", "T", "V", "M", "S", "H", "L"],
-      ["D", "J", "H", "M", "M", "B", "Z", "A"],
-      ["J", "N", "Q", "B", "H", "W", "T", "Y"],
+      ["Z", "N", "J", "T", "W", "V", "W", "Q"],
+      ["C", "R", "C", "Z", "G", "O", "M", "W"],
+      ["W", "M", "W", "R", "K", "N", "X", "P"],
+      ["J", "J", "Q", "H", "R", "F", "K", "L"],
+      ["K", "H", "Z", "M", "M", "G", "F", "A"],
+      ["P", "L", "A", "Y", "C", "O", "M", "Y"],
+      ["T", "K", "H", "Q", "N", "E", "V", "S"],
+      ["W", "R", "Z", "J", "X", "S", "T", "H"],
+    ],
+    palavras: [
+      { palavra: "GO", caminho: [{ linha: 1, coluna: 4 }, { linha: 1, coluna: 5 }] },
+      { palavra: "GOES", caminho: [{ linha: 4, coluna: 5 }, { linha: 5, coluna: 5 }, { linha: 6, coluna: 5 }, { linha: 7, coluna: 5 }] },
+      { palavra: "PLAY", caminho: [{ linha: 5, coluna: 0 }, { linha: 5, coluna: 1 }, { linha: 5, coluna: 2 }, { linha: 5, coluna: 3 }] },
+      { palavra: "PLAYS", caminho: [{ linha: 2, coluna: 7 }, { linha: 3, coluna: 7 }, { linha: 4, coluna: 7 }, { linha: 5, coluna: 7 }, { linha: 6, coluna: 7 }] },
     ],
   },
   {
     id: "g3",
     letras: [
-      ["F", "R", "C", "F", "B", "H", "F", "T"],
-      ["G", "B", "D", "K", "V", "H", "N", "T"],
-      ["O", "T", "Z", "F", "F", "Z", "X", "Z"],
-      ["P", "L", "A", "Y", "Z", "Q", "D", "H"],
-      ["F", "R", "N", "Z", "J", "B", "G", "K"],
-      ["T", "H", "B", "Q", "D", "N", "O", "T"],
-      ["J", "T", "M", "R", "M", "K", "E", "M"],
-      ["V", "P", "L", "A", "Y", "S", "S", "M"],
+      ["M", "J", "P", "L", "A", "Y", "Q", "V"],
+      ["H", "C", "G", "O", "E", "S", "M", "Q"],
+      ["X", "W", "C", "M", "K", "X", "C", "D"],
+      ["H", "N", "M", "T", "Q", "P", "Q", "H"],
+      ["T", "X", "Z", "C", "C", "L", "Z", "B"],
+      ["X", "G", "O", "F", "N", "A", "H", "V"],
+      ["C", "Q", "D", "N", "H", "Y", "Q", "N"],
+      ["Z", "R", "D", "J", "N", "S", "Z", "H"],
+    ],
+    palavras: [
+      { palavra: "GO", caminho: [{ linha: 5, coluna: 1 }, { linha: 5, coluna: 2 }] },
+      { palavra: "GOES", caminho: [{ linha: 1, coluna: 2 }, { linha: 1, coluna: 3 }, { linha: 1, coluna: 4 }, { linha: 1, coluna: 5 }] },
+      { palavra: "PLAY", caminho: [{ linha: 0, coluna: 2 }, { linha: 0, coluna: 3 }, { linha: 0, coluna: 4 }, { linha: 0, coluna: 5 }] },
+      { palavra: "PLAYS", caminho: [{ linha: 3, coluna: 5 }, { linha: 4, coluna: 5 }, { linha: 5, coluna: 5 }, { linha: 6, coluna: 5 }, { linha: 7, coluna: 5 }] },
     ],
   },
   {
     id: "g4",
     letras: [
-      ["T", "D", "G", "O", "E", "S", "M", "F"],
-      ["M", "Z", "K", "R", "K", "Z", "B", "Z"],
-      ["T", "D", "F", "P", "V", "K", "Z", "J"],
-      ["W", "R", "D", "L", "V", "P", "X", "V"],
-      ["D", "J", "J", "A", "H", "L", "B", "H"],
-      ["X", "H", "Z", "Y", "T", "A", "H", "H"],
-      ["B", "B", "F", "H", "W", "Y", "K", "K"],
-      ["B", "N", "G", "O", "K", "S", "Q", "M"],
+      ["P", "H", "M", "M", "F", "C", "R", "F"],
+      ["L", "C", "P", "L", "A", "Y", "S", "X"],
+      ["A", "Q", "Z", "G", "O", "V", "N", "F"],
+      ["Y", "W", "K", "Z", "N", "Q", "M", "F"],
+      ["N", "F", "G", "O", "E", "S", "J", "B"],
+      ["C", "M", "R", "J", "W", "H", "M", "K"],
+      ["C", "H", "D", "X", "X", "H", "M", "Z"],
+      ["W", "X", "H", "Z", "V", "R", "R", "T"],
+    ],
+    palavras: [
+      { palavra: "GO", caminho: [{ linha: 2, coluna: 3 }, { linha: 2, coluna: 4 }] },
+      { palavra: "GOES", caminho: [{ linha: 4, coluna: 2 }, { linha: 4, coluna: 3 }, { linha: 4, coluna: 4 }, { linha: 4, coluna: 5 }] },
+      { palavra: "PLAY", caminho: [{ linha: 0, coluna: 0 }, { linha: 1, coluna: 0 }, { linha: 2, coluna: 0 }, { linha: 3, coluna: 0 }] },
+      { palavra: "PLAYS", caminho: [{ linha: 1, coluna: 2 }, { linha: 1, coluna: 3 }, { linha: 1, coluna: 4 }, { linha: 1, coluna: 5 }, { linha: 1, coluna: 6 }] },
     ],
   },
   {
     id: "g5",
     letras: [
-      ["X", "J", "G", "O", "E", "S", "B", "H"],
-      ["J", "H", "Z", "F", "C", "R", "Z", "F"],
-      ["P", "L", "A", "Y", "S", "C", "G", "M"],
-      ["K", "N", "C", "F", "X", "B", "O", "D"],
-      ["X", "R", "K", "N", "X", "Z", "P", "M"],
-      ["N", "K", "X", "H", "W", "F", "L", "V"],
-      ["X", "R", "D", "M", "W", "D", "A", "K"],
-      ["Q", "F", "H", "T", "H", "N", "Y", "H"],
+      ["K", "P", "K", "C", "Z", "F", "K", "F"],
+      ["G", "L", "V", "P", "V", "N", "N", "J"],
+      ["O", "A", "T", "L", "B", "M", "M", "K"],
+      ["H", "Y", "Z", "A", "X", "V", "X", "W"],
+      ["K", "G", "Q", "Y", "J", "N", "F", "W"],
+      ["V", "O", "H", "S", "C", "X", "V", "W"],
+      ["Q", "E", "R", "T", "C", "T", "Q", "N"],
+      ["D", "S", "W", "J", "Q", "N", "Q", "F"],
+    ],
+    palavras: [
+      { palavra: "GO", caminho: [{ linha: 1, coluna: 0 }, { linha: 2, coluna: 0 }] },
+      { palavra: "GOES", caminho: [{ linha: 4, coluna: 1 }, { linha: 5, coluna: 1 }, { linha: 6, coluna: 1 }, { linha: 7, coluna: 1 }] },
+      { palavra: "PLAY", caminho: [{ linha: 0, coluna: 1 }, { linha: 1, coluna: 1 }, { linha: 2, coluna: 1 }, { linha: 3, coluna: 1 }] },
+      { palavra: "PLAYS", caminho: [{ linha: 1, coluna: 3 }, { linha: 2, coluna: 3 }, { linha: 3, coluna: 3 }, { linha: 4, coluna: 3 }, { linha: 5, coluna: 3 }] },
     ],
   },
   {
     id: "g6",
     letras: [
-      ["C", "J", "W", "D", "P", "N", "B", "D"],
-      ["N", "D", "M", "D", "L", "N", "F", "P"],
-      ["X", "B", "G", "O", "A", "R", "W", "L"],
-      ["N", "H", "C", "M", "Y", "F", "J", "A"],
-      ["N", "C", "J", "K", "S", "Q", "Q", "Y"],
-      ["K", "Q", "X", "J", "N", "T", "B", "N"],
-      ["C", "B", "G", "O", "E", "S", "B", "K"],
-      ["Z", "M", "X", "F", "W", "Z", "V", "Q"],
+      ["M", "J", "B", "N", "W", "F", "N", "T"],
+      ["N", "P", "L", "A", "Y", "S", "M", "K"],
+      ["F", "D", "D", "W", "H", "Z", "J", "G"],
+      ["X", "H", "X", "H", "K", "D", "V", "O"],
+      ["G", "O", "D", "N", "X", "K", "H", "E"],
+      ["X", "K", "C", "R", "R", "R", "C", "S"],
+      ["T", "T", "K", "V", "B", "K", "X", "W"],
+      ["M", "C", "P", "L", "A", "Y", "D", "D"],
+    ],
+    palavras: [
+      { palavra: "GO", caminho: [{ linha: 4, coluna: 0 }, { linha: 4, coluna: 1 }] },
+      { palavra: "GOES", caminho: [{ linha: 2, coluna: 7 }, { linha: 3, coluna: 7 }, { linha: 4, coluna: 7 }, { linha: 5, coluna: 7 }] },
+      { palavra: "PLAY", caminho: [{ linha: 7, coluna: 2 }, { linha: 7, coluna: 3 }, { linha: 7, coluna: 4 }, { linha: 7, coluna: 5 }] },
+      { palavra: "PLAYS", caminho: [{ linha: 1, coluna: 1 }, { linha: 1, coluna: 2 }, { linha: 1, coluna: 3 }, { linha: 1, coluna: 4 }, { linha: 1, coluna: 5 }] },
     ],
   },
   {
     id: "g7",
     letras: [
-      ["X", "B", "N", "T", "R", "R", "M", "P"],
-      ["C", "Q", "K", "T", "J", "B", "R", "L"],
-      ["V", "D", "P", "L", "A", "Y", "S", "A"],
-      ["Z", "N", "K", "M", "B", "D", "N", "Y"],
-      ["D", "H", "V", "G", "C", "V", "B", "Q"],
-      ["Q", "M", "D", "O", "H", "V", "R", "Z"],
-      ["H", "Q", "H", "E", "C", "W", "G", "O"],
-      ["H", "B", "M", "S", "D", "B", "C", "H"],
+      ["V", "V", "R", "F", "R", "M", "B", "K"],
+      ["D", "Q", "C", "P", "L", "A", "Y", "F"],
+      ["R", "K", "W", "N", "Q", "J", "G", "V"],
+      ["Q", "G", "Z", "N", "B", "K", "O", "V"],
+      ["J", "O", "V", "R", "M", "H", "Z", "Q"],
+      ["F", "E", "X", "N", "Z", "M", "R", "Z"],
+      ["X", "S", "N", "Z", "V", "T", "X", "R"],
+      ["R", "V", "V", "P", "L", "A", "Y", "S"],
+    ],
+    palavras: [
+      { palavra: "GO", caminho: [{ linha: 2, coluna: 6 }, { linha: 3, coluna: 6 }] },
+      { palavra: "GOES", caminho: [{ linha: 3, coluna: 1 }, { linha: 4, coluna: 1 }, { linha: 5, coluna: 1 }, { linha: 6, coluna: 1 }] },
+      { palavra: "PLAY", caminho: [{ linha: 1, coluna: 3 }, { linha: 1, coluna: 4 }, { linha: 1, coluna: 5 }, { linha: 1, coluna: 6 }] },
+      { palavra: "PLAYS", caminho: [{ linha: 7, coluna: 3 }, { linha: 7, coluna: 4 }, { linha: 7, coluna: 5 }, { linha: 7, coluna: 6 }, { linha: 7, coluna: 7 }] },
     ],
   },
   {
     id: "g8",
     letras: [
-      ["D", "D", "D", "Z", "N", "D", "G", "P"],
-      ["N", "M", "K", "M", "X", "Z", "O", "L"],
-      ["V", "D", "Z", "Q", "C", "K", "D", "A"],
-      ["H", "R", "N", "P", "L", "A", "Y", "Y"],
-      ["G", "Q", "H", "B", "Z", "C", "Z", "S"],
-      ["O", "N", "F", "K", "Z", "Q", "Q", "X"],
-      ["E", "X", "X", "F", "K", "Q", "D", "Z"],
-      ["S", "B", "Q", "X", "D", "X", "N", "V"],
+      ["P", "K", "C", "C", "K", "X", "B", "C"],
+      ["L", "J", "D", "Z", "H", "G", "O", "F"],
+      ["A", "V", "W", "T", "Q", "M", "Q", "D"],
+      ["Y", "V", "F", "W", "F", "B", "T", "Q"],
+      ["K", "W", "J", "T", "X", "N", "B", "G"],
+      ["D", "H", "B", "N", "W", "B", "F", "O"],
+      ["N", "Q", "F", "Z", "J", "C", "N", "E"],
+      ["D", "F", "P", "L", "A", "Y", "S", "S"],
+    ],
+    palavras: [
+      { palavra: "GO", caminho: [{ linha: 1, coluna: 5 }, { linha: 1, coluna: 6 }] },
+      { palavra: "GOES", caminho: [{ linha: 4, coluna: 7 }, { linha: 5, coluna: 7 }, { linha: 6, coluna: 7 }, { linha: 7, coluna: 7 }] },
+      { palavra: "PLAY", caminho: [{ linha: 0, coluna: 0 }, { linha: 1, coluna: 0 }, { linha: 2, coluna: 0 }, { linha: 3, coluna: 0 }] },
+      { palavra: "PLAYS", caminho: [{ linha: 7, coluna: 2 }, { linha: 7, coluna: 3 }, { linha: 7, coluna: 4 }, { linha: 7, coluna: 5 }, { linha: 7, coluna: 6 }] },
     ],
   },
 ];
 
+const DIRECOES_PERMITIDAS = [
+  { dl: 0, dc: 1 },
+  { dl: 1, dc: 0 },
+];
+
+const chaveCelula = (c: CelulaGrade) => `${c.linha}-${c.coluna}`;
+
+export const mesmoCaminho = (a: CelulaGrade[], b: CelulaGrade[]) =>
+  a.length === b.length && a.every((c, i) => c.linha === b[i].linha && c.coluna === b[i].coluna);
+
+export const prefixoDeCaminho = (parcial: CelulaGrade[], caminho: CelulaGrade[]) =>
+  parcial.length > 0 &&
+  parcial.length < caminho.length &&
+  parcial.every((c, i) => c.linha === caminho[i].linha && c.coluna === caminho[i].coluna);
+
+/** Retorna a lista de problemas encontrados na grade (vazia = grade válida). */
+export function validarGrade(grade: GradeCaca): string[] {
+  const erros: string[] = [];
+  const n = grade.letras.length;
+
+  for (const palavra of PALAVRAS_CACA) {
+    const ocorrencias = grade.palavras.filter((p) => p.palavra === palavra);
+    if (ocorrencias.length !== 1) {
+      erros.push(`${grade.id}: ${palavra} precisa de exatamente um caminho planejado`);
+      continue;
+    }
+    const caminho = ocorrencias[0].caminho;
+    if (caminho.length !== palavra.length) {
+      erros.push(`${grade.id}: caminho de ${palavra} tem tamanho errado`);
+      continue;
+    }
+    // dentro da grade e formando a palavra
+    const letras = caminho
+      .map((c) =>
+        c.linha >= 0 && c.linha < n && c.coluna >= 0 && c.coluna < grade.letras[c.linha].length
+          ? grade.letras[c.linha][c.coluna]
+          : "?",
+      )
+      .join("");
+    if (letras !== palavra) {
+      erros.push(`${grade.id}: caminho de ${palavra} forma "${letras}"`);
+    }
+    // direção única e permitida
+    const dl = caminho[1].linha - caminho[0].linha;
+    const dc = caminho[1].coluna - caminho[0].coluna;
+    const direcaoOk = DIRECOES_PERMITIDAS.some((d) => d.dl === dl && d.dc === dc);
+    const contigua = caminho.every(
+      (c, i) =>
+        i === 0 ||
+        (c.linha - caminho[i - 1].linha === dl && c.coluna - caminho[i - 1].coluna === dc),
+    );
+    if (!direcaoOk || !contigua) {
+      erros.push(`${grade.id}: caminho de ${palavra} não é contínuo em direção permitida`);
+    }
+  }
+
+  // caminhos totalmente disjuntos entre as quatro palavras
+  const vistas = new Map<string, PalavraCaca>();
+  for (const { palavra, caminho } of grade.palavras) {
+    for (const celula of caminho) {
+      const k = chaveCelula(celula);
+      const dona = vistas.get(k);
+      if (dona && dona !== palavra) {
+        erros.push(`${grade.id}: ${palavra} e ${dona} compartilham a célula ${k}`);
+      }
+      vistas.set(k, palavra);
+    }
+  }
+
+  // a palavra curta nunca pode ser o prefixo posicional da longa
+  const pares: [PalavraCaca, PalavraCaca][] = [
+    ["GO", "GOES"],
+    ["PLAY", "PLAYS"],
+  ];
+  for (const [curta, longa] of pares) {
+    const a = grade.palavras.find((p) => p.palavra === curta)?.caminho;
+    const b = grade.palavras.find((p) => p.palavra === longa)?.caminho;
+    if (a && b && a.every((c, i) => b[i] && c.linha === b[i].linha && c.coluna === b[i].coluna)) {
+      erros.push(`${grade.id}: ${curta} é o prefixo do caminho de ${longa}`);
+    }
+  }
+
+  return erros;
+}
+
+/** Só grades aprovadas pelo validador chegam à criança. */
+export const GRADES_VALIDAS: GradeCaca[] = GRADES_CACA.filter(
+  (g) => validarGrade(g).length === 0,
+);
+
+export function gradeEhValida(id: string) {
+  return GRADES_VALIDAS.some((g) => g.id === id);
+}
+
 export function sortearGradeId(atual?: string) {
-  const opcoes = GRADES_CACA.filter((g) => g.id !== atual);
-  const lista = opcoes.length > 0 ? opcoes : GRADES_CACA;
+  const opcoes = GRADES_VALIDAS.filter((g) => g.id !== atual);
+  const lista = opcoes.length > 0 ? opcoes : GRADES_VALIDAS;
   return lista[Math.floor(Math.random() * lista.length)].id;
 }
 
 export function gradePorId(id: string): GradeCaca {
-  return GRADES_CACA.find((g) => g.id === id) ?? GRADES_CACA[0];
+  return GRADES_VALIDAS.find((g) => g.id === id) ?? GRADES_VALIDAS[0];
 }
 
 /** Os dois grupos de sujeitos, usados na observação e na síntese final. */
