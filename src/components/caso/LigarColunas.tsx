@@ -47,8 +47,9 @@ export function LigarColunas() {
   return (
     <div className="space-y-3">
       <p className="text-base font-semibold">
-        Clique em um sujeito e depois na forma verbal correta para conectá-los.
+        Observe quem pratica a ação. Clique no sujeito e depois no verbo correto.
       </p>
+
 
       <div className="grid grid-cols-2 gap-3 sm:gap-5">
         <ul className="space-y-2">
