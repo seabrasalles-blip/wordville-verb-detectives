@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Check, Search } from "lucide-react";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCaso } from "./CasoProvider";
 import { BotaoAudio } from "./BotaoAudio";
-import { BalaoLex } from "./BalaoLex";
+import { AreaFeedback, Feedback } from "./Feedback";
 import { Fantasma, useArrasto } from "./useArrasto";
 import type { Lacuna, TipoDica } from "@/lib/caso-conteudo";
 
 const ORDEM_DICAS: TipoDica[] = ["conceitual", "procedimental", "atencional"];
+
+const normalizar = (v: string) => v.trim().toLowerCase();
 
 type Props = {
   lacunas: Lacuna[];
@@ -21,13 +23,20 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
   const { estado, despachar, fala } = useCaso();
   const [dica, setDica] = useState<{ id: string; texto: string } | null>(null);
   const [ultimoAcerto, setUltimoAcerto] = useState<Lacuna | null>(null);
+  const [processando, setProcessando] = useState(false);
 
   const soltar = (idLacuna: string, palavra: string) => {
+    if (processando) return;
     const lacuna = lacunas.find((l) => l.id === idLacuna);
-    if (!lacuna || estado.respostas[lacuna.id] === lacuna.resposta) return;
+    if (!lacuna) return;
+    // resposta já correta fica travada
+    if (normalizar(estado.respostas[lacuna.id] ?? "") === normalizar(lacuna.resposta)) return;
 
-    if (palavra === lacuna.resposta) {
-      despachar({ tipo: "responder", id: lacuna.id, valor: palavra });
+    setProcessando(true);
+    window.setTimeout(() => setProcessando(false), 250);
+
+    if (normalizar(palavra) === normalizar(lacuna.resposta)) {
+      despachar({ tipo: "responder", id: lacuna.id, valor: lacuna.resposta });
       setDica(null);
       setUltimoAcerto(lacuna);
       fala.falar(`${lacuna.antes} ${lacuna.resposta} ${lacuna.depois}`, `frase-${lacuna.id}`);
@@ -38,34 +47,40 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
     despachar({ tipo: "errar", id: lacuna.id });
     const disponiveis = ORDEM_DICAS.filter((t) => lacuna.dicas[t]);
     const escolhida = disponiveis[Math.min(tentativas, disponiveis.length - 1)];
-    setDica({ id: lacuna.id, texto: lacuna.dicas[escolhida] ?? "" });
+    setDica({ id: lacuna.id, texto: lacuna.dicas[escolhida] ?? "Observe quem pratica a ação." });
     setUltimoAcerto(null);
   };
 
   const arrasto = useArrasto(soltar);
-  const tudoCerto = lacunas.every((l) => estado.respostas[l.id] === l.resposta);
+  const tudoCerto = lacunas.every(
+    (l) => normalizar(estado.respostas[l.id] ?? "") === normalizar(l.resposta),
+  );
 
   return (
-    <div className="space-y-2.5">
-      <p className="text-base font-semibold text-foreground">{comando}</p>
+    <div className="space-y-2">
+      <p className="text-[18px] font-semibold text-foreground">{comando}</p>
 
       <div className={cn("grid gap-2", lacunas.length >= 3 && "sm:grid-cols-2")}>
         {lacunas.map((lacuna) => {
-          const resposta = estado.respostas[lacuna.id];
-          const certo = resposta === lacuna.resposta;
+          const certo = normalizar(estado.respostas[lacuna.id] ?? "") === normalizar(lacuna.resposta);
+          const errada = dica?.id === lacuna.id && !certo;
           return (
             <div
               key={lacuna.id}
               className={cn(
-                "rounded-2xl border-2 bg-card p-2.5 shadow-sm transition-colors",
-                certo ? "border-acerto bg-acerto/10" : "border-investigacao/30",
+                "rounded-2xl border-2 bg-card p-2 shadow-sm transition-colors",
+                certo
+                  ? "border-acerto bg-acerto/10"
+                  : errada
+                    ? "border-reorienta"
+                    : "border-investigacao/30",
               )}
             >
               <div className="flex flex-wrap items-center gap-2">
                 <span aria-hidden="true" className="text-xl">
                   {lacuna.ilustracao}
                 </span>
-                <p className="flex flex-wrap items-center gap-1.5 text-base font-semibold sm:text-lg">
+                <p className="flex flex-wrap items-center gap-1.5 text-[20px] font-semibold">
                   <span>{lacuna.antes}</span>
                   <button
                     type="button"
@@ -73,7 +88,7 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
                     onClick={() => arrasto.aoClicarLacuna(lacuna.id)}
                     aria-label={`Lacuna da frase ${lacuna.antes} ... ${lacuna.depois}`}
                     className={cn(
-                      "min-w-24 rounded-lg border-2 border-dashed px-2.5 py-1 text-center text-sm transition-colors",
+                      "min-w-24 rounded-lg border-2 border-dashed px-2.5 py-0.5 text-center text-[20px] transition-colors",
                       certo
                         ? "border-acerto border-solid bg-acerto text-acerto-foreground"
                         : "border-investigacao/60 bg-investigacao/5 text-muted-foreground",
@@ -85,40 +100,30 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
                   <span>{lacuna.depois}</span>
                 </p>
                 {certo ? (
-                  <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-acerto px-2.5 py-0.5 text-xs font-bold text-acerto-foreground">
+                  <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-acerto px-2 py-0.5 text-[15px] font-bold text-acerto-foreground">
                     <Check className="size-3.5" aria-hidden="true" /> Consertado
                   </span>
                 ) : null}
-              </div>
-
-              {certo ? (
-                <div className="mt-2 flex flex-wrap gap-2">
+                {certo ? (
                   <BotaoAudio
                     texto={`${lacuna.antes} ${lacuna.resposta} ${lacuna.depois}`}
                     id={`frase-${lacuna.id}`}
-                    rotulo="Repetir"
                     tamanho="sm"
                   />
-                </div>
-              ) : null}
+                ) : null}
+              </div>
 
-              {dica?.id === lacuna.id ? (
-                <BalaoLex tom="reorienta" className="mt-2">
-                  <p className="flex items-start gap-2">
-                    <Search className="mt-0.5 size-4 shrink-0 text-reorienta" aria-hidden="true" />
-                    <span>{dica.texto}</span>
-                  </p>
-                </BalaoLex>
+              {errada ? (
+                <Feedback type="hint" message={dica.texto} className="mt-1.5" />
               ) : null}
             </div>
           );
         })}
       </div>
 
-      <div className="rounded-2xl border-2 border-dashed border-investigacao/40 bg-secondary/60 p-2.5">
-        <p className="mb-2 text-xs font-semibold text-muted-foreground">
-          Arraste o bloco até a lacuna ou toque no bloco e depois na lacuna. O áudio é uma ajuda
-          extra.
+      <div className="rounded-2xl border-2 border-dashed border-investigacao/40 bg-secondary/60 p-2">
+        <p className="mb-1.5 text-[15px] font-semibold text-muted-foreground">
+          Arraste o bloco até a lacuna ou toque no bloco e depois na lacuna.
         </p>
 
         <div className="flex flex-wrap gap-2">
@@ -129,7 +134,7 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
                 {...arrasto.propsBloco(palavra)}
                 aria-pressed={arrasto.selecionado === palavra}
                 className={cn(
-                  "cursor-grab rounded-xl border-2 bg-card px-4 py-1.5 text-base font-bold text-investigacao shadow-md transition-transform select-none active:scale-95",
+                  "cursor-grab rounded-xl border-2 bg-card px-4 py-1 text-[18px] font-bold text-investigacao shadow-md transition-transform select-none active:scale-95",
                   arrasto.selecionado === palavra
                     ? "border-pista bg-pista/40"
                     : "border-investigacao",
@@ -143,17 +148,21 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
         </div>
       </div>
 
-      {ultimoAcerto ? (
-        <BalaoLex tom="acerto">
-          <p>{ultimoAcerto.acertoTexto}</p>
-        </BalaoLex>
-      ) : null}
-
-      {tudoCerto && aoConcluir ? (
-        <BalaoLex tom="acerto">
-          <p>{aoConcluir}</p>
-        </BalaoLex>
-      ) : null}
+      <AreaFeedback>
+        {tudoCerto ? (
+          <Feedback
+            type="success"
+            message={aoConcluir ?? "Correto! Todas as frases estão completas."}
+          />
+        ) : ultimoAcerto ? (
+          <Feedback
+            type="success"
+            message={ultimoAcerto.acertoTexto}
+            onClose={() => setUltimoAcerto(null)}
+            autoClose
+          />
+        ) : null}
+      </AreaFeedback>
 
       <Fantasma arrasto={arrasto.arrasto} />
     </div>
