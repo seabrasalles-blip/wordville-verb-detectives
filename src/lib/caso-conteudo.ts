@@ -1,4 +1,4 @@
-export const TOTAL_TELAS = 9;
+export const TOTAL_TELAS = 10;
 
 export const PALAVRAS_CACA = ["GO", "GOES", "PLAY", "PLAYS"] as const;
 export type PalavraCaca = (typeof PALAVRAS_CACA)[number];
@@ -10,25 +10,22 @@ export const EVIDENCIAS: Record<
   GO: {
     icone: "🚶‍♀️➡️",
     fala: "go",
-    texto:
-      "Encontrou 'go'! Isso significa 'ir' — como quando você vai para algum lugar. Clique no alto-falante e escute com atenção.",
+    texto: "Você achou 'go'! Significa 'ir'. Clique no alto-falante e escute.",
   },
   GOES: {
     icone: "🚶‍♂️➡️",
     fala: "goes",
-    texto:
-      "Olha, 'goes'! Parece parente do 'go', não? Escute o som — reparou que termina diferente? Guarde esse som, ele vai ser importante!",
+    texto: "Achou 'goes'! Compare com 'go': aqui aparece ES no final. Escute a palavra.",
   },
   PLAY: {
     icone: "⚽️🧒",
     fala: "play",
-    texto: "'Play'! Isso significa 'brincar' ou 'jogar'. Escute o som dessa palavra.",
+    texto: "'Play'! Significa 'brincar' ou 'jogar'. Escute a palavra.",
   },
   PLAYS: {
     icone: "⚽️👧",
     fala: "plays",
-    texto:
-      "'Plays'! Escute com atenção... o final soa parecido com 'goes', não soa? Essa é a nossa pista sonora do caso!",
+    texto: "'Plays'! Compare com 'play': aqui aparece S no final. Essa é a nossa pista!",
   },
 };
 
@@ -71,6 +68,24 @@ export const POSICOES_CACA: Record<PalavraCaca, [number, number][]> = {
   ],
 };
 
+/** Os dois grupos de sujeitos, usados na observação e na síntese final. */
+export const GRUPOS = [
+  {
+    id: "g1",
+    titulo: "I, you, we, they",
+    formas: "go · play",
+    exemplos: ["We go to school.", "They play in the park."],
+    icone: "👫",
+  },
+  {
+    id: "g2",
+    titulo: "He, she, it",
+    formas: "goes · plays",
+    exemplos: ["He goes to school.", "She plays in the park."],
+    icone: "👧",
+  },
+] as const;
+
 export type TipoDica = "conceitual" | "procedimental" | "atencional";
 
 export type Lacuna = {
@@ -83,6 +98,9 @@ export type Lacuna = {
   dicas: Partial<Record<TipoDica, string>>;
 };
 
+const DICA_SUJEITO =
+  "Observe quem pratica a ação. A frase começa com I, you, we, they, he, she ou it?";
+
 export const LACUNAS_TELA4: Lacuna[] = [
   {
     id: "t4-he",
@@ -90,15 +108,11 @@ export const LACUNAS_TELA4: Lacuna[] = [
     depois: "to the park on Sundays.",
     resposta: "goes",
     ilustracao: "👦",
-    acertoTexto:
-      "Muito bem! Você colocou 'goes' em 'He ___'. Lembre-se: quando falamos de he, she ou it, o verbo ganha um som a mais no final — vira 'goes'.",
+    acertoTexto: "Muito bem! 'He' está no grupo de he, she e it. Por isso: go recebe ES → goes.",
     dicas: {
-      conceitual:
-        "Hmm, vamos pensar juntos. Quem faz a ação aqui é 'He'. Na nossa pista de antes, quando falávamos de 'She', usamos qual forma mesmo? 'Go' ou 'goes'?",
-      procedimental:
-        "Tente assim: ouça as duas opções no alto-falante. 'He go to the park' — soa completo? Agora ouça 'He goes to the park'. Qual soa mais natural?",
-      atencional:
-        "Olhe bem para o sujeito da frase: é 'He', 'We' ou 'She'? Foi isso que mudou o verbo na nossa pista da Tela 3. Quem faz a ação?",
+      conceitual: "Quem pratica a ação é 'He'. Ele está no grupo de he, she e it. Qual forma usamos?",
+      procedimental: DICA_SUJEITO,
+      atencional: "Compare os grupos: I, you, we, they → go. He, she, it → goes.",
     },
   },
   {
@@ -107,15 +121,11 @@ export const LACUNAS_TELA4: Lacuna[] = [
     depois: "to the park on Sundays.",
     resposta: "go",
     ilustracao: "👨‍👩‍👧",
-    acertoTexto:
-      "Muito bem! Você colocou 'go' em 'We ___'. Com I, we e they o verbo continua do jeitinho que ele é: 'go'.",
+    acertoTexto: "Muito bem! 'We' está no grupo de I, you, we e they. O verbo fica 'go'.",
     dicas: {
-      conceitual:
-        "Hmm, vamos pensar juntos. Quem faz a ação aqui é 'We' — mais de uma pessoa, incluindo você. O verbo muda só quando falamos de he, she ou it. Então qual forma fica aqui?",
-      procedimental:
-        "Tente assim: ouça as duas opções no alto-falante. 'We goes to the park' — soa completo? Agora ouça 'We go to the park'. Qual soa mais natural?",
-      atencional:
-        "Olhe bem para o sujeito da frase: é 'He', 'We' ou 'She'? Foi isso que mudou o verbo na nossa pista da Tela 3. Quem faz a ação?",
+      conceitual: "Quem pratica a ação é 'We'. Ele está no grupo de I, you, we e they. Qual forma usamos?",
+      procedimental: DICA_SUJEITO,
+      atencional: "Compare os grupos: I, you, we, they → go. He, she, it → goes.",
     },
   },
   {
@@ -124,15 +134,11 @@ export const LACUNAS_TELA4: Lacuna[] = [
     depois: "to the park on Sundays.",
     resposta: "goes",
     ilustracao: "👧",
-    acertoTexto:
-      "Muito bem! Você colocou 'goes' em 'She ___'. Lembre-se: quando falamos de he, she ou it, o verbo ganha um som a mais no final — vira 'goes'.",
+    acertoTexto: "Muito bem! 'She' está no grupo de he, she e it. Por isso: go recebe ES → goes.",
     dicas: {
-      conceitual:
-        "Hmm, vamos pensar juntos. Quem faz a ação aqui é 'She'. Na nossa pista da Tela 3, com 'She' usamos qual forma mesmo? 'Go' ou 'goes'?",
-      procedimental:
-        "Tente assim: ouça as duas opções no alto-falante. 'She go to the park' — soa completo? Agora ouça 'She goes to the park'. Qual soa mais natural?",
-      atencional:
-        "Olhe bem para o sujeito da frase: é 'He', 'We' ou 'She'? Foi isso que mudou o verbo na nossa pista da Tela 3. Quem faz a ação?",
+      conceitual: "Quem pratica a ação é 'She'. Ela está no grupo de he, she e it. Qual forma usamos?",
+      procedimental: DICA_SUJEITO,
+      atencional: "Compare os grupos: I, you, we, they → go. He, she, it → goes.",
     },
   },
 ];
@@ -144,13 +150,10 @@ export const LACUNAS_TELA6: Lacuna[] = [
     depois: "soccer every weekend.",
     resposta: "plays",
     ilustracao: "👧⚽️",
-    acertoTexto:
-      "Isso! 'She plays' — mesma regra de 'She goes'. Quando falamos de he, she ou it, o verbo ganha esse som a mais no final. 'Plays' e 'goes' seguem o mesmo padrão!",
+    acertoTexto: "Isso! 'She' está no grupo de he, she e it. Na escrita, play recebe S → plays.",
     dicas: {
-      conceitual:
-        "Vamos pensar: quem faz a ação na frase 'She ___ soccer'? É 'She'. E o que aprendemos sobre 'she' e o verbo? Ele ganha algo no final...",
-      atencional:
-        "Compare com o que você já sabe: 'She goes' está certo. Então 'She plays' ou 'She play'? Ouça as duas opções e siga o mesmo padrão!",
+      conceitual: "Quem pratica a ação é 'She'. Ela está no grupo de he, she e it. Qual forma usamos?",
+      atencional: "Compare com 'She goes'. Escolha o verbo correto para 'She'.",
     },
   },
   {
@@ -159,13 +162,22 @@ export const LACUNAS_TELA6: Lacuna[] = [
     depois: "soccer every weekend.",
     resposta: "play",
     ilustracao: "🧒⚽️",
-    acertoTexto:
-      "Isso! Com 'I' o verbo fica do jeitinho que ele é: 'I play'. A marca a mais no final aparece só com he, she e it.",
+    acertoTexto: "Isso! 'I' está no grupo de I, you, we e they. O verbo fica 'play'.",
     dicas: {
-      conceitual:
-        "Vamos pensar: quem faz a ação na frase 'I ___ soccer'? É 'I' — você mesmo. E o verbo muda quando falamos de nós mesmos?",
-      atencional:
-        "Compare com o que você já sabe: 'I go' está certo, sem som a mais no final. Então com 'I' fica 'play' ou 'plays'? Ouça as duas opções!",
+      conceitual: "Quem pratica a ação é 'I'. Ele está no grupo de I, you, we e they. Qual forma usamos?",
+      atencional: "Compare com 'I go'. Escolha o verbo correto para 'I'.",
+    },
+  },
+  {
+    id: "t6-it",
+    antes: "It",
+    depois: "in the garden.",
+    resposta: "plays",
+    ilustracao: "🐶",
+    acertoTexto: "Isso mesmo! Com it, usamos plays.",
+    dicas: {
+      conceitual: "Observe o sujeito: it pertence ao grupo de he e she.",
+      atencional: "O cachorro é 'it'. Compare com 'She plays'. Escolha o verbo correto.",
     },
   },
 ];
@@ -177,12 +189,10 @@ export const LACUNAS_TELA7: Lacuna[] = [
     depois: "to school every day.",
     resposta: "goes",
     ilustracao: "👦🏫",
-    acertoTexto: "Cartaz consertado! Você usou 'goes' corretamente. O caso está quase no fim!",
+    acertoTexto: "Cartaz consertado! 'He' pede 'goes'.",
     dicas: {
-      conceitual:
-        "Quem faz a ação? 'He'. E o que descobrimos sobre 'he' e o verbo? Ele ganha um som a mais — vira 'goes'.",
-      procedimental:
-        "Dica de detetive: primeiro identifique quem faz a ação (o sujeito). Depois ouça as duas opções e escolha a que soa certa.",
+      conceitual: "Quem pratica a ação é 'He'. Ele está no grupo de he, she e it.",
+      procedimental: DICA_SUJEITO,
     },
   },
   {
@@ -191,12 +201,10 @@ export const LACUNAS_TELA7: Lacuna[] = [
     depois: "to the park on Sundays.",
     resposta: "go",
     ilustracao: "👨‍👩‍👧🌳",
-    acertoTexto: "Cartaz consertado! Você usou 'go' corretamente. O caso está quase no fim!",
+    acertoTexto: "Cartaz consertado! 'We' pede 'go'.",
     dicas: {
-      conceitual:
-        "Quem faz a ação? 'We'. E o verbo só ganha o som a mais com he, she ou it. Então aqui ele fica como?",
-      procedimental:
-        "Dica de detetive: primeiro identifique quem faz a ação (o sujeito). Depois ouça as duas opções e escolha a que soa certa.",
+      conceitual: "Quem pratica a ação é 'We'. Ele está no grupo de I, you, we e they.",
+      procedimental: DICA_SUJEITO,
     },
   },
   {
@@ -205,12 +213,10 @@ export const LACUNAS_TELA7: Lacuna[] = [
     depois: "soccer every weekend.",
     resposta: "plays",
     ilustracao: "👧⚽️",
-    acertoTexto: "Cartaz consertado! Você usou 'plays' corretamente. O caso está quase no fim!",
+    acertoTexto: "Cartaz consertado! 'She' pede 'plays'.",
     dicas: {
-      conceitual:
-        "Quem faz a ação? 'She'. E o que descobrimos sobre 'she' e o verbo? Ele ganha um som a mais — como em 'goes'.",
-      procedimental:
-        "Dica de detetive: primeiro identifique quem faz a ação (o sujeito). Depois ouça as duas opções e escolha a que soa certa.",
+      conceitual: "Quem pratica a ação é 'She'. Ela está no grupo de he, she e it.",
+      procedimental: DICA_SUJEITO,
     },
   },
   {
@@ -219,12 +225,10 @@ export const LACUNAS_TELA7: Lacuna[] = [
     depois: "soccer every weekend.",
     resposta: "play",
     ilustracao: "🧒⚽️",
-    acertoTexto: "Cartaz consertado! Você usou 'play' corretamente. O caso está quase no fim!",
+    acertoTexto: "Cartaz consertado! 'I' pede 'play'.",
     dicas: {
-      conceitual:
-        "Quem faz a ação? 'I'. Quando falamos de nós mesmos, o verbo não ganha nada no final. Então fica como?",
-      procedimental:
-        "Dica de detetive: primeiro identifique quem faz a ação (o sujeito). Depois ouça as duas opções e escolha a que soa certa.",
+      conceitual: "Quem pratica a ação é 'I'. Ele está no grupo de I, you, we e they.",
+      procedimental: DICA_SUJEITO,
     },
   },
 ];
@@ -245,41 +249,75 @@ export const FORMAS_TELA5 = [
   { id: "f5", texto: "go" },
 ];
 
+/** Tela 9: montar a frase com blocos. */
+export type Montagem = {
+  id: string;
+  icone: string;
+  contexto: string;
+  sujeito: string;
+  fim: string;
+  opcoes: string[];
+  correta: string;
+  acerto: string;
+};
+
+export const MONTAGENS: Montagem[] = [
+  {
+    id: "m-she",
+    icone: "👧",
+    contexto: "Uma menina brincando no parque.",
+    sujeito: "She",
+    fim: "in the park.",
+    opcoes: ["play", "plays"],
+    correta: "plays",
+    acerto: "Correto! Com she, usamos plays.",
+  },
+  {
+    id: "m-they",
+    icone: "👫",
+    contexto: "Duas crianças brincando no parque.",
+    sujeito: "They",
+    fim: "in the park.",
+    opcoes: ["play", "plays"],
+    correta: "play",
+    acerto: "Correto! Com they, usamos play.",
+  },
+];
+
+export const ERRO_MONTAGEM = "Observe quem pratica a ação antes de escolher o verbo.";
+
 export const PERGUNTAS_TELA8 = [
   {
     id: "q1",
     titulo: "O que você aprendeu?",
-    pergunta: "Quando falamos de he, she ou it, o que acontece com o verbo?",
+    pergunta: "Com he, she e it, o que acontece com o verbo?",
     opcoes: [
       {
-        texto: "O verbo ganha um som/letra a mais no final",
+        texto: "O verbo muda: play vira plays e go vira goes",
         correta: true,
-        feedback: "Exato! He goes, she plays — todos ganham essa marca.",
+        feedback: "Exato! Na escrita, play recebe S e go recebe ES.",
       },
       {
         texto: "O verbo fica igual",
         correta: false,
-        feedback: "Hmm, lembra de 'She goes'? O 'go' mudou para 'goes'. O que aconteceu ali?",
+        feedback: "Compare: 'I go' e 'He goes'. O que mudou no verbo?",
       },
     ],
   },
   {
     id: "q2",
-    titulo: "Como você descobre a forma correta?",
-    pergunta:
-      "Quando você encontrar uma frase para completar, qual é a primeira coisa que você procura?",
+    titulo: "Como descobrir a forma certa?",
+    pergunta: "O que você observa primeiro em uma frase?",
     opcoes: [
       {
-        texto: "Quem faz a ação (o sujeito)",
+        texto: "Quem pratica a ação (o sujeito)",
         correta: true,
-        feedback:
-          "Isso! Tudo começa pelo sujeito. E se tiver dúvida, você pode ouvir as opções e comparar o som!",
+        feedback: "Isso! Veja o sujeito e depois escolha o verbo.",
       },
       {
         texto: "A palavra mais comprida",
         correta: false,
-        feedback:
-          "Boa tentativa! Mas o tamanho não importa tanto. O que muda o verbo é quem faz a ação. Quem é o sujeito?",
+        feedback: "O tamanho não importa. Observe quem pratica a ação.",
       },
     ],
   },

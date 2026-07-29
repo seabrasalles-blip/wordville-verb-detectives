@@ -18,7 +18,9 @@ export type EstadoCaso = {
   respostas: Record<string, string>;
   tentativas: Record<string, number>;
   conexoes: Record<string, string>;
+  montagens: Record<string, string>;
   metacognicao: Record<string, number>;
+  observou: boolean;
   medalha: boolean;
 };
 
@@ -28,7 +30,9 @@ const inicial: EstadoCaso = {
   respostas: {},
   tentativas: {},
   conexoes: {},
+  montagens: {},
   metacognicao: {},
+  observou: false,
   medalha: false,
 };
 
@@ -40,10 +44,13 @@ type Acao =
   | { tipo: "responder"; id: string; valor: string }
   | { tipo: "errar"; id: string }
   | { tipo: "conectar"; id: string; forma: string }
+  | { tipo: "montar"; id: string; valor: string }
+  | { tipo: "observou" }
   | { tipo: "metacognicao"; id: string; indice: number }
   | { tipo: "medalha" }
   | { tipo: "restaurar"; estado: EstadoCaso }
   | { tipo: "reiniciar" };
+
 
 function reducer(estado: EstadoCaso, acao: Acao): EstadoCaso {
   switch (acao.tipo) {
@@ -66,6 +73,10 @@ function reducer(estado: EstadoCaso, acao: Acao): EstadoCaso {
       };
     case "conectar":
       return { ...estado, conexoes: { ...estado.conexoes, [acao.id]: acao.forma } };
+    case "montar":
+      return { ...estado, montagens: { ...estado.montagens, [acao.id]: acao.valor } };
+    case "observou":
+      return { ...estado, observou: true };
     case "metacognicao":
       return { ...estado, metacognicao: { ...estado.metacognicao, [acao.id]: acao.indice } };
     case "medalha":

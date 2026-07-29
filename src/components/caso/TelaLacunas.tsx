@@ -46,10 +46,10 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
   const tudoCerto = lacunas.every((l) => estado.respostas[l.id] === l.resposta);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2.5">
       <p className="text-base font-semibold text-foreground">{comando}</p>
 
-      <div className={cn("grid gap-2", lacunas.length >= 4 && "sm:grid-cols-2")}>
+      <div className={cn("grid gap-2", lacunas.length >= 3 && "sm:grid-cols-2")}>
         {lacunas.map((lacuna) => {
           const resposta = estado.respostas[lacuna.id];
           const certo = resposta === lacuna.resposta;
@@ -117,9 +117,10 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
 
       <div className="rounded-2xl border-2 border-dashed border-investigacao/40 bg-secondary/60 p-2.5">
         <p className="mb-2 text-xs font-semibold text-muted-foreground">
-          Blocos de palavras — arraste até a lacuna ou toque no bloco e depois na lacuna. Ouça
-          antes de decidir!
+          Arraste o bloco até a lacuna ou toque no bloco e depois na lacuna. O áudio é uma ajuda
+          extra.
         </p>
+
         <div className="flex flex-wrap gap-2">
           {banco.map((palavra) => (
             <div key={palavra} className="flex items-center gap-1.5">
