@@ -117,9 +117,10 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
 
       <div className="rounded-2xl border-2 border-dashed border-investigacao/40 bg-secondary/60 p-2.5">
         <p className="mb-2 text-xs font-semibold text-muted-foreground">
-          Blocos de palavras — arraste até a lacuna ou toque no bloco e depois na lacuna. Ouça
-          antes de decidir!
+          Arraste o bloco até a lacuna ou toque no bloco e depois na lacuna. O áudio é uma ajuda
+          extra.
         </p>
+
         <div className="flex flex-wrap gap-2">
           {banco.map((palavra) => (
             <div key={palavra} className="flex items-center gap-1.5">
