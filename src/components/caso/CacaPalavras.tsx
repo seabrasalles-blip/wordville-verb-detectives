@@ -28,6 +28,8 @@ export function CacaPalavras() {
   const direcao = useRef<{ dl: number; dc: number } | null>(null);
   const limpando = useRef<number | null>(null);
   const contínuo = useRef(true);
+  const direcaoInvalida = useRef(false);
+
 
   const encontradas = new Set<string>(
     Object.values(estado.caminhos).flatMap((cs) => cs.map((p) => chave(p.linha, p.coluna))),
@@ -61,10 +63,16 @@ export function CacaPalavras() {
     const texto = atual.map((p) => grade.letras[p.linha][p.coluna]).join("").toUpperCase();
 
     if (!contínuo.current) {
-      setAviso({ tipo: "error", texto: "As letras precisam estar ligadas e na ordem." });
+      setAviso({
+        tipo: "error",
+        texto: direcaoInvalida.current
+          ? "Leia da esquerda para a direita ou de cima para baixo."
+          : "As letras precisam estar ligadas e na ordem.",
+      });
       limparDepois();
       return;
     }
+
 
     const palavra = (PALAVRAS_CACA as readonly string[]).includes(texto)
       ? (texto as PalavraCaca)
