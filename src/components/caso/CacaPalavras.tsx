@@ -4,11 +4,13 @@ import {
   EVIDENCIAS,
   PALAVRAS_CACA,
   gradePorId,
-  type PalavraCaca,
+  mesmoCaminho,
+  prefixoDeCaminho,
 } from "@/lib/caso-conteudo";
 import { useCaso } from "./CasoProvider";
 import { BotaoAudio } from "./BotaoAudio";
 import { AreaFeedback, Feedback } from "./Feedback";
+
 
 type Celula = { linha: number; coluna: number };
 
@@ -60,8 +62,6 @@ export function CacaPalavras() {
       return;
     }
 
-    const texto = atual.map((p) => grade.letras[p.linha][p.coluna]).join("").toUpperCase();
-
     if (!contínuo.current) {
       setAviso({
         tipo: "error",
@@ -73,32 +73,32 @@ export function CacaPalavras() {
       return;
     }
 
+    // A validação é feita pelo caminho planejado, nunca só pelas letras:
+    // assim as letras iniciais de GOES nunca são registradas como GO
+    // (nem as de PLAYS como PLAY), e as duas palavras ficam independentes.
+    const alvo = grade.palavras.find((p) => mesmoCaminho(atual, p.caminho));
 
-    const palavra = (PALAVRAS_CACA as readonly string[]).includes(texto)
-      ? (texto as PalavraCaca)
-      : null;
-
-    if (palavra && estado.encontradas.includes(palavra)) {
+    if (alvo && estado.encontradas.includes(alvo.palavra)) {
       setAviso({ tipo: "hint", texto: "Essa evidência já está no mural. Procure outra palavra." });
       limparDepois();
       return;
     }
 
-    if (palavra) {
+    if (alvo) {
       caminhoRef.current = [];
       setCaminho([]);
-      setAviso({ tipo: "success", texto: `Você encontrou ${palavra}!` });
-      despachar({ tipo: "encontrou", palavra, caminho: atual });
-      fala.falar(EVIDENCIAS[palavra].fala, `evid-${palavra}`);
+      setAviso({ tipo: "success", texto: `Você encontrou ${alvo.palavra}!` });
+      despachar({ tipo: "encontrou", palavra: alvo.palavra, caminho: atual });
+      fala.falar(EVIDENCIAS[alvo.palavra].fala, `evid-${alvo.palavra}`);
       return;
     }
 
-    const prefixo = PALAVRAS_CACA.some((p) => p.startsWith(texto) && p !== texto);
+    const prefixo = grade.palavras.some((p) => prefixoDeCaminho(atual, p.caminho));
     setAviso(
       prefixo
         ? {
             tipo: "hint",
-            texto: "Você encontrou o começo de uma palavra. Observe se falta alguma letra.",
+            texto: "Você encontrou o começo de uma palavra. Observe se há mais alguma letra.",
           }
         : {
             tipo: "error",
@@ -108,6 +108,7 @@ export function CacaPalavras() {
     );
     limparDepois();
   }, [despachar, estado.encontradas, fala, grade]);
+
 
   const marcar = (linha: number, coluna: number) => {
     const atual = caminhoRef.current;

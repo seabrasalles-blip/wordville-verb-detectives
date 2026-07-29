@@ -8,9 +8,12 @@ import {
   type ReactNode,
 } from "react";
 import {
-  GRADES_CACA,
+  GRADES_VALIDAS,
   PALAVRAS_CACA,
   TOTAL_TELAS,
+  gradeEhValida,
+  gradePorId,
+  mesmoCaminho,
   sortearGradeId,
   type PalavraCaca,
 } from "@/lib/caso-conteudo";
@@ -40,7 +43,7 @@ const inicial: EstadoCaso = {
   iniciou: false,
   tela: 1,
   encontradas: [],
-  gradeId: GRADES_CACA[0].id,
+  gradeId: GRADES_VALIDAS[0].id,
   caminhos: {},
   respostas: {},
   tentativas: {},
@@ -183,18 +186,26 @@ function sanear(dados: unknown): EstadoCaso {
     }
   }
 
+  // grade antiga/inválida é trocada por uma válida, preservando as outras telas
   const gradeId =
-    typeof d.gradeId === "string" && GRADES_CACA.some((g) => g.id === d.gradeId)
-      ? d.gradeId
-      : GRADES_CACA[0].id;
+    typeof d.gradeId === "string" && gradeEhValida(d.gradeId) ? d.gradeId : sortearGradeId();
+  const grade = gradePorId(gradeId);
+
+  // só continua registrada a palavra cujo caminho salvo bate com o caminho
+  // planejado da grade atual; o resto volta a ficar disponível para busca
+  const caminhosValidos: Record<string, { linha: number; coluna: number }[]> = {};
+  for (const [palavra, caminho] of Object.entries(caminhos)) {
+    const planejado = grade.palavras.find((p) => p.palavra === palavra);
+    if (planejado && mesmoCaminho(caminho, planejado.caminho)) caminhosValidos[palavra] = caminho;
+  }
 
   return {
     iniciou: d.iniciou === true,
     tela,
 
-    encontradas: encontradas.filter((p) => caminhos[p]),
+    encontradas: encontradas.filter((p) => caminhosValidos[p]),
     gradeId,
-    caminhos,
+    caminhos: caminhosValidos,
     respostas: registro(d.respostas),
     tentativas: numeros(d.tentativas),
     conexoes: registro(d.conexoes),

@@ -1,42 +1,67 @@
-## Objetivo
+## Causa técnica
 
-Reorganizar estruturalmente a Tela 1 (abertura): Lex grande + balão integrado à esquerda, painel único de evidência à direita, tudo dentro de 1200×675 sem rolagem. Nenhuma outra tela e nenhuma lógica pedagógica é alterada.
+Hoje as grades em `src/lib/caso-conteudo.ts` guardam apenas as letras (`{ id, letras }`) e o `CacaPalavras.tsx` valida **só pelo texto** formado no arrasto. Como toda ocorrência de `PLAYS` contém as letras `PLAY` (e `GOES` contém `GO`), selecionar as 4 primeiras letras da ocorrência de PLAYS registra "PLAY" naquele caminho errado; a partir daí a ocorrência própria de PLAY responde "essa evidência já está no mural" e o mural mostra o destaque no lugar errado. Nada na estrutura de dados impede que uma grade tenha só a palavra longa.
 
-## Estrutura atual vs. nova
+## 1. Dados: caminhos planejados por grade
 
-```text
-ANTES                              DEPOIS
-[ faixa Wordville h-24 ]           [ faixa Wordville mais baixa ]
-[ cartaz+pergunta | Lex pequena ]  [ Lex + balão (38%) | painel evidência (62%) ]
-[ área inferior vazia ]            [ colunas com alturas equilibradas ]
+Alterar o tipo em `src/lib/caso-conteudo.ts`:
+
+```ts
+type Celula = { linha: number; coluna: number };
+type PalavraNaGrade = { palavra: PalavraCaca; caminho: Celula[] };
+export type GradeCaca = { id: string; letras: string[][]; palavras: PalavraNaGrade[] };
 ```
 
-## 1. Coluna esquerda (38%)
+As 8 grades passam a declarar explicitamente os 4 caminhos (GO, GOES, PLAY, PLAYS).
 
-- Balão de fala no topo, largura limitada à coluna, com rabicho apontando para baixo/esquerda em direção à cabeça de Lex.
-- Texto curto: "Olá! Eu sou a Inspetora Lex. Os verbos dos cartazes de Wordville estão errados. Você me ajuda a encontrar as pistas?" (18px, entrelinha confortável).
-- Lex ancorada na base da coluna, altura ~220–240px, proporção preservada, sem cortes e sem encostar nas bordas; leve deslocamento para que a personagem "olhe" para a direita.
-- Balão e personagem formam um bloco só (mesmo container, sem gap grande), nunca um card solto.
+## 2. Regeração das grades (script Python descartável)
 
-## 2. Coluna direita (62%)
+Gerar 8 grades 8×8 novas, todas com:
+- as 4 palavras em caminhos **disjuntos** (nenhuma célula compartilhada — a opção mais segura para 8–10 anos);
+- apenas horizontal esquerda→direita e vertical cima→baixo;
+- preenchimento aleatório verificado para **não** criar ocorrências acidentais de nenhuma das 4 palavras em nenhuma das 8 direções fora dos caminhos planejados;
+- GO nunca sendo o prefixo posicional de GOES, idem PLAY/PLAYS.
 
-Um único painel de investigação centralizado verticalmente, contendo, em ordem:
+O resultado é colado como literal em `caso-conteudo.ts` (nada gerado em runtime).
 
-- rótulo "🔎 Evidência encontrada" (16px, etiqueta);
-- frase "He go to school." em destaque (24px);
-- pergunta "Algo está errado nesta frase. Você consegue descobrir o quê?" (18px);
-- botão "Ver a frase correta" (18px).
+## 3. Validador de grade
 
-Após o clique, a frase correta "He goes to school." aparece dentro do mesmo painel (com áudio), no lugar do botão — mesma altura de bloco, sem deslocar Lex nem crescer a tela.
+Função exportada `validarGrade(grade): string[]` que rejeita quando:
+- falta ou sobra caminho para qualquer das 4 palavras;
+- o caminho não é contínuo em direção permitida;
+- as letras do caminho não formam a palavra;
+- o caminho de GO é prefixo do de GOES (ou PLAY do de PLAYS), ou há células compartilhadas;
+- existe ocorrência da palavra fora do caminho planejado.
 
-Estilo: cantos bem arredondados, contorno colorido duplo, sombra suave, fundo claro, inclinação no máximo ~1°.
+`GRADES_CACA` é filtrada por esse validador na exportação (`GRADES_VALIDAS`), e um teste em `src/lib/caso-conteudo.test.ts` roda o validador sobre todas as grades para que uma grade inválida quebre o build de testes.
 
-## 3. Implementação
+## 4. Validação por caminho no componente
 
-- `src/components/caso/CasoApp.tsx`: reescrita apenas do componente `Tela1` — grid `[38%_62%]`, altura total do main ocupada com `h-full`, faixa Wordville reduzida (~72–80px) para liberar altura, painel de evidência montado inline (reaproveitando `Cartaz` para a frase correta ou markup próprio).
-- `src/components/caso/BalaoLex.tsx`: nova variante `apresentacao` — balão acima, Lex grande embaixo, rabicho conectando os dois; as variantes `linha` e `lateral` usadas nas outras telas ficam intactas.
-- Sem mudanças no `CasoProvider`, no conteúdo pedagógico, no cabeçalho, no rodapé ou na lógica de liberação do botão "Vamos investigar!" (continua dependendo de `t1-visto`).
+Em `src/components/caso/CacaPalavras.tsx`:
+- ao soltar, comparar o caminho selecionado com os `grade.palavras`: acerto só quando o caminho coincide **exatamente** com um caminho planejado ainda não encontrado;
+- caminho que é prefixo de um caminho planejado (ex.: 4 primeiras células de PLAYS) → dica "Você encontrou o começo de uma palavra. Observe se há mais alguma letra.", sem registrar nada;
+- caminho igual a um já encontrado → "essa evidência já está no mural";
+- células destacadas continuam clicáveis: o destaque `encontradas` é só visual, nenhum `disabled`/`pointer-events-none`, e `iniciar()` limpa apenas a seleção temporária;
+- mural e contador continuam por palavra (1/4 ao achar PLAY, PLAYS independente).
 
-## 4. Verificação
+## 5. Estado salvo
 
-Playwright em 1200×675: screenshot da Tela 1 antes e depois do clique em "Ver a frase correta", medindo `scrollHeight` vs `clientHeight` do palco, do main, do balão e do painel para confirmar zero rolagem, além da altura renderizada de Lex e da checagem do botão de avanço habilitando corretamente.
+Em `src/components/caso/CasoProvider.tsx`, o `sanear` passa a:
+- descartar `gradeId` que não exista mais ou não passe no validador, sorteando uma grade válida;
+- manter em `caminhos`/`encontradas` apenas as palavras cujo caminho salvo bate com um caminho planejado da grade atual; o resto é limpo;
+- preservar intactos o progresso das demais telas.
+
+Assim quem tem estado antigo volta à Tela 2 numa grade válida e consegue concluir.
+
+## 6. Verificação
+
+Playwright em 1200×675, script que, para cada grade válida, executa arrasto célula a célula nas 4 ordens exigidas (GO→GOES→PLAY→PLAYS, GOES→GO→PLAYS→PLAY, PLAY→PLAYS→GO→GOES, PLAYS→PLAY→GOES→GO), confirmando 4/4 e 4 itens no mural; mais um teste de recarregamento (2 palavras → reload → mesma grade, 2 registradas, outras 2 achaveis) e um de nova tentativa. Em todos os passos, checagem de `scrollHeight === clientHeight === 675` e largura 1200, sem erros de console.
+
+## Arquivos afetados
+
+- `src/lib/caso-conteudo.ts` (tipo, 8 grades novas com caminhos, `validarGrade`, `sortearGradeId` restrito a grades válidas)
+- `src/components/caso/CacaPalavras.tsx` (validação por caminho, células nunca bloqueadas)
+- `src/components/caso/CasoProvider.tsx` (saneamento/migração do estado do caça-palavras)
+- `src/lib/caso-conteudo.test.ts` (novo, valida as 8 grades)
+
+Layout, fontes e todas as correções pedagógicas anteriores ficam intactos.
