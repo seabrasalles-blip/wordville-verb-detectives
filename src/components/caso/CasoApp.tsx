@@ -116,7 +116,7 @@ function Casca() {
           <TelaLacunas
             lacunas={LACUNAS_TELA4}
             banco={["go", "goes"]}
-            comando="Arraste 'go' ou 'goes' para completar cada frase. Você pode ouvir as opções antes de decidir."
+            comando="Observe quem pratica a ação e escolha a forma correta do verbo."
           />
         ) : null}
         {tela === 5 ? <LigarColunas /> : null}
@@ -125,13 +125,15 @@ function Casca() {
           <TelaLacunas
             lacunas={LACUNAS_TELA7}
             banco={["go", "goes", "play", "plays"]}
-            comando="Últimos cartazes da cidade! Use tudo o que você descobriu. Cada cartaz precisa da palavra certa."
-            aoConcluir="Todos os cartazes estão consertados! Vamos até o meu escritório conversar sobre o caso."
+            comando="Observe quem pratica a ação e escolha a forma correta do verbo."
+            aoConcluir="Todos os cartazes estão consertados! Vamos ao escritório."
           />
         ) : null}
         {tela === 8 ? <Tela8 /> : null}
-        {tela === 9 ? <Tela9 /> : null}
+        {tela === 9 ? <MontarFrase /> : null}
+        {tela === 10 ? <Tela9 /> : null}
       </main>
+
 
       <footer className="shrink-0 border-t-4 border-investigacao/20 bg-card/95 backdrop-blur">
         <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-2">
