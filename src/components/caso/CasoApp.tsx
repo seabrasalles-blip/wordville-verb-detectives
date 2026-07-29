@@ -337,19 +337,19 @@ function Tela8() {
 function Tela9() {
   const { estado, despachar, fala } = useCaso();
   const texto =
-    "Caso resolvido! Todos os cartazes de Wordville estão corretos, e tudo graças a você! Você descobriu que o verbo muda de som e de letra quando falamos de he, she ou it — e que essa regra vale para vários verbos, como go e play! Aqui está sua medalha de Assistente-Detetive. Até o próximo caso!";
+    "Caso resolvido! Todos os cartazes de Wordville estão corretos graças a você! Você descobriu que o verbo muda de som e de letra com he, she ou it — e vale para vários verbos, como go e play! Aqui está sua medalha de Assistente-Detetive. Até o próximo caso!";
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <img
         src={wordville}
         alt="Rua de Wordville com os cartazes corrigidos e a cidade em festa"
         width={1536}
         height={768}
         loading="lazy"
-        className="h-24 w-full rounded-2xl border-2 border-acerto object-cover shadow-md sm:h-28"
+        className="h-16 w-full rounded-2xl border-2 border-acerto object-cover shadow-md sm:h-20"
       />
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-2 sm:grid-cols-2">
         <Cartaz frase="He goes to school." icone="🏫" audioId="final-1" />
         <Cartaz frase="She plays soccer." icone="⚽️" audioId="final-2" />
       </div>
@@ -359,16 +359,16 @@ function Tela9() {
       </BalaoLex>
 
       {estado.medalha ? (
-        <div className="medalha-anima flex flex-col items-center gap-2">
+        <div className="medalha-anima flex items-center justify-center gap-3">
           <img
             src={medalha}
             alt="Medalha de Assistente-Detetive"
             width={768}
             height={768}
             loading="lazy"
-            className="w-24 drop-shadow-xl"
+            className="w-16 drop-shadow-xl"
           />
-          <p className="text-lg font-bold text-acerto">Assistente-Detetive de Wordville! 🎉</p>
+          <p className="text-base font-bold text-acerto">Assistente-Detetive de Wordville! 🎉</p>
         </div>
       ) : (
         <button
@@ -377,7 +377,7 @@ function Tela9() {
             despachar({ tipo: "medalha" });
             fala.falar("He goes to school.", "final-1");
           }}
-          className="rounded-full bg-acerto px-6 py-2.5 text-base font-bold text-acerto-foreground shadow-lg transition-transform hover:scale-105"
+          className="rounded-full bg-acerto px-6 py-2 text-base font-bold text-acerto-foreground shadow-lg transition-transform hover:scale-105"
         >
           Receber medalha!
         </button>

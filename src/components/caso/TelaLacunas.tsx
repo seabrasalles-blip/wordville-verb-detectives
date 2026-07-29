@@ -49,7 +49,7 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
     <div className="space-y-3">
       <p className="text-base font-semibold text-foreground">{comando}</p>
 
-      <div className={cn("grid gap-2.5", lacunas.length >= 4 && "sm:grid-cols-2")}>
+      <div className={cn("grid gap-2", lacunas.length >= 4 && "sm:grid-cols-2")}>
         {lacunas.map((lacuna) => {
           const resposta = estado.respostas[lacuna.id];
           const certo = resposta === lacuna.resposta;
