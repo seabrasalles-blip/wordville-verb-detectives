@@ -46,10 +46,10 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
   const tudoCerto = lacunas.every((l) => estado.respostas[l.id] === l.resposta);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2.5">
       <p className="text-base font-semibold text-foreground">{comando}</p>
 
-      <div className={cn("grid gap-2", lacunas.length >= 4 && "sm:grid-cols-2")}>
+      <div className={cn("grid gap-2", lacunas.length >= 3 && "sm:grid-cols-2")}>
         {lacunas.map((lacuna) => {
           const resposta = estado.respostas[lacuna.id];
           const certo = resposta === lacuna.resposta;
