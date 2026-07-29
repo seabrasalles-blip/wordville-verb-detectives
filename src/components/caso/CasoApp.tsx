@@ -63,8 +63,9 @@ function Casca() {
   })();
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b-4 border-investigacao/20 bg-card">
+    <div className="flex min-h-screen items-center justify-center bg-black/5 p-2 sm:p-4">
+    <div className="relative flex h-[675px] w-full max-w-[1200px] flex-col overflow-hidden rounded-2xl border border-investigacao/20 bg-background shadow-2xl">
+      <header className="shrink-0 border-b-4 border-investigacao/20 bg-card">
         <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-3 px-4 py-3">
           <h1 className="text-lg font-bold text-investigacao sm:text-xl">
             🕵️‍♀️ O Caso dos Verbos Desaparecidos
@@ -94,7 +95,7 @@ function Casca() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-4 py-6 pb-32">
+      <main className="mx-auto w-full max-w-4xl flex-1 overflow-y-auto px-4 py-5 pb-6">
         <p className="mb-4 text-sm font-bold tracking-wide text-muted-foreground uppercase">
           Tela {tela} — {TITULOS[tela - 1]}
         </p>
@@ -122,7 +123,7 @@ function Casca() {
         {tela === 9 ? <Tela9 /> : null}
       </main>
 
-      <footer className="fixed inset-x-0 bottom-0 border-t-4 border-investigacao/20 bg-card/95 backdrop-blur">
+      <footer className="shrink-0 border-t-4 border-investigacao/20 bg-card/95 backdrop-blur">
         <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-3">
           <button
             type="button"
@@ -152,6 +153,7 @@ function Casca() {
           ) : null}
         </div>
       </footer>
+    </div>
     </div>
   );
 }
