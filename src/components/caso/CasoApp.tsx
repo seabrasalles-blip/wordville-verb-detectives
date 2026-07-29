@@ -108,7 +108,7 @@ function Casca() {
   );
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black/5 p-2 sm:p-4">
+    <div className="flex min-h-screen items-center justify-center bg-black/5 p-0 [@media(min-height:707px)]:p-2 [@media(min-height:743px)]:p-4">
       <div className="relative flex h-[675px] w-full max-w-[1200px] flex-col overflow-hidden rounded-2xl border border-investigacao/20 bg-background shadow-2xl">
         <header className="shrink-0 border-b-4 border-investigacao/20 bg-card">
           <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 py-1.5">
