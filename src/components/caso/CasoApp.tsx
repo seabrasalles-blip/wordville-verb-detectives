@@ -427,7 +427,7 @@ function Tela3() {
 function Tela6() {
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-2 rounded-2xl border-2 border-investigacao bg-card px-3 py-1.5 shadow-sm">
+      <div className="cartao-pista flex flex-wrap items-center gap-2 border-pista px-3 py-1.5">
         <span aria-hidden="true" className="text-2xl">
           🐶
         </span>
@@ -465,8 +465,8 @@ function Tela8() {
           const opcao = escolhida !== undefined ? q.opcoes[escolhida] : undefined;
           const certa = opcao?.correta === true;
           return (
-            <div key={q.id} className="rounded-2xl border-2 border-investigacao bg-card p-2.5">
-              <h2 className="text-[17px] font-bold text-investigacao">{q.titulo}</h2>
+            <div key={q.id} className="cartao-pista border-investigacao/70 p-2.5">
+              <h2 className="etiqueta inline-block border-pista bg-pista text-[16px] text-pista-foreground">{q.titulo}</h2>
               <p className="mt-0.5 text-[18px]">{q.pergunta}</p>
               <div className="mt-2 grid gap-2">
                 {q.opcoes.map((op, i) => (
