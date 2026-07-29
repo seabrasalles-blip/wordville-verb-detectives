@@ -261,7 +261,7 @@ function Cartaz({
   return (
     <div
       className={cn(
-        "rounded-2xl border-2 border-investigacao bg-card p-2 text-center shadow-md",
+        "cartao-pista border-investigacao p-2 text-center",
         tremulando && "tremula border-reorienta",
       )}
     >
@@ -286,8 +286,8 @@ function Grupos() {
   return (
     <div className="grid gap-2 sm:grid-cols-2">
       {GRUPOS.map((g) => (
-        <div key={g.id} className="rounded-2xl border-2 border-investigacao bg-card p-2">
-          <p className="text-[17px] font-bold text-investigacao">
+        <div key={g.id} className="cartao-pista border-investigacao p-2">
+          <p className="etiqueta inline-block border-pista bg-pista text-[16px] text-pista-foreground">
             <span aria-hidden="true">{g.icone}</span> {g.titulo}
           </p>
           <p className="mt-0.5 text-[20px] font-bold">
@@ -317,9 +317,9 @@ function Tela1() {
         alt="Rua principal da cidade de Wordville, cheia de cartazes"
         width={1536}
         height={768}
-        className="h-24 w-full rounded-2xl border-2 border-investigacao object-cover shadow-md"
+        className="h-24 w-full rounded-3xl border-4 border-pista object-cover shadow-md"
       />
-      <div className="grid gap-3 sm:grid-cols-2 sm:items-center">
+      <div className="grid gap-3 sm:grid-cols-[1fr_0.75fr] sm:items-center">
         <div className="space-y-1.5">
           <Cartaz frase="He go to school." icone="🏫" tremulando semAudio />
           <p className="text-center text-[17px] font-semibold text-reorienta">
@@ -329,7 +329,7 @@ function Tela1() {
             <button
               type="button"
               onClick={() => despachar({ tipo: "responder", id: "t1-visto", valor: "sim" })}
-              className="mx-auto block rounded-full bg-pista px-4 py-1.5 text-[17px] font-bold text-pista-foreground shadow-md"
+              className="botao-fofo mx-auto block bg-pista px-5 py-2 text-[17px] text-pista-foreground"
             >
               Ver a frase correta
             </button>
@@ -337,7 +337,8 @@ function Tela1() {
             <Cartaz frase="He goes to school." icone="✅" audioId="cartaz-correto" />
           )}
         </div>
-        <BalaoLex>
+        <BalaoLex variante="lateral">
+
           <p className="text-[17px]">
             Olá! Eu sou a Inspetora Lex, detetive de Wordville. Os verbos dos cartazes estão
             errados.
