@@ -4,9 +4,11 @@ import { cn } from "@/lib/utils";
 import wordville from "@/assets/wordville.jpg";
 import medalha from "@/assets/medalha.png";
 import {
+  GRUPOS,
   LACUNAS_TELA4,
   LACUNAS_TELA6,
   LACUNAS_TELA7,
+  MONTAGENS,
   PALAVRAS_CACA,
   PARES_TELA5,
   PERGUNTAS_TELA8,
@@ -17,6 +19,7 @@ import { BalaoLex, Ingles } from "./BalaoLex";
 import { BotaoAudio } from "./BotaoAudio";
 import { CacaPalavras } from "./CacaPalavras";
 import { LigarColunas } from "./LigarColunas";
+import { MontarFrase } from "./MontarFrase";
 import { TelaLacunas } from "./TelaLacunas";
 
 const TITULOS = [
@@ -28,8 +31,10 @@ const TITULOS = [
   "Agora com play",
   "Revisão mista",
   "O que você aprendeu",
+  "Monte a frase",
   "Caso resolvido",
 ];
+
 
 export function CasoApp() {
   return (
