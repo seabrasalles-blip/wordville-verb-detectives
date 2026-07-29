@@ -1,52 +1,74 @@
-# Eliminar a barra de rolagem (palco fixo 1200×675)
+## Objetivo
 
-## Contexto confirmado
-O palco tem **675px** de altura. Hoje:
-- Cabeçalho = 92px, Rodapé = 80px → área de conteúdo ≈ **503px**
-- Tela 1 (medida): conteúdo = **966px** (estoura ~460px)
-- Cada tela usa `space-y-6`, `p-4/p-5`, `text-xl/2xl`, imagens em largura total 16:9 (~448px de altura), balões grandes e cartões generosos.
+Revisar a precisão conceitual e os textos do app, mantendo narrativa, Lex, assets, paleta, componentes, progresso e localStorage. Sem refatoração técnica e sem redução de fontes.
 
-Sem compactar, é impossível caber em ~503px. O plano abaixo reduz densidade em **todos** os componentes para que cada tela (estado base + feedback dinâmico) caiba sem rolagem.
+## 1. Regra central em dois grupos (Tela 3)
 
-## Orçamento-alvo por tela
-- Cabeçalho compacto: **~56px** (título `text-base`, `py-2`, barra de progresso `h-2`)
-- Rodapé compacto: **~56px** (botões `py-2 text-base`)
-- Área de conteúdo: **~563px**
-- Cada tela deve usar ≤ ~470px no estado base, deixando ~90px de folga para os balões de dica/acerto que aparecem dinamicamente.
+Substituir a explicação "quando falamos de outra pessoa" por dois quadros visuais, usando os componentes já existentes (`Cartaz`, `BalaoLex`):
 
-## Etapa 1 — Casca (CasoApp.tsx)
-- Header: `py-2`, título `text-base sm:text-lg`, barra de progresso `h-2`, padding `pb-2`.
-- Footer: `py-2`, botões `px-5 py-2 text-base` (sem `text-lg py-3`).
-- Main: trocar `overflow-y-auto` → **`overflow-hidden`**; `py-3 px-4`; garantir que nada ultrapasse.
-- Manter `max-w-4xl` centralizado dentro dos 1200px.
+```text
+Grupo 1 — I, you, we, they      Grupo 2 — he, she, it
+go / play                        goes / plays
+I go to school.                  He goes to school.
+They play in the park.           She plays in the park.
+```
 
-## Etapa 2 — Componentes base (densidade global)
-- **BalaoLex**: avatar `w-16` (era `w-24/32`), balão `p-3 text-sm leading-snug` (era `p-5 text-lg`), `space-y-2`.
-- **Cartaz**: emoji `text-3xl` (era `5xl`), frase `text-lg` (era `xl/2xl`), `p-3`, legenda `text-sm`.
-- **BotaoAudio**: manter, mas `tamanho="sm"` como padrão nas telas compactadas.
+Síntese curta da Lex: "Com he, she e it, o verbo muda. Play vira plays e go vira goes." + "Com I, you, we e they, usamos play e go sem mudança."
 
-## Etapa 3 — Por tela
-- **Tela 1**: imagem `h-28 object-cover rounded-2xl` (era largura total ~448px); Cartaz + lupa em linha compacta; balão enxuto.
-- **Tela 2 (CacaPalavras)**: grade limitada a `max-w-[260px]` (células menores, ~260px de altura) ao lado do mural de evidências (já em `lg:grid-cols`); instrução `text-base`; balão de conclusão compacto. Tudo cabe lado a lado.
-- **Tela 3**: 2 cartazes em `grid-cols-2` (linha ~110px) + balão + botão/revelação; `space-y-3`.
-- **Tela 4 / 6 / 7 (TelaLacunas)**: cartões `p-2 gap-2 text-lg`, ilustração `text-xl`, badge "Consertado" inline; banco de palavras `p-2 gap-2 px-3 py-1.5 text-lg`; `space-y-3`. Na **Tela 7 (4 lacunas)**, dispor os cartões em **`grid-cols-2`** para caber em 2 linhas; banco compacto abaixo.
-- **Tela 5 (LigarColunas)**: linhas `py-2 text-lg` (5×~42px ≈ 210px); colunas lado a lado; feedback compacto.
-- **Tela 8**: dispor as **2 perguntas em `grid-cols-2`** (lado a lado), opções `py-2 text-base`, feedback `text-sm` enxuto. Cada coluna ~280px.
-- **Tela 9**: imagem `h-28 object-cover`; 2 cartazes em `grid-cols-2`; balão + medalha `w-24`. Botão "Receber medalha" `py-2`.
+Sem o termo "terceira pessoa do singular" nas telas do aluno.
 
-## Etapa 4 — Garantir folga para feedback dinâmico
-- Dicas/acertos (TelaLacunas, LigarColunas, Tela8) aparecem *somando* altura. O estado base de cada tela será dimensionado para deixar ~90px livres; se algum texto de feedback for muito longo, **encurtar** o texto em `caso-conteudo.ts` (sem mudar o significado pedagógico) para caber.
+## 2. Explicação de S e ES
 
-## Etapa 5 — Verificação
-Após implementar, medir via Playwright: para **cada uma das 9 telas** (navegando e completando os exercícios para revelar feedback), confirmar `main.scrollHeight ≤ main.clientHeight` (sem overflow). Ajustar qualquer tela que ainda estourar.
+Trocar "o verbo ganha um som/letra a mais" (aparece nos textos de acerto e dicas das Telas 4, 6, 7, 8 e 9) por: "Na escrita, algumas palavras recebem S e outras recebem ES." com os exemplos `play → plays`, `go → goes` e a observação "Neste caso, play recebe S e go recebe ES." Sem outras regras ortográficas.
 
-## Arquivos afetados
-- `src/components/caso/CasoApp.tsx` (casca + telas 1, 3, 8, 9)
-- `src/components/caso/BalaoLex.tsx`
-- `src/components/caso/CacaPalavras.tsx`
-- `src/components/caso/LigarColunas.tsx`
-- `src/components/caso/TelaLacunas.tsx`
-- `src/lib/caso-conteudo.ts` (apenas encurtar textos de feedback longos, se necessário)
+## 3. Frase incorreta sem áudio (Tela 1)
 
-## Observação
-A compactação reduz um pouco o tamanho dos textos/elementos, mas mantém todo o conteúdo pedagógico e a legibilidade adequada para crianças de 8–10 anos. Nenhuma funcionalidade (áudio, arrastar, dicas, progresso) é alterada — apenas o layout.
+O cartaz `He go to school` perde o botão de áudio (nova prop `semAudio` no componente `Cartaz`) e recebe a marcação visual: "Algo está errado nesta frase. Você consegue descobrir o quê?". Após a observação da criança, exibir e permitir ouvir `He goes to school.`
+
+## 4. Instruções baseadas no sujeito, não no som
+
+Reescrever comandos e dicas que dizem "qual soa mais natural" (dicas procedimentais das Telas 4, 6 e 7) para: "Observe quem pratica a ação. A frase começa com I, you, we, they, he, she ou it?" e "Observe quem pratica a ação e escolha a forma correta do verbo." O áudio continua disponível como apoio.
+
+## 5. Prática com IT (Tela 6)
+
+Adicionar exemplo visual "The dog plays in the garden." → "It plays in the garden." (emoji 🐶 no padrão atual dos cartazes) e uma nova lacuna:
+
+```text
+It ___ in the garden.     opções: play | plays
+acerto: "Isso mesmo! Com it, usamos plays."
+erro:   "Observe o sujeito: it pertence ao grupo de he e she."
+```
+
+## 6. Tela de observação obrigatória (Tela 3)
+
+O botão Continuar do rodapé fica desabilitado até a criança concluir a observação (revelar/selecionar a diferença). Isso exige registrar a conclusão no estado do caso (novo campo booleano simples no reducer, sem mudar a estrutura de persistência) para que `liberado` na `Casca` leia a Tela 3. Estado desabilitado já tem estilo visual (`disabled:opacity-40`), que será reforçado com o aviso já existente.
+
+## 7. Nova tela "Monte a frase" (antes da conclusão)
+
+Nova tela inserida entre a atual Tela 8 e a Tela 9 (`TOTAL_TELAS` passa de 9 para 10). Componente novo `MontarFrase.tsx`, reaproveitando o padrão visual de blocos das telas existentes:
+
+```text
+Situação 1 (👧 no parque):  She | play | plays | in the park.  → She plays in the park.
+Situação 2 (👫 no parque):  They | play | plays | in the park. → They play in the park.
+```
+
+Acerto 1: "Correto! Com she, usamos plays." Acerto 2: "Correto! Com they, usamos play." Erro: "Observe quem pratica a ação antes de escolher o verbo." Tentativas ilimitadas; a frase correta não é revelada no primeiro erro. Contraste final visível entre as duas frases. Avanço liberado só com as duas montadas.
+
+## 8. Linguagem por faixa etária
+
+Revisar todos os comandos para frases curtas com uma ação: "Observe as frases.", "Quem pratica a ação?", "Escolha o verbo correto.", "Compare os dois exemplos.", "Monte a frase.", "Tente novamente."
+
+## 9. Síntese final (Tela 9)
+
+Antes da medalha, um bloco em dois grupos (I/you/we/they → go, play; He/she/it → goes, plays) com os pares contrastivos `They play in the park.` / `She plays in the park.` e `We go to school.` / `He goes to school.` Texto de fechamento: "Você descobriu a pista! Com he, she e it, usamos goes e plays. Com I, you, we e they, usamos go e play." Sem regras novas.
+
+## 10. GO TO
+
+Manter `go to school`. Não há hoje nenhum texto no projeto afirmando que o app não usa "go to", então nada a corrigir; se algum comentário surgir durante a edição, será ajustado para a formulação indicada.
+
+## Detalhes técnicos
+
+- Arquivos alterados: `src/lib/caso-conteudo.ts` (textos, dicas, nova lacuna de `it`, conteúdo das novas telas), `src/components/caso/CasoApp.tsx` (Telas 1, 3, 6, 9, títulos, roteamento da nova tela, regra de liberação), `src/components/caso/BalaoLex.tsx` (nenhuma mudança prevista), `src/components/caso/CasoProvider.tsx` (campo de observação concluída + estado da montagem), novo `src/components/caso/MontarFrase.tsx`, e ajuste de `head()` em `src/routes/index.tsx` se o texto descritivo citar a regra antiga.
+- Caça-palavras, arrasto e persistência não são tocados (a chave do localStorage é mantida; campos novos entram com valor padrão via `{ ...inicial, ...dados }`).
+- Como o palco é fixo em 1200×675 px, os novos blocos serão dimensionados para caber sem rolagem, sem reduzir as fontes atuais — verificação por medição de altura em cada tela.
+- Ao final: typecheck e passagem completa pelas 10 telas para checar ausência de regressões.
