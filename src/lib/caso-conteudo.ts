@@ -481,9 +481,15 @@ export function familiaDaPalavra(palavra: string): FamiliaVerbal {
   return p === "go" || p === "goes" ? "go" : "play";
 }
 
+/** Sentido do verbo dentro da frase, em português. */
+function ideiaDoVerbo(lacuna: Lacuna) {
+  if (lacuna.familia === "go") return "ir";
+  return lacuna.acao.includes("jogar") ? "jogar" : "brincar";
+}
+
 /**
- * Feedback da revisão mista: analisa significado (família do verbo) e
- * concordância (forma) separadamente, com dicas graduais por tentativa.
+ * Feedback da revisão mista: primeiro o significado da ação, depois o sujeito
+ * e só então a comparação completa. Nunca apenas a lista de alternativas.
  */
 export function feedbackLacuna(lacuna: Lacuna, palavra: string, tentativa: number) {
   const escolha = palavra.trim().toLowerCase();
@@ -491,24 +497,35 @@ export function feedbackLacuna(lacuna: Lacuna, palavra: string, tentativa: numbe
   const familiaCorreta = familiaEscolhida === lacuna.familia;
   const sujeito = lacuna.antes.trim().toLowerCase();
   const base = lacuna.familia;
-  const flexionada = base === "go" ? "goes" : "plays";
+  const ideia = ideiaDoVerbo(lacuna);
   const terceira = grupoDoSujeito(sujeito) === "terceira";
+  const terminacao = base === "go" ? "ES" : "S";
+  const flexionada = base === "go" ? "goes" : "plays";
+  const frase = `${lacuna.antes} ${lacuna.resposta} ${lacuna.depois}`;
 
+  // 1) Verbo certo, forma errada: reconhece o que a criança já entendeu.
   if (familiaCorreta) {
-    return `O verbo está certo, mas com ${sujeito} usamos ${lacuna.resposta}.`;
+    const inicio = `Você encontrou o verbo certo: ${base} significa ${ideia}.`;
+    return terceira
+      ? `${inicio} Agora observe o sujeito ${lacuna.antes}. Com ${sujeito}, usamos ${flexionada}.`
+      : `${inicio} Mas com ${lacuna.antes}, usamos ${base} sem ${terminacao}.`;
   }
 
-  // família errada, mas a terminação já combina com o sujeito
+  // 2) Terminação já combina com o sujeito, mas o verbo é o outro.
   const marcada = escolha === "goes" || escolha === "plays";
   if (marcada === terceira && tentativa === 0) {
-    return `A terminação combina com ${sujeito}, mas o verbo não combina com a ação. ${lacuna.acao} pede ${base}.`;
+    return `Você percebeu que ${sujeito} pede essa forma, mas observe a ação: a frase fala sobre ${lacuna.acao}. O verbo necessário é ${base}.`;
   }
 
+  // 3) Erro de significado, com progressão pedagógica.
   if (tentativa === 0) {
-    return `A frase fala em ${lacuna.acao}. Procure uma forma do verbo ${base}.`;
+    return `A frase fala sobre ${lacuna.acao}. Em inglês, usamos o verbo ${base} para expressar a ideia de ${ideia}.`;
   }
   if (tentativa === 1) {
-    return `Primeiro escolha o verbo ${base}. Agora observe o sujeito ${sujeito}.`;
+    return terceira
+      ? `Você já sabe que o verbo é ${base}. Agora observe o sujeito ${lacuna.antes}: com ${sujeito}, ${base} vira ${flexionada}.`
+      : `Você já sabe que o verbo é ${base}. Com ${lacuna.antes}, usamos ${base} sem ${terminacao}.`;
   }
-  return `Para essa frase, escolha entre ${base} e ${flexionada}.`;
+  return `Compare: ${frase}`;
 }
+
