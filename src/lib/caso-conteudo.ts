@@ -30,111 +30,110 @@ export const EVIDENCIAS: Record<
 };
 
 export type GradeCaca = { id: string; letras: string[][] };
-
-/** 8 grades 8x8 pré-validadas: cada uma contém GO, GOES, PLAY e PLAYS. */
+/** 8 grades 8x8 pré-validadas: GO, GOES, PLAY e PLAYS aparecem apenas na horizontal (esquerda→direita) ou na vertical (cima→baixo), sem ocorrências acidentais em outras direções. */
 export const GRADES_CACA: GradeCaca[] = [
   {
     id: "g1",
     letras: [
-    ["P", "L", "A", "Y", "V", "K", "W", "B"],
-    ["M", "X", "Z", "M", "G", "T", "M", "M"],
-    ["X", "Q", "B", "W", "O", "F", "J", "Q"],
-    ["F", "R", "W", "K", "E", "Q", "Q", "Z"],
-    ["V", "C", "Z", "M", "S", "V", "W", "J"],
-    ["T", "T", "D", "X", "O", "F", "J", "V"],
-    ["T", "Z", "B", "G", "Z", "C", "Q", "V"],
-    ["J", "J", "M", "S", "Y", "A", "L", "P"],
+      ["D", "M", "D", "W", "C", "F", "M", "C"],
+      ["V", "C", "M", "C", "H", "Q", "G", "W"],
+      ["H", "F", "Q", "J", "F", "K", "O", "T"],
+      ["P", "L", "A", "Y", "F", "D", "C", "K"],
+      ["Z", "W", "R", "X", "X", "T", "Q", "M"],
+      ["J", "M", "D", "Q", "G", "O", "E", "S"],
+      ["Z", "R", "X", "P", "L", "A", "Y", "S"],
+      ["Q", "D", "F", "W", "J", "R", "H", "Z"],
     ],
   },
   {
     id: "g2",
     letras: [
-    ["Y", "J", "R", "J", "H", "T", "J", "X"],
-    ["A", "G", "O", "E", "S", "W", "T", "T"],
-    ["L", "T", "X", "J", "V", "X", "M", "Z"],
-    ["P", "N", "Z", "T", "X", "X", "T", "X"],
-    ["Z", "L", "M", "R", "J", "N", "Z", "Q"],
-    ["Q", "W", "A", "Q", "K", "Z", "T", "D"],
-    ["R", "B", "K", "Y", "F", "C", "G", "C"],
-    ["N", "M", "F", "H", "S", "N", "O", "M"],
+      ["Z", "G", "D", "C", "Q", "X", "Q", "V"],
+      ["T", "O", "P", "L", "A", "Y", "S", "B"],
+      ["X", "T", "J", "F", "Z", "G", "C", "K"],
+      ["Q", "H", "M", "V", "V", "O", "Z", "D"],
+      ["J", "X", "V", "N", "H", "E", "W", "P"],
+      ["N", "W", "T", "V", "M", "S", "H", "L"],
+      ["D", "J", "H", "M", "M", "B", "Z", "A"],
+      ["J", "N", "Q", "B", "H", "W", "T", "Y"],
     ],
   },
   {
     id: "g3",
     letras: [
-    ["B", "N", "J", "R", "F", "K", "N", "Q"],
-    ["F", "D", "Z", "Z", "D", "T", "S", "D"],
-    ["W", "H", "B", "G", "Q", "E", "W", "W"],
-    ["F", "C", "O", "C", "O", "P", "V", "S"],
-    ["R", "N", "M", "G", "L", "C", "Q", "Y"],
-    ["B", "D", "F", "A", "C", "K", "W", "A"],
-    ["Q", "N", "Y", "H", "C", "R", "R", "L"],
-    ["T", "H", "V", "V", "X", "V", "F", "P"],
+      ["F", "R", "C", "F", "B", "H", "F", "T"],
+      ["G", "B", "D", "K", "V", "H", "N", "T"],
+      ["O", "T", "Z", "F", "F", "Z", "X", "Z"],
+      ["P", "L", "A", "Y", "Z", "Q", "D", "H"],
+      ["F", "R", "N", "Z", "J", "B", "G", "K"],
+      ["T", "H", "B", "Q", "D", "N", "O", "T"],
+      ["J", "T", "M", "R", "M", "K", "E", "M"],
+      ["V", "P", "L", "A", "Y", "S", "S", "M"],
     ],
   },
   {
     id: "g4",
     letras: [
-    ["Q", "K", "W", "W", "P", "Q", "W", "X"],
-    ["J", "S", "M", "Q", "S", "L", "N", "C"],
-    ["D", "E", "C", "X", "Y", "N", "A", "Z"],
-    ["R", "O", "G", "H", "A", "K", "D", "Y"],
-    ["W", "G", "K", "O", "L", "X", "N", "J"],
-    ["T", "W", "R", "K", "P", "R", "F", "C"],
-    ["M", "N", "M", "F", "R", "J", "Q", "X"],
-    ["B", "C", "T", "D", "Q", "R", "B", "R"],
+      ["T", "D", "G", "O", "E", "S", "M", "F"],
+      ["M", "Z", "K", "R", "K", "Z", "B", "Z"],
+      ["T", "D", "F", "P", "V", "K", "Z", "J"],
+      ["W", "R", "D", "L", "V", "P", "X", "V"],
+      ["D", "J", "J", "A", "H", "L", "B", "H"],
+      ["X", "H", "Z", "Y", "T", "A", "H", "H"],
+      ["B", "B", "F", "H", "W", "Y", "K", "K"],
+      ["B", "N", "G", "O", "K", "S", "Q", "M"],
     ],
   },
   {
     id: "g5",
     letras: [
-    ["J", "V", "J", "S", "D", "H", "X", "H"],
-    ["H", "B", "E", "B", "K", "P", "K", "J"],
-    ["J", "O", "Q", "R", "K", "L", "K", "O"],
-    ["G", "J", "K", "V", "Y", "A", "G", "Q"],
-    ["B", "T", "W", "J", "A", "Y", "H", "N"],
-    ["D", "R", "Q", "B", "L", "S", "R", "D"],
-    ["Q", "T", "Q", "Z", "P", "R", "J", "Z"],
-    ["Z", "J", "C", "N", "B", "T", "V", "B"],
+      ["X", "J", "G", "O", "E", "S", "B", "H"],
+      ["J", "H", "Z", "F", "C", "R", "Z", "F"],
+      ["P", "L", "A", "Y", "S", "C", "G", "M"],
+      ["K", "N", "C", "F", "X", "B", "O", "D"],
+      ["X", "R", "K", "N", "X", "Z", "P", "M"],
+      ["N", "K", "X", "H", "W", "F", "L", "V"],
+      ["X", "R", "D", "M", "W", "D", "A", "K"],
+      ["Q", "F", "H", "T", "H", "N", "Y", "H"],
     ],
   },
   {
     id: "g6",
     letras: [
-    ["K", "N", "P", "L", "A", "Y", "S", "D"],
-    ["W", "R", "D", "T", "W", "N", "X", "F"],
-    ["K", "Q", "F", "C", "K", "T", "Z", "K"],
-    ["B", "Y", "T", "M", "W", "Q", "T", "F"],
-    ["D", "A", "K", "F", "N", "Q", "O", "K"],
-    ["V", "L", "Z", "M", "H", "G", "K", "B"],
-    ["K", "P", "J", "B", "R", "Q", "T", "V"],
-    ["V", "S", "E", "O", "G", "Q", "H", "Z"],
+      ["C", "J", "W", "D", "P", "N", "B", "D"],
+      ["N", "D", "M", "D", "L", "N", "F", "P"],
+      ["X", "B", "G", "O", "A", "R", "W", "L"],
+      ["N", "H", "C", "M", "Y", "F", "J", "A"],
+      ["N", "C", "J", "K", "S", "Q", "Q", "Y"],
+      ["K", "Q", "X", "J", "N", "T", "B", "N"],
+      ["C", "B", "G", "O", "E", "S", "B", "K"],
+      ["Z", "M", "X", "F", "W", "Z", "V", "Q"],
     ],
   },
   {
     id: "g7",
     letras: [
-    ["Y", "A", "L", "P", "Z", "W", "R", "X"],
-    ["X", "G", "O", "E", "S", "T", "Q", "M"],
-    ["J", "P", "M", "D", "Q", "Z", "R", "X"],
-    ["Q", "D", "L", "F", "W", "J", "R", "H"],
-    ["Z", "O", "W", "A", "C", "D", "R", "R"],
-    ["T", "G", "Z", "X", "Y", "D", "D", "N"],
-    ["Z", "D", "C", "Q", "X", "S", "Q", "V"],
-    ["T", "B", "X", "T", "J", "F", "Z", "C"],
+      ["X", "B", "N", "T", "R", "R", "M", "P"],
+      ["C", "Q", "K", "T", "J", "B", "R", "L"],
+      ["V", "D", "P", "L", "A", "Y", "S", "A"],
+      ["Z", "N", "K", "M", "B", "D", "N", "Y"],
+      ["D", "H", "V", "G", "C", "V", "B", "Q"],
+      ["Q", "M", "D", "O", "H", "V", "R", "Z"],
+      ["H", "Q", "H", "E", "C", "W", "G", "O"],
+      ["H", "B", "M", "S", "D", "B", "C", "H"],
     ],
   },
   {
     id: "g8",
     letras: [
-    ["F", "C", "R", "M", "D", "Z", "K", "H"],
-    ["D", "C", "Z", "K", "H", "X", "X", "Q"],
-    ["T", "W", "O", "G", "H", "J", "S", "F"],
-    ["P", "R", "T", "Z", "K", "Q", "E", "H"],
-    ["L", "T", "Q", "D", "M", "T", "O", "M"],
-    ["A", "B", "Q", "R", "M", "N", "G", "C"],
-    ["Y", "W", "N", "Y", "A", "L", "P", "V"],
-    ["S", "Q", "W", "J", "V", "F", "J", "B"],
+      ["D", "D", "D", "Z", "N", "D", "G", "P"],
+      ["N", "M", "K", "M", "X", "Z", "O", "L"],
+      ["V", "D", "Z", "Q", "C", "K", "D", "A"],
+      ["H", "R", "N", "P", "L", "A", "Y", "Y"],
+      ["G", "Q", "H", "B", "Z", "C", "Z", "S"],
+      ["O", "N", "F", "K", "Z", "Q", "Q", "X"],
+      ["E", "X", "X", "F", "K", "Q", "D", "Z"],
+      ["S", "B", "Q", "X", "D", "X", "N", "V"],
     ],
   },
 ];
@@ -482,9 +481,15 @@ export function familiaDaPalavra(palavra: string): FamiliaVerbal {
   return p === "go" || p === "goes" ? "go" : "play";
 }
 
+/** Sentido do verbo dentro da frase, em português. */
+function ideiaDoVerbo(lacuna: Lacuna) {
+  if (lacuna.familia === "go") return "ir";
+  return lacuna.acao.includes("jogar") ? "jogar" : "brincar";
+}
+
 /**
- * Feedback da revisão mista: analisa significado (família do verbo) e
- * concordância (forma) separadamente, com dicas graduais por tentativa.
+ * Feedback da revisão mista: primeiro o significado da ação, depois o sujeito
+ * e só então a comparação completa. Nunca apenas a lista de alternativas.
  */
 export function feedbackLacuna(lacuna: Lacuna, palavra: string, tentativa: number) {
   const escolha = palavra.trim().toLowerCase();
@@ -492,24 +497,35 @@ export function feedbackLacuna(lacuna: Lacuna, palavra: string, tentativa: numbe
   const familiaCorreta = familiaEscolhida === lacuna.familia;
   const sujeito = lacuna.antes.trim().toLowerCase();
   const base = lacuna.familia;
-  const flexionada = base === "go" ? "goes" : "plays";
+  const ideia = ideiaDoVerbo(lacuna);
   const terceira = grupoDoSujeito(sujeito) === "terceira";
+  const terminacao = base === "go" ? "ES" : "S";
+  const flexionada = base === "go" ? "goes" : "plays";
+  const frase = `${lacuna.antes} ${lacuna.resposta} ${lacuna.depois}`;
 
+  // 1) Verbo certo, forma errada: reconhece o que a criança já entendeu.
   if (familiaCorreta) {
-    return `O verbo está certo, mas com ${sujeito} usamos ${lacuna.resposta}.`;
+    const inicio = `Você encontrou o verbo certo: ${base} significa ${ideia}.`;
+    return terceira
+      ? `${inicio} Agora observe o sujeito ${lacuna.antes}. Com ${sujeito}, usamos ${flexionada}.`
+      : `${inicio} Mas com ${lacuna.antes}, usamos ${base} sem ${terminacao}.`;
   }
 
-  // família errada, mas a terminação já combina com o sujeito
+  // 2) Terminação já combina com o sujeito, mas o verbo é o outro.
   const marcada = escolha === "goes" || escolha === "plays";
   if (marcada === terceira && tentativa === 0) {
-    return `A terminação combina com ${sujeito}, mas o verbo não combina com a ação. ${lacuna.acao} pede ${base}.`;
+    return `Você percebeu que ${sujeito} pede essa forma, mas observe a ação: a frase fala sobre ${lacuna.acao}. O verbo necessário é ${base}.`;
   }
 
+  // 3) Erro de significado, com progressão pedagógica.
   if (tentativa === 0) {
-    return `A frase fala em ${lacuna.acao}. Procure uma forma do verbo ${base}.`;
+    return `A frase fala sobre ${lacuna.acao}. Em inglês, usamos o verbo ${base} para expressar a ideia de ${ideia}.`;
   }
   if (tentativa === 1) {
-    return `Primeiro escolha o verbo ${base}. Agora observe o sujeito ${sujeito}.`;
+    return terceira
+      ? `Você já sabe que o verbo é ${base}. Agora observe o sujeito ${lacuna.antes}: com ${sujeito}, ${base} vira ${flexionada}.`
+      : `Você já sabe que o verbo é ${base}. Com ${lacuna.antes}, usamos ${base} sem ${terminacao}.`;
   }
-  return `Para essa frase, escolha entre ${base} e ${flexionada}.`;
+  return `Compare: ${frase}`;
 }
+

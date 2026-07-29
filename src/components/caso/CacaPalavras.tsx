@@ -28,6 +28,8 @@ export function CacaPalavras() {
   const direcao = useRef<{ dl: number; dc: number } | null>(null);
   const limpando = useRef<number | null>(null);
   const contínuo = useRef(true);
+  const direcaoInvalida = useRef(false);
+
 
   const encontradas = new Set<string>(
     Object.values(estado.caminhos).flatMap((cs) => cs.map((p) => chave(p.linha, p.coluna))),
@@ -61,10 +63,16 @@ export function CacaPalavras() {
     const texto = atual.map((p) => grade.letras[p.linha][p.coluna]).join("").toUpperCase();
 
     if (!contínuo.current) {
-      setAviso({ tipo: "error", texto: "As letras precisam estar ligadas e na ordem." });
+      setAviso({
+        tipo: "error",
+        texto: direcaoInvalida.current
+          ? "Leia da esquerda para a direita ou de cima para baixo."
+          : "As letras precisam estar ligadas e na ordem.",
+      });
       limparDepois();
       return;
     }
+
 
     const palavra = (PALAVRAS_CACA as readonly string[]).includes(texto)
       ? (texto as PalavraCaca)
@@ -109,10 +117,12 @@ export function CacaPalavras() {
 
     const dl = linha - ultima.linha;
     const dc = coluna - ultima.coluna;
-    const vizinha = Math.abs(dl) <= 1 && Math.abs(dc) <= 1;
+    // apenas horizontal esquerda→direita e vertical cima→baixo
+    const permitida = (dl === 0 && dc === 1) || (dl === 1 && dc === 0);
 
-    if (!vizinha) {
+    if (!permitida) {
       contínuo.current = false;
+      direcaoInvalida.current = true;
       atualizar([...atual, { linha, coluna }]);
       return;
     }
@@ -120,9 +130,11 @@ export function CacaPalavras() {
       direcao.current = { dl, dc };
     } else if (direcao.current.dl !== dl || direcao.current.dc !== dc) {
       contínuo.current = false;
+      direcaoInvalida.current = true;
     }
     atualizar([...atual, { linha, coluna }]);
   };
+
 
   const iniciar = (linha: number, coluna: number) => {
     if (limpando.current) window.clearTimeout(limpando.current);
@@ -130,6 +142,8 @@ export function CacaPalavras() {
     arrastando.current = true;
     direcao.current = null;
     contínuo.current = true;
+    direcaoInvalida.current = false;
+
     atualizar([{ linha, coluna }]);
   };
 
@@ -142,7 +156,9 @@ export function CacaPalavras() {
   return (
     <div className="space-y-2">
       <p className="text-[18px] font-semibold">
-        Arraste sobre as letras, na ordem, para encontrar as palavras.
+        Encontre as palavras na horizontal ou na vertical. Leia da esquerda para a direita ou de
+        cima para baixo.
+
       </p>
 
       <div className="grid gap-4 lg:grid-cols-[auto_1fr]">
