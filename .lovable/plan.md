@@ -1,63 +1,42 @@
 ## Objetivo
 
-Redesign visual e estrutural de Wordville para crianças de 8–10 anos, com capa inicial, Lex protagonista e paleta vibrante — sem tocar nas atividades, validações, áudios, progresso e textos pedagógicos já corrigidos, e mantendo 1200×675 px sem rolagem.
+Reorganizar estruturalmente a Tela 1 (abertura): Lex grande + balão integrado à esquerda, painel único de evidência à direita, tudo dentro de 1200×675 sem rolagem. Nenhuma outra tela e nenhuma lógica pedagógica é alterada.
 
-## 1. Capa inicial (nova tela de entrada)
+## Estrutura atual vs. nova
 
-Novo componente `src/components/caso/Capa.tsx`, exibido antes da Tela 1 e controlado por um estado próprio (`iniciou`) no `CasoProvider`, persistido no localStorage. Assim as 10 telas e toda a lógica de `telaConcluida` continuam idênticas.
+```text
+ANTES                              DEPOIS
+[ faixa Wordville h-24 ]           [ faixa Wordville mais baixa ]
+[ cartaz+pergunta | Lex pequena ]  [ Lex + balão (38%) | painel evidência (62%) ]
+[ área inferior vazia ]            [ colunas com alturas equilibradas ]
+```
 
-Composição no mesmo palco 1200×675:
-- fundo: cenário de Wordville tratado (recorte + overlay colorido + vinheta), não como banner solto;
-- esquerda: título **O Caso dos Verbos Desaparecidos** em Baloo 2, subtítulo **Ajude a Inspetora Lex a descobrir qual verbo combina com cada frase!**, botão grande **Iniciar investigação** e botão secundário **Como jogar**;
-- direita: Lex grande em destaque com balão curto de convite;
-- adereços leves: lupa, selo "Missão 1", etiquetas de pista, cartazes com go/goes e play/plays.
+## 1. Coluna esquerda (38%)
 
-"Como jogar" abre um pop-up curto (4 passos ilustrados) dimensionado para caber sem rolagem interna.
+- Balão de fala no topo, largura limitada à coluna, com rabicho apontando para baixo/esquerda em direção à cabeça de Lex.
+- Texto curto: "Olá! Eu sou a Inspetora Lex. Os verbos dos cartazes de Wordville estão errados. Você me ajuda a encontrar as pistas?" (18px, entrelinha confortável).
+- Lex ancorada na base da coluna, altura ~220–240px, proporção preservada, sem cortes e sem encostar nas bordas; leve deslocamento para que a personagem "olhe" para a direita.
+- Balão e personagem formam um bloco só (mesmo container, sem gap grande), nunca um card solto.
 
-Nova arte gerada só para a capa: um painel ilustrado de fundo (cidade Wordville em estilo cartoon infantil) e, se necessário, uma lupa/selo em PNG transparente. Lex, medalha e wordville.jpg atuais são preservados.
+## 2. Coluna direita (62%)
 
-## 2. Direção de arte e paleta
+Um único painel de investigação centralizado verticalmente, contendo, em ordem:
 
-Reescrita apenas dos tokens em `src/styles.css` (nenhum componente ganha cor hardcoded):
-- azul vivo alegre como `--investigacao`/`--primary`;
-- amarelo dourado como `--pista` (destaques e botões secundários);
-- laranja quente como `--reorienta` amigável;
-- verde claro para `--acerto`;
-- coral suave para erro/atenção;
-- `--background` em creme/azul claro levemente colorido, com um gradiente e textura suave atrás do palco;
-- `--radius` maior (cantos mais infantis) e novas variáveis de sombra/gradiente lúdicas.
+- rótulo "🔎 Evidência encontrada" (16px, etiqueta);
+- frase "He go to school." em destaque (24px);
+- pergunta "Algo está errado nesta frase. Você consegue descobrir o quê?" (18px);
+- botão "Ver a frase correta" (18px).
 
-Novos utilitários CSS: `superficie-pista`, `etiqueta`, `fita-adesiva`, `sombra-fofa` e uma animação leve de "carimbo" para acertos.
+Após o clique, a frase correta "He goes to school." aparece dentro do mesmo painel (com áudio), no lugar do botão — mesma altura de bloco, sem deslocar Lex nem crescer a tela.
 
-## 3. Componentes mais lúdicos
+Estilo: cantos bem arredondados, contorno colorido duplo, sombra suave, fundo claro, inclinação no máximo ~1°.
 
-Ajustes de estilo (sem mudar lógica) em: `Cartaz`, `Grupos`, `BalaoLex`, `Feedback`, `TelaLacunas`, `CacaPalavras`, `LigarColunas`, `MontarFrase`, `DialogoReiniciar`, `BotaoAudio`.
-- cards viram "cartões de evidência"/"placas de pista": cantos bem arredondados, borda dupla, leve rotação em elementos decorativos, ícone-selo no topo;
-- caça-palavras com aparência de mural de investigação;
-- feedbacks como etiquetas de detetive (verde = pista confirmada, coral = pista errada), mantendo a área reservada que evita salto de layout.
+## 3. Implementação
 
-## 4. Lex protagonista
+- `src/components/caso/CasoApp.tsx`: reescrita apenas do componente `Tela1` — grid `[38%_62%]`, altura total do main ocupada com `h-full`, faixa Wordville reduzida (~72–80px) para liberar altura, painel de evidência montado inline (reaproveitando `Cartaz` para a frase correta ou markup próprio).
+- `src/components/caso/BalaoLex.tsx`: nova variante `apresentacao` — balão acima, Lex grande embaixo, rabicho conectando os dois; as variantes `linha` e `lateral` usadas nas outras telas ficam intactas.
+- Sem mudanças no `CasoProvider`, no conteúdo pedagógico, no cabeçalho, no rodapé ou na lógica de liberação do botão "Vamos investigar!" (continua dependendo de `t1-visto`).
 
-- `BalaoLex` ganha variante `lateral`: Lex maior, ancorada em uma coluna própria à direita, com o balão preso a ela por um rabicho.
-- Tela 1 recomposta: esquerda/centro com a frase-problema "He go to school.", a pergunta e o botão; direita com painel de Lex + balão. A frase incorreta continua sem áudio.
-- Nas demais telas, Lex fica em faixa de apoio fixa (comentadora), sem cobrir a atividade.
+## 4. Verificação
 
-## 5. Barra de progresso como trilha de pistas
-
-Cabeçalho reformulado com a mesma altura atual: 10 marcadores em forma de pegadas/lupas ligados por uma trilha pontilhada; concluído = selo verde, atual = lupa pulsante, futuro = marcador apagado. Mantém o contador "n/10" legível.
-
-## 6. Botões e controles
-
-Variantes consistentes: primário (azul, grande, sombra sólida inferior, animação de "afundar" no clique), destaque (amarelo), neutro (contorno grosso). Aplicado a Iniciar investigação, Continuar, Voltar, Ver frase correta, Recomeçar, fechar feedback e botões de áudio (que viram botões redondos com ícone de alto-falante).
-
-## 7. Legibilidade e limite de 675 px
-
-Mínimos mantidos: instruções 18px, alternativas 18px, inglês 20px, feedback 17px, botões 17px. O espaço extra vem de composição em duas colunas e de decoração posicionada em áreas vazias — não de redução de texto.
-
-Verificação final com Playwright: capa + 10 telas, medindo `scrollHeight`/`scrollWidth` de cada contêiner para garantir zero rolagem (inclusive dentro de cards e do pop-up), com screenshots.
-
-## Arquivos afetados
-
-- Novos: `src/components/caso/Capa.tsx`, `src/components/caso/ComoJogar.tsx`, `src/components/caso/PainelLex.tsx`, arte de fundo da capa em `src/assets/`.
-- Editados (estilo/composição): `src/styles.css`, `CasoApp.tsx`, `BalaoLex.tsx`, `Feedback.tsx`, `TelaLacunas.tsx`, `CacaPalavras.tsx`, `LigarColunas.tsx`, `MontarFrase.tsx`, `DialogoReiniciar.tsx`, `BotaoAudio.tsx`, `CasoProvider.tsx` (apenas o flag `iniciou`).
-- Intocados: `src/lib/caso-conteudo.ts` (conteúdo pedagógico, grades, feedbacks), `use-fala.ts`, `useArrasto.tsx`, critérios de conclusão.
+Playwright em 1200×675: screenshot da Tela 1 antes e depois do clique em "Ver a frase correta", medindo `scrollHeight` vs `clientHeight` do palco, do main, do balão e do painel para confirmar zero rolagem, além da altura renderizada de Lex e da checagem do botão de avanço habilitando corretamente.

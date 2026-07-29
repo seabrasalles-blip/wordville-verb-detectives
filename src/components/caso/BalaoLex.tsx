@@ -24,8 +24,9 @@ type Props = {
   tom?: Tom;
   /** Frase em inglês para o alto-falante opcional do balão. */
   audio?: string;
-  /** "lateral" coloca Lex grande embaixo do balão, em coluna própria. */
-  variante?: "linha" | "lateral";
+  /** "lateral" coloca Lex grande embaixo do balão, em coluna própria.
+   *  "apresentacao" usa Lex bem grande, ancorada na base, com balão preso acima. */
+  variante?: "linha" | "lateral" | "apresentacao";
   className?: string;
 };
 
@@ -58,6 +59,28 @@ export function BalaoLex({
       ) : null}
     </div>
   );
+
+  if (variante === "apresentacao") {
+    return (
+      <div className={cn("surge flex h-full flex-col justify-end", className)}>
+        <div className="relative w-full">
+          {balao}
+          {/* rabicho ligando o balão à cabeça de Lex */}
+          <span
+            aria-hidden="true"
+            className="absolute -bottom-3 left-10 size-6 rotate-45 border-r-[3px] border-b-[3px] border-investigacao/40 bg-card"
+          />
+        </div>
+        <img
+          src={lex}
+          alt="Inspetora Lex, a detetive de Wordville"
+          width={768}
+          height={1024}
+          className="mt-2 h-[230px] w-auto self-start object-contain drop-shadow-xl"
+        />
+      </div>
+    );
+  }
 
   if (variante === "lateral") {
     return (

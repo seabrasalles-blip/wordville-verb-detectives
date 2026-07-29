@@ -311,40 +311,62 @@ function Tela1() {
   const { estado, despachar } = useCaso();
   const visto = estado.respostas["t1-visto"] === "sim";
   return (
-    <div className="space-y-2">
+    <div className="flex min-h-0 flex-1 flex-col gap-2">
       <img
         src={wordville}
         alt="Rua principal da cidade de Wordville, cheia de cartazes"
         width={1536}
         height={768}
-        className="h-24 w-full rounded-3xl border-4 border-pista object-cover shadow-md"
+        className="h-[74px] w-full shrink-0 rounded-3xl border-4 border-pista object-cover shadow-md"
       />
-      <div className="grid gap-3 sm:grid-cols-[1fr_0.75fr] sm:items-center">
-        <div className="space-y-1.5">
-          <Cartaz frase="He go to school." icone="🏫" tremulando semAudio />
-          <p className="text-center text-[17px] font-semibold text-reorienta">
-            Algo está errado nesta frase. Você consegue descobrir o quê?
-          </p>
-          {!visto ? (
-            <button
-              type="button"
-              onClick={() => despachar({ tipo: "responder", id: "t1-visto", valor: "sim" })}
-              className="botao-fofo mx-auto block bg-pista px-5 py-2 text-[17px] text-pista-foreground"
-            >
-              Ver a frase correta
-            </button>
-          ) : (
-            <Cartaz frase="He goes to school." icone="✅" audioId="cartaz-correto" />
-          )}
-        </div>
-        <BalaoLex variante="lateral">
-
-          <p className="text-[17px]">
-            Olá! Eu sou a Inspetora Lex, detetive de Wordville. Os verbos dos cartazes estão
+      <div className="grid min-h-0 flex-1 grid-cols-[38%_1fr] gap-4">
+        <BalaoLex variante="apresentacao">
+          <p className="text-[18px] leading-snug">
+            Olá! Eu sou a <strong>Inspetora Lex</strong>. Os verbos dos cartazes de Wordville estão
             errados.
           </p>
-          <p className="text-[17px]">Preciso de um assistente-detetive. Você topa?</p>
+          <p className="text-[18px] leading-snug">Você me ajuda a encontrar as pistas?</p>
         </BalaoLex>
+
+        <div className="flex min-h-0 items-center">
+          <section className="cartao-pista w-full rotate-[-0.6deg] border-investigacao bg-card p-4">
+            <p className="etiqueta inline-block border-pista bg-pista text-[16px] text-pista-foreground">
+              <span aria-hidden="true">🔎</span> Evidência encontrada
+            </p>
+            <div className="mt-3 rounded-3xl border-[3px] border-dashed border-reorienta/70 bg-reorienta/10 px-4 py-3 text-center">
+              <span aria-hidden="true" className="text-2xl">
+                🏫
+              </span>
+              <p className="tremula mt-1 text-[26px] leading-tight font-extrabold text-investigacao">
+                <Ingles>He go to school.</Ingles>
+              </p>
+            </div>
+            <p className="mt-3 text-center text-[18px] font-semibold text-reorienta">
+              Algo está errado nesta frase. Você consegue descobrir o quê?
+            </p>
+            <div className="mt-3 flex min-h-[74px] items-center justify-center">
+              {!visto ? (
+                <button
+                  type="button"
+                  onClick={() => despachar({ tipo: "responder", id: "t1-visto", valor: "sim" })}
+                  className="botao-fofo bg-pista px-6 py-2.5 text-[18px] text-pista-foreground"
+                >
+                  Ver a frase correta
+                </button>
+              ) : (
+                <div className="surge flex w-full items-center justify-center gap-3 rounded-3xl border-[3px] border-acerto bg-acerto/10 px-4 py-2">
+                  <span aria-hidden="true" className="text-2xl">
+                    ✅
+                  </span>
+                  <p className="text-[24px] font-extrabold text-investigacao">
+                    <Ingles>He goes to school.</Ingles>
+                  </p>
+                  <BotaoAudio texto="He goes to school." id="cartaz-correto" tamanho="sm" />
+                </div>
+              )}
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   );
