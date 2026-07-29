@@ -19,6 +19,8 @@ import { useFala } from "@/hooks/use-fala";
 const CHAVE = "caso-verbos-desaparecidos-v1";
 
 export type EstadoCaso = {
+  /** Falso enquanto a criança está na capa. */
+  iniciou: boolean;
   tela: number;
   encontradas: PalavraCaca[];
   /** Grade sorteada para a tentativa atual do caça-palavras. */
@@ -35,6 +37,7 @@ export type EstadoCaso = {
 };
 
 const inicial: EstadoCaso = {
+  iniciou: false,
   tela: 1,
   encontradas: [],
   gradeId: GRADES_CACA[0].id,
@@ -47,6 +50,7 @@ const inicial: EstadoCaso = {
   observou: false,
   medalha: false,
 };
+
 
 type Acao =
   | { tipo: "ir"; tela: number }
