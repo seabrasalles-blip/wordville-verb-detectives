@@ -73,8 +73,11 @@ type Acao =
 
 function reducer(estado: EstadoCaso, acao: Acao): EstadoCaso {
   switch (acao.tipo) {
+    case "iniciar":
+      return { ...estado, iniciou: true };
     case "ir":
       return { ...estado, tela: Math.min(TOTAL_TELAS, Math.max(1, acao.tela)) };
+
     case "avancar":
       return { ...estado, tela: Math.min(TOTAL_TELAS, estado.tela + 1) };
     case "voltar":
