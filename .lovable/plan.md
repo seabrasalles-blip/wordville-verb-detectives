@@ -1,54 +1,63 @@
-## O que foi verificado no código
+## Objetivo
 
-- `src/lib/caso-conteudo.ts` tem **uma única grade** (`GRADE_CACA`) e um mapa fixo `POSICOES_CACA`. `CacaPalavras.tsx` valida com `palavraDoCaminho()`, que compara o caminho selecionado com essas coordenadas exatas — por isso P→L→A→Y dentro de PLAYS é recusado (não existe PLAY naquelas coordenadas) e as palavras ficam sempre no mesmo lugar.
-- Tela 5: `ALVOS_TELA5` amarra cada cartão a um `parId` (`a2→p-i`, `a4→p-they`, `a5→p-we`), e `LigarColunas.tsx` aceita só `alvo.parId === par.id`. Logo, "We + cartão go do I" é recusado, e o feedback de erro usa `GRUPO_DO_SUJEITO`, gerando frases como "I não combina com go".
-- Tela 7: `LACUNAS_TELA7` guarda só `resposta` e dicas fixas por sujeito; `TelaLacunas.tsx` compara a palavra com `resposta` e mostra a dica da vez — sem distinguir erro de significado (família go/play) de erro de concordância.
-- Tela 3 (`Tela3` em `CasoApp.tsx`): a revelação depende de `estado.observou`, restaurado do localStorage. Não confirmei ainda por que a alternativa aparece marcada numa tentativa nova — **o primeiro passo da implementação é reproduzir em 1200×675 e identificar a origem exata** (estado persistido antigo, ausência de reset, ou marcação visual indevida) antes de alterar.
+Redesign visual e estrutural de Wordville para crianças de 8–10 anos, com capa inicial, Lex protagonista e paleta vibrante — sem tocar nas atividades, validações, áudios, progresso e textos pedagógicos já corrigidos, e mantendo 1200×675 px sem rolagem.
 
-## 1. Caça-palavras
+## 1. Capa inicial (nova tela de entrada)
 
-**Validação por palavra formada** (`CacaPalavras.tsx`):
-- Manter o caminho como sequência contínua, direção única travada na segunda célula (8 sentidos: horizontais, verticais e diagonais), sem saltos nem repetição de célula.
-- Ao soltar: montar a string das letras na ordem, em maiúsculas, e comparar com as palavras ainda não encontradas. Nada de coordenadas pré-definidas — PLAY dentro de PLAYS passa a valer.
-- Registrar `{ palavra, caminho: {linha, coluna}[] }` no estado; o destaque visual usa esse caminho.
+Novo componente `src/components/caso/Capa.tsx`, exibido antes da Tela 1 e controlado por um estado próprio (`iniciou`) no `CasoProvider`, persistido no localStorage. Assim as 10 telas e toda a lógica de `telaConcluida` continuam idênticas.
 
-**Feedbacks** (mensagens exatas do pedido):
-- palavra válida: "Você encontrou PLAY!"
-- prefixo de palavra: "Você encontrou o começo de uma palavra. Observe se falta alguma letra."
-- já encontrada: "Essa evidência já está no mural. Procure outra palavra."
-- caminho quebrado/fora de ordem: "As letras precisam estar ligadas e na ordem."
-- sem correspondência: "Essa sequência ainda não é uma das palavras do mural. Observe as letras e tente novamente."
+Composição no mesmo palco 1200×675:
+- fundo: cenário de Wordville tratado (recorte + overlay colorido + vinheta), não como banner solto;
+- esquerda: título **O Caso dos Verbos Desaparecidos** em Baloo 2, subtítulo **Ajude a Inspetora Lex a descobrir qual verbo combina com cada frase!**, botão grande **Iniciar investigação** e botão secundário **Como jogar**;
+- direita: Lex grande em destaque com balão curto de convite;
+- adereços leves: lupa, selo "Missão 1", etiquetas de pista, cartazes com go/goes e play/plays.
 
-**Variação de grades**: criar **8 grades 8×8** validadas em `caso-conteudo.ts`, cada uma com GO, GOES, PLAY e PLAYS em posições/direções diferentes (incluindo trás-para-frente e verticais), mesma densidade de letras e mesmo tamanho de célula. Sorteio apenas quando começa uma tentativa nova (reiniciar confirmado, primeira sessão sem progresso, ou início após conclusão). O `gradeId` vai para o estado persistido, então recarregar a página, sair e voltar à tela ou errar não troca a grade.
+"Como jogar" abre um pop-up curto (4 passos ilustrados) dimensionado para caber sem rolagem interna.
 
-## 2. Tela 3
+Nova arte gerada só para a capa: um painel ilustrado de fundo (cidade Wordville em estilo cartoon infantil) e, se necessário, uma lupa/selo em PNG transparente. Lex, medalha e wordville.jpg atuais são preservados.
 
-- Reproduzir o problema, corrigir a origem e garantir estado inicial `null`/`false`: nenhuma alternativa marcada, nenhuma borda de acerto, síntese oculta, "Continuar" desativado até um clique real.
-- Sanear no `CasoProvider`: `observou` e a escolha da Tela 3 só são restauradas se coerentes com a tentativa salva; dados antigos/incompatíveis voltam ao estado inicial.
-- Reiniciar apaga a resposta da Tela 3 junto com o resto.
+## 2. Direção de arte e paleta
 
-## 3. Ligar colunas (Tela 5)
+Reescrita apenas dos tokens em `src/styles.css` (nenhum componente ganha cor hardcoded):
+- azul vivo alegre como `--investigacao`/`--primary`;
+- amarelo dourado como `--pista` (destaques e botões secundários);
+- laranja quente como `--reorienta` amigável;
+- verde claro para `--acerto`;
+- coral suave para erro/atenção;
+- `--background` em creme/azul claro levemente colorido, com um gradiente e textura suave atrás do palco;
+- `--radius` maior (cantos mais infantis) e novas variáveis de sombra/gradiente lúdicas.
 
-- Cartões passam a ter `id` (controle de uso) + `forma: "go" | "goes"` (correção linguística). O `parId` deixa de existir.
-- Correção: comparar o grupo do sujeito (I/We/They → `go`; He/She → `goes`) com a **forma do cartão clicado**. Qualquer cartão GO serve para I, We e They; qualquer GOES serve para He e She.
-- Acerto consome só o cartão clicado; erro não consome nem bloqueia nada, e conexões corretas anteriores permanecem.
-- Feedbacks montados com o sujeito e a forma realmente escolhidos: "Isso mesmo! I combina com go." / "Observe o sujeito. Com I, usamos go." / "Correto! She combina com goes." / "Observe o sujeito. Com she, usamos goes."
+Novos utilitários CSS: `superficie-pista`, `etiqueta`, `fita-adesiva`, `sombra-fofa` e uma animação leve de "carimbo" para acertos.
 
-## 4. Feedbacks da revisão mista (Tela 7)
+## 3. Componentes mais lúdicos
 
-- Cada lacuna ganha `familiaEsperada: "go" | "play"` além da `resposta`.
-- Na entrega da palavra, duas checagens: família (significado) e forma (concordância). O feedback segue a matriz do pedido, com progressão por tentativa: 1º erro aponta o significado da ação, 2º aponta o grupo do sujeito, 3º indica as duas opções relevantes — sem preencher a lacuna.
-- Combinações cobertas: He+go/play/plays, We+goes/play/plays, She+play/go/goes, I+plays/go/goes.
-- Acertos anteriores continuam travados e visíveis após um erro.
+Ajustes de estilo (sem mudar lógica) em: `Cartaz`, `Grupos`, `BalaoLex`, `Feedback`, `TelaLacunas`, `CacaPalavras`, `LigarColunas`, `MontarFrase`, `DialogoReiniciar`, `BotaoAudio`.
+- cards viram "cartões de evidência"/"placas de pista": cantos bem arredondados, borda dupla, leve rotação em elementos decorativos, ícone-selo no topo;
+- caça-palavras com aparência de mural de investigação;
+- feedbacks como etiquetas de detetive (verde = pista confirmada, coral = pista errada), mantendo a área reservada que evita salto de layout.
 
-## 5. Layout 1200×675
+## 4. Lex protagonista
 
-Feedbacks mais longos (item 4) são o principal risco de estouro. Medidas: mensagem em uma área de altura reservada com 2 linhas máximas de texto compacto (17px), redução de espaços verticais entre cards, e verificação por medição em Playwright no viewport 1200×675 nas 10 telas, em três estados (vazio, com erro, concluída), checando `scrollWidth/scrollHeight` do palco, do `main` e de cada card, sem recorrer a `overflow: hidden` para esconder conteúdo.
+- `BalaoLex` ganha variante `lateral`: Lex maior, ancorada em uma coluna própria à direita, com o balão preso a ela por um rabicho.
+- Tela 1 recomposta: esquerda/centro com a frase-problema "He go to school.", a pergunta e o botão; direita com painel de Lex + balão. A frase incorreta continua sem áudio.
+- Nas demais telas, Lex fica em faixa de apoio fixa (comentadora), sem cobrir a atividade.
 
-## Testes
+## 5. Barra de progresso como trilha de pistas
 
-Caça-palavras (PLAY dentro de PLAYS, PLAYS completo, letras fora de ordem, reload mantendo grade, reiniciar sorteando outra), Tela 3 (nada marcado antes do clique), ligar colunas (todas as combinações válidas e inválidas listadas), revisão mista (as 10 combinações listadas) e layout. Ao final, `tsgo` e relatório com arquivos alterados, causa/solução de cada problema, número de grades, forma de persistência e confirmação de 1200×675 sem barras de rolagem.
+Cabeçalho reformulado com a mesma altura atual: 10 marcadores em forma de pegadas/lupas ligados por uma trilha pontilhada; concluído = selo verde, atual = lupa pulsante, futuro = marcador apagado. Mantém o contador "n/10" legível.
 
-## Detalhes técnicos
+## 6. Botões e controles
 
-Arquivos previstos: `src/lib/caso-conteudo.ts` (grades, cartões da Tela 5 por forma, `familiaEsperada` e matriz de feedback da Tela 7), `src/components/caso/CacaPalavras.tsx`, `LigarColunas.tsx`, `TelaLacunas.tsx`, `CasoProvider.tsx` (novos campos `gradeId` e caminhos encontrados, saneamento) e `CasoApp.tsx` (Tela 3). Sem mudança de arquitetura, assets, paleta, personagem, áudio ou sequência de telas.
+Variantes consistentes: primário (azul, grande, sombra sólida inferior, animação de "afundar" no clique), destaque (amarelo), neutro (contorno grosso). Aplicado a Iniciar investigação, Continuar, Voltar, Ver frase correta, Recomeçar, fechar feedback e botões de áudio (que viram botões redondos com ícone de alto-falante).
+
+## 7. Legibilidade e limite de 675 px
+
+Mínimos mantidos: instruções 18px, alternativas 18px, inglês 20px, feedback 17px, botões 17px. O espaço extra vem de composição em duas colunas e de decoração posicionada em áreas vazias — não de redução de texto.
+
+Verificação final com Playwright: capa + 10 telas, medindo `scrollHeight`/`scrollWidth` de cada contêiner para garantir zero rolagem (inclusive dentro de cards e do pop-up), com screenshots.
+
+## Arquivos afetados
+
+- Novos: `src/components/caso/Capa.tsx`, `src/components/caso/ComoJogar.tsx`, `src/components/caso/PainelLex.tsx`, arte de fundo da capa em `src/assets/`.
+- Editados (estilo/composição): `src/styles.css`, `CasoApp.tsx`, `BalaoLex.tsx`, `Feedback.tsx`, `TelaLacunas.tsx`, `CacaPalavras.tsx`, `LigarColunas.tsx`, `MontarFrase.tsx`, `DialogoReiniciar.tsx`, `BotaoAudio.tsx`, `CasoProvider.tsx` (apenas o flag `iniciou`).
+- Intocados: `src/lib/caso-conteudo.ts` (conteúdo pedagógico, grades, feedbacks), `use-fala.ts`, `useArrasto.tsx`, critérios de conclusão.
