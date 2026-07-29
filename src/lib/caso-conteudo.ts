@@ -241,23 +241,36 @@ export const PARES_TELA5: { id: string; sujeito: string; icone: string; forma: s
   { id: "p-they", sujeito: "They", icone: "👫", forma: "go" },
 ];
 
-export const FORMAS_TELA5 = [
-  { id: "f1", texto: "goes" },
-  { id: "f2", texto: "go" },
-  { id: "f3", texto: "go" },
-  { id: "f4", texto: "goes" },
-  { id: "f5", texto: "go" },
+/**
+ * Alvos da tela 5: cada alvo tem identificador próprio e pertence a um único par.
+ * A validação usa `parId`, nunca o texto (que se repete entre alvos).
+ */
+export const ALVOS_TELA5: { id: string; texto: string; parId: string }[] = [
+  { id: "a1", texto: "goes", parId: "p-she" },
+  { id: "a2", texto: "go", parId: "p-i" },
+  { id: "a3", texto: "goes", parId: "p-he" },
+  { id: "a4", texto: "go", parId: "p-they" },
+  { id: "a5", texto: "go", parId: "p-we" },
 ];
 
-/** Tela 9: montar a frase com blocos. */
+/** Grupo a que cada sujeito pertence, para feedbacks dinâmicos. */
+export const GRUPO_DO_SUJEITO: Record<string, string> = {
+  "p-i": "I pertence ao grupo de you, we e they.",
+  "p-we": "We pertence ao grupo de I, you e they.",
+  "p-they": "They pertence ao grupo de I, you e we.",
+  "p-she": "She pertence ao grupo de he e it.",
+  "p-he": "He pertence ao grupo de she e it.",
+};
+
+/** Tela 9: montar a frase com blocos ordenados. */
 export type Montagem = {
   id: string;
   icone: string;
   contexto: string;
-  sujeito: string;
-  fim: string;
-  opcoes: string[];
-  correta: string;
+  /** Blocos disponíveis, em ordem fixa (inclui distrator). */
+  blocos: { id: string; texto: string }[];
+  /** Ids dos blocos na ordem correta da frase. */
+  solucao: string[];
   acerto: string;
 };
 
@@ -266,41 +279,68 @@ export const MONTAGENS: Montagem[] = [
     id: "m-she",
     icone: "👧",
     contexto: "Uma menina brincando no parque.",
-    sujeito: "She",
-    fim: "in the park.",
-    opcoes: ["play", "plays"],
-    correta: "plays",
+    blocos: [
+      { id: "b1", texto: "in the park." },
+      { id: "b2", texto: "plays" },
+      { id: "b3", texto: "She" },
+      { id: "b4", texto: "play" },
+    ],
+    solucao: ["b3", "b2", "b1"],
     acerto: "Correto! Com she, usamos plays.",
   },
   {
     id: "m-they",
     icone: "👫",
     contexto: "Duas crianças brincando no parque.",
-    sujeito: "They",
-    fim: "in the park.",
-    opcoes: ["play", "plays"],
-    correta: "play",
+    blocos: [
+      { id: "c1", texto: "play" },
+      { id: "c2", texto: "They" },
+      { id: "c3", texto: "in the park." },
+      { id: "c4", texto: "plays" },
+    ],
+    solucao: ["c2", "c1", "c3"],
     acerto: "Correto! Com they, usamos play.",
   },
 ];
 
-export const ERRO_MONTAGEM = "Observe quem pratica a ação antes de escolher o verbo.";
+export function fraseDaMontagem(m: Montagem) {
+  return m.solucao
+    .map((id) => m.blocos.find((b) => b.id === id)?.texto ?? "")
+    .join(" ");
+}
 
-export const PERGUNTAS_TELA8 = [
+export const ERRO_MONTAGEM = "Observe a ordem das palavras e a forma do verbo.";
+
+export type OpcaoReflexao = {
+  id: string;
+  texto: string;
+  correta: boolean;
+  feedback: string;
+};
+
+export const PERGUNTAS_TELA8: {
+  id: string;
+  titulo: string;
+  pergunta: string;
+  opcoes: OpcaoReflexao[];
+}[] = [
   {
     id: "q1",
     titulo: "O que você aprendeu?",
     pergunta: "Com he, she e it, o que acontece com o verbo?",
     opcoes: [
       {
+        id: "q1-a",
         texto: "O verbo muda: play vira plays e go vira goes",
         correta: true,
         feedback: "Exato! Na escrita, play recebe S e go recebe ES.",
       },
       {
+        id: "q1-b",
         texto: "O verbo fica igual",
         correta: false,
-        feedback: "Compare: 'I go' e 'He goes'. O que mudou no verbo?",
+        feedback:
+          "Vamos observar mais uma vez: he, she e it formam um grupo diferente. Compare 'I go' e 'He goes'.",
       },
     ],
   },
@@ -310,15 +350,18 @@ export const PERGUNTAS_TELA8 = [
     pergunta: "O que você observa primeiro em uma frase?",
     opcoes: [
       {
+        id: "q2-a",
         texto: "Quem pratica a ação (o sujeito)",
         correta: true,
         feedback: "Isso! Veja o sujeito e depois escolha o verbo.",
       },
       {
+        id: "q2-b",
         texto: "A palavra mais comprida",
         correta: false,
-        feedback: "O tamanho não importa. Observe quem pratica a ação.",
+        feedback: "O tamanho não importa. Observe quem pratica a ação e tente de novo.",
       },
     ],
   },
 ];
+
