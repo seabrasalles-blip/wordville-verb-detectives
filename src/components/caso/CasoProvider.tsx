@@ -73,6 +73,10 @@ function reducer(estado: EstadoCaso, acao: Acao): EstadoCaso {
       };
     case "conectar":
       return { ...estado, conexoes: { ...estado.conexoes, [acao.id]: acao.forma } };
+    case "montar":
+      return { ...estado, montagens: { ...estado.montagens, [acao.id]: acao.valor } };
+    case "observou":
+      return { ...estado, observou: true };
     case "metacognicao":
       return { ...estado, metacognicao: { ...estado.metacognicao, [acao.id]: acao.indice } };
     case "medalha":
