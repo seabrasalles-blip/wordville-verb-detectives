@@ -66,37 +66,37 @@ function Casca() {
     <div className="flex min-h-screen items-center justify-center bg-black/5 p-2 sm:p-4">
     <div className="relative flex h-[675px] w-full max-w-[1200px] flex-col overflow-hidden rounded-2xl border border-investigacao/20 bg-background shadow-2xl">
       <header className="shrink-0 border-b-4 border-investigacao/20 bg-card">
-        <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-3 px-4 py-3">
-          <h1 className="text-lg font-bold text-investigacao sm:text-xl">
+        <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-3 px-4 py-2">
+          <h1 className="text-base font-bold text-investigacao sm:text-lg">
             🕵️‍♀️ O Caso dos Verbos Desaparecidos
           </h1>
           <button
             type="button"
             onClick={reiniciar}
-            className="ml-auto inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold text-muted-foreground hover:bg-secondary"
+            className="ml-auto inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-muted-foreground hover:bg-secondary"
           >
-            <RotateCcw className="size-4" aria-hidden="true" /> Recomeçar
+            <RotateCcw className="size-3.5" aria-hidden="true" /> Recomeçar
           </button>
         </div>
-        <div className="mx-auto flex max-w-4xl items-center gap-2 px-4 pb-3">
+        <div className="mx-auto flex max-w-4xl items-center gap-2 px-4 pb-2">
           {Array.from({ length: TOTAL_TELAS }, (_, i) => (
             <span
               key={i}
               aria-hidden="true"
               className={cn(
-                "h-2.5 flex-1 rounded-full",
+                "h-1.5 flex-1 rounded-full",
                 i + 1 < tela ? "bg-acerto" : i + 1 === tela ? "bg-investigacao" : "bg-secondary",
               )}
             />
           ))}
-          <span className="ml-2 text-sm font-semibold text-muted-foreground">
+          <span className="ml-2 text-xs font-semibold text-muted-foreground">
             {tela}/{TOTAL_TELAS}
           </span>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-4xl flex-1 overflow-y-auto px-4 py-5 pb-6">
-        <p className="mb-4 text-sm font-bold tracking-wide text-muted-foreground uppercase">
+      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col overflow-hidden px-4 py-2">
+        <p className="mb-1 text-[11px] font-bold tracking-wide text-muted-foreground uppercase">
           Tela {tela} — {TITULOS[tela - 1]}
         </p>
         {tela === 1 ? <Tela1 /> : null}
@@ -124,19 +124,19 @@ function Casca() {
       </main>
 
       <footer className="shrink-0 border-t-4 border-investigacao/20 bg-card/95 backdrop-blur">
-        <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-3">
+        <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-2">
           <button
             type="button"
             onClick={voltar}
             disabled={tela === 1}
-            className="inline-flex items-center gap-2 rounded-full border-4 border-investigacao/40 px-4 py-2 text-base font-bold text-investigacao disabled:opacity-40"
+            className="inline-flex items-center gap-1.5 rounded-full border-2 border-investigacao/40 px-3.5 py-1.5 text-sm font-bold text-investigacao disabled:opacity-40"
           >
-            <ArrowLeft className="size-5" aria-hidden="true" /> Voltar
+            <ArrowLeft className="size-4" aria-hidden="true" /> Voltar
           </button>
           {tela < TOTAL_TELAS ? (
-            <div className="ml-auto flex items-center gap-3">
+            <div className="ml-auto flex items-center gap-2">
               {!liberado ? (
-                <span className="hidden text-sm text-muted-foreground sm:block">
+                <span className="hidden text-xs text-muted-foreground sm:block">
                   Termine a investigação desta tela para continuar
                 </span>
               ) : null}
@@ -144,10 +144,10 @@ function Casca() {
                 type="button"
                 onClick={avancar}
                 disabled={!liberado}
-                className="inline-flex items-center gap-2 rounded-full bg-investigacao px-6 py-3 text-lg font-bold text-investigacao-foreground shadow-lg transition-transform hover:scale-105 disabled:scale-100 disabled:opacity-40"
+                className="inline-flex items-center gap-1.5 rounded-full bg-investigacao px-5 py-2 text-base font-bold text-investigacao-foreground shadow-lg transition-transform hover:scale-105 disabled:scale-100 disabled:opacity-40"
               >
                 {tela === 1 ? "Vamos investigar!" : "Continuar"}
-                <ArrowRight className="size-5" aria-hidden="true" />
+                <ArrowRight className="size-4" aria-hidden="true" />
               </button>
             </div>
           ) : null}
