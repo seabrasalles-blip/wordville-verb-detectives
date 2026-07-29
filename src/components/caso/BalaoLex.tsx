@@ -24,8 +24,9 @@ type Props = {
   tom?: Tom;
   /** Frase em inglês para o alto-falante opcional do balão. */
   audio?: string;
-  /** "lateral" coloca Lex grande embaixo do balão, em coluna própria. */
-  variante?: "linha" | "lateral";
+  /** "lateral" coloca Lex grande embaixo do balão, em coluna própria.
+   *  "apresentacao" usa Lex bem grande, ancorada na base, com balão preso acima. */
+  variante?: "linha" | "lateral" | "apresentacao";
   className?: string;
 };
 
