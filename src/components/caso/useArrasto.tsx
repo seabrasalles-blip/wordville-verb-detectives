@@ -6,9 +6,30 @@ export type EstadoArrasto = {
   y: number;
 } | null;
 
+const TOLERANCIA = 24;
+
+/** Encontra a lacuna sob o ponto ou a mais próxima dentro da tolerância. */
+function lacunaNoPonto(x: number, y: number): string | null {
+  const direto = document
+    .elementFromPoint(x, y)
+    ?.closest<HTMLElement>("[data-lacuna]");
+  if (direto?.dataset.lacuna) return direto.dataset.lacuna;
+
+  let melhor: { id: string; dist: number } | null = null;
+  document.querySelectorAll<HTMLElement>("[data-lacuna]").forEach((el) => {
+    const r = el.getBoundingClientRect();
+    const dx = Math.max(r.left - x, 0, x - r.right);
+    const dy = Math.max(r.top - y, 0, y - r.bottom);
+    const dist = Math.hypot(dx, dy);
+    const id = el.dataset.lacuna;
+    if (id && dist <= TOLERANCIA && (!melhor || dist < melhor.dist)) melhor = { id, dist };
+  });
+  return melhor ? (melhor as { id: string }).id : null;
+}
+
 /**
- * Arrastar-e-soltar com Pointer Events (mouse + toque) e, como alternativa
- * acessível, seleção por toque simples: tocar no bloco e depois na lacuna.
+ * Arrastar-e-soltar com Pointer Events (mouse + toque) e, como alternativa,
+ * seleção por toque simples: tocar no bloco e depois na lacuna.
  */
 export function useArrasto(soltar: (idLacuna: string, palavra: string) => void) {
   const [arrasto, setArrasto] = useState<EstadoArrasto>(null);
@@ -29,9 +50,7 @@ export function useArrasto(soltar: (idLacuna: string, palavra: string) => void) 
     const dx = evento.clientX - inicio.current.x;
     const dy = evento.clientY - inicio.current.y;
     if (Math.hypot(dx, dy) > 8) moveu.current = true;
-    setArrasto((atual) =>
-      atual ? { ...atual, x: evento.clientX, y: evento.clientY } : atual,
-    );
+    setArrasto((atual) => (atual ? { ...atual, x: evento.clientX, y: evento.clientY } : atual));
   }, []);
 
   const aoSoltar = useCallback(
@@ -43,13 +62,12 @@ export function useArrasto(soltar: (idLacuna: string, palavra: string) => void) 
         setSelecionado((atual) => (atual === palavra ? null : palavra));
         return;
       }
-      const alvo = document
-        .elementFromPoint(evento.clientX, evento.clientY)
-        ?.closest<HTMLElement>("[data-lacuna]");
-      if (alvo?.dataset.lacuna) {
-        soltar(alvo.dataset.lacuna, palavra);
+      const alvo = lacunaNoPonto(evento.clientX, evento.clientY);
+      if (alvo) {
+        soltar(alvo, palavra);
         setSelecionado(null);
       }
+      // fora de qualquer lacuna: o bloco simplesmente volta ao banco
     },
     [soltar],
   );
