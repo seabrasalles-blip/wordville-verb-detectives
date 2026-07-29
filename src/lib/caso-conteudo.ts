@@ -169,11 +169,17 @@ export const GRUPOS = [
 
 export type TipoDica = "conceitual" | "procedimental" | "atencional";
 
+export type FamiliaVerbal = "go" | "play";
+
 export type Lacuna = {
   id: string;
   antes: string;
   depois: string;
   resposta: string;
+  /** Verbo pedido pelo significado da frase. */
+  familia: FamiliaVerbal;
+  /** Ação descrita pela frase, usada nos feedbacks de significado. */
+  acao: string;
   ilustracao: string;
   acertoTexto: string;
   dicas: Partial<Record<TipoDica, string>>;
@@ -188,6 +194,8 @@ export const LACUNAS_TELA4: Lacuna[] = [
     antes: "He",
     depois: "to the park on Sundays.",
     resposta: "goes",
+    familia: "go",
+    acao: "ir ao parque",
     ilustracao: "👦",
     acertoTexto: "Muito bem! 'He' está no grupo de he, she e it. Por isso: go recebe ES → goes.",
     dicas: {
@@ -201,6 +209,8 @@ export const LACUNAS_TELA4: Lacuna[] = [
     antes: "We",
     depois: "to the park on Sundays.",
     resposta: "go",
+    familia: "go",
+    acao: "ir ao parque",
     ilustracao: "👨‍👩‍👧",
     acertoTexto: "Muito bem! 'We' está no grupo de I, you, we e they. O verbo fica 'go'.",
     dicas: {
@@ -214,6 +224,8 @@ export const LACUNAS_TELA4: Lacuna[] = [
     antes: "She",
     depois: "to the park on Sundays.",
     resposta: "goes",
+    familia: "go",
+    acao: "ir ao parque",
     ilustracao: "👧",
     acertoTexto: "Muito bem! 'She' está no grupo de he, she e it. Por isso: go recebe ES → goes.",
     dicas: {
@@ -230,6 +242,8 @@ export const LACUNAS_TELA6: Lacuna[] = [
     antes: "She",
     depois: "soccer every weekend.",
     resposta: "plays",
+    familia: "play",
+    acao: "jogar futebol",
     ilustracao: "👧⚽️",
     acertoTexto: "Isso! 'She' está no grupo de he, she e it. Na escrita, play recebe S → plays.",
     dicas: {
@@ -242,6 +256,8 @@ export const LACUNAS_TELA6: Lacuna[] = [
     antes: "I",
     depois: "soccer every weekend.",
     resposta: "play",
+    familia: "play",
+    acao: "jogar futebol",
     ilustracao: "🧒⚽️",
     acertoTexto: "Isso! 'I' está no grupo de I, you, we e they. O verbo fica 'play'.",
     dicas: {
@@ -254,6 +270,8 @@ export const LACUNAS_TELA6: Lacuna[] = [
     antes: "It",
     depois: "in the garden.",
     resposta: "plays",
+    familia: "play",
+    acao: "brincar no jardim",
     ilustracao: "🐶",
     acertoTexto: "Isso mesmo! Com it, usamos plays.",
     dicas: {
@@ -269,6 +287,8 @@ export const LACUNAS_TELA7: Lacuna[] = [
     antes: "He",
     depois: "to school every day.",
     resposta: "goes",
+    familia: "go",
+    acao: "ir à escola",
     ilustracao: "👦🏫",
     acertoTexto: "Cartaz consertado! 'He' pede 'goes'.",
     dicas: {
@@ -281,6 +301,8 @@ export const LACUNAS_TELA7: Lacuna[] = [
     antes: "We",
     depois: "to the park on Sundays.",
     resposta: "go",
+    familia: "go",
+    acao: "ir ao parque",
     ilustracao: "👨‍👩‍👧🌳",
     acertoTexto: "Cartaz consertado! 'We' pede 'go'.",
     dicas: {
@@ -293,6 +315,8 @@ export const LACUNAS_TELA7: Lacuna[] = [
     antes: "She",
     depois: "soccer every weekend.",
     resposta: "plays",
+    familia: "play",
+    acao: "jogar futebol",
     ilustracao: "👧⚽️",
     acertoTexto: "Cartaz consertado! 'She' pede 'plays'.",
     dicas: {
@@ -305,6 +329,8 @@ export const LACUNAS_TELA7: Lacuna[] = [
     antes: "I",
     depois: "soccer every weekend.",
     resposta: "play",
+    familia: "play",
+    acao: "jogar futebol",
     ilustracao: "🧒⚽️",
     acertoTexto: "Cartaz consertado! 'I' pede 'play'.",
     dicas: {
@@ -445,3 +471,45 @@ export const PERGUNTAS_TELA8: {
   },
 ];
 
+
+/** Grupo do sujeito, para os feedbacks de concordância. */
+export function grupoDoSujeito(sujeito: string): "base" | "terceira" {
+  return ["he", "she", "it"].includes(sujeito.trim().toLowerCase()) ? "terceira" : "base";
+}
+
+export function familiaDaPalavra(palavra: string): FamiliaVerbal {
+  const p = palavra.trim().toLowerCase();
+  return p === "go" || p === "goes" ? "go" : "play";
+}
+
+/**
+ * Feedback da revisão mista: analisa significado (família do verbo) e
+ * concordância (forma) separadamente, com dicas graduais por tentativa.
+ */
+export function feedbackLacuna(lacuna: Lacuna, palavra: string, tentativa: number) {
+  const escolha = palavra.trim().toLowerCase();
+  const familiaEscolhida = familiaDaPalavra(escolha);
+  const familiaCorreta = familiaEscolhida === lacuna.familia;
+  const sujeito = lacuna.antes.trim().toLowerCase();
+  const base = lacuna.familia;
+  const flexionada = base === "go" ? "goes" : "plays";
+  const terceira = grupoDoSujeito(sujeito) === "terceira";
+
+  if (familiaCorreta) {
+    return `O verbo está certo, mas com ${sujeito} usamos ${lacuna.resposta}.`;
+  }
+
+  // família errada, mas a terminação já combina com o sujeito
+  const marcada = escolha === "goes" || escolha === "plays";
+  if (marcada === terceira && tentativa === 0) {
+    return `A terminação combina com ${sujeito}, mas o verbo não combina com a ação. ${lacuna.acao} pede ${base}.`;
+  }
+
+  if (tentativa === 0) {
+    return `A frase fala em ${lacuna.acao}. Procure uma forma do verbo ${base}.`;
+  }
+  if (tentativa === 1) {
+    return `Primeiro escolha o verbo ${base}. Agora observe o sujeito ${sujeito}.`;
+  }
+  return `Para essa frase, escolha entre ${base} e ${flexionada}.`;
+}
