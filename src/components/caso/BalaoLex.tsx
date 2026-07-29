@@ -30,30 +30,30 @@ type Props = {
 /** Balão de fala da Inspetora Lex, consistente em todas as telas. */
 export function BalaoLex({ children, tom = "investigacao", audio, className }: Props) {
   return (
-    <div className={cn("surge flex items-end gap-3", className)}>
+    <div className={cn("surge flex items-end gap-2.5", className)}>
       <img
         src={lex}
         alt="Inspetora Lex, a detetive de Wordville"
         width={768}
         height={1024}
         loading="lazy"
-        className="hidden w-24 shrink-0 drop-shadow-md sm:block md:w-32"
+        className="hidden w-14 shrink-0 drop-shadow-md sm:block md:w-16"
       />
       <div
         className={cn(
-          "relative flex-1 rounded-3xl border-4 p-4 text-base leading-relaxed shadow-sm sm:p-5 md:text-lg",
+          "relative flex-1 rounded-2xl border-2 p-2.5 text-sm leading-snug shadow-sm md:text-[15px]",
           tons[tom],
         )}
       >
         <span
           aria-hidden="true"
-          className="absolute -top-4 left-4 grid size-9 place-items-center rounded-full border-2 border-current bg-card text-lg"
+          className="absolute -top-3.5 left-3 grid size-7 place-items-center rounded-full border-2 border-current bg-card text-sm"
         >
           {icones[tom]}
         </span>
-        <div className="mt-2 space-y-3">{children}</div>
+        <div className="mt-1.5 space-y-2">{children}</div>
         {audio ? (
-          <div className="mt-3">
+          <div className="mt-2">
             <BotaoAudio texto={audio} tamanho="sm" rotulo="Ouvir" />
           </div>
         ) : null}
