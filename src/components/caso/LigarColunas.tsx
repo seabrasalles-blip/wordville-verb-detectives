@@ -1,21 +1,26 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ALVOS_TELA5, GRUPO_DO_SUJEITO, PARES_TELA5 } from "@/lib/caso-conteudo";
+import { CARTOES_TELA5, PARES_TELA5 } from "@/lib/caso-conteudo";
 import { useCaso } from "./CasoProvider";
 import { AreaFeedback, Feedback } from "./Feedback";
 import { BotaoAudio } from "./BotaoAudio";
 
-/** Tela 5: ligar sujeito → forma verbal. A validação usa ids, nunca o texto. */
+const GRUPO_TEXTO: Record<string, string> = {
+  go: "I, you, we e they usam go.",
+  goes: "He, she e it usam goes.",
+};
+
+/** Tela 5: ligar sujeito → forma verbal. Vale qualquer cartão com a forma correta. */
 export function LigarColunas() {
   const { estado, despachar, fala } = useCaso();
   const [sujeito, setSujeito] = useState<string | null>(null);
   const [aviso, setAviso] = useState<{ tipo: "success" | "error"; texto: string } | null>(null);
 
-  const conectar = (idAlvo: string) => {
-    const alvo = ALVOS_TELA5.find((a) => a.id === idAlvo);
-    if (!alvo) return;
-    if (Object.values(estado.conexoes).includes(idAlvo)) return;
+  const conectar = (idCartao: string) => {
+    const cartao = CARTOES_TELA5.find((c) => c.id === idCartao);
+    if (!cartao) return;
+    if (Object.values(estado.conexoes).includes(idCartao)) return;
     if (!sujeito) {
       setAviso({ tipo: "error", texto: "Escolha primeiro o sujeito, depois o verbo." });
       return;
@@ -23,13 +28,10 @@ export function LigarColunas() {
     const par = PARES_TELA5.find((p) => p.id === sujeito);
     if (!par || estado.conexoes[par.id]) return;
 
-    if (alvo.parId === par.id) {
-      despachar({ tipo: "conectar", id: par.id, forma: alvo.id });
-      fala.falar(`${par.sujeito} ${alvo.texto}`, `par-${par.id}`);
-      setAviso({
-        tipo: "success",
-        texto: `${par.sujeito} combina com ${alvo.texto}.`,
-      });
+    if (cartao.forma === par.forma) {
+      despachar({ tipo: "conectar", id: par.id, forma: cartao.id });
+      fala.falar(`${par.sujeito} ${cartao.forma}`, `par-${par.id}`);
+      setAviso({ tipo: "success", texto: `${par.sujeito} combina com ${cartao.forma}.` });
       setSujeito(null);
       return;
     }
@@ -37,11 +39,11 @@ export function LigarColunas() {
     despachar({ tipo: "errar", id: par.id });
     setAviso({
       tipo: "error",
-      texto: `${par.sujeito} não combina com ${alvo.texto}. ${GRUPO_DO_SUJEITO[par.id] ?? "Observe o sujeito antes de escolher."}`,
+      texto: `${par.sujeito} não combina com ${cartao.forma}. ${GRUPO_TEXTO[par.forma]}`,
     });
   };
 
-  const alvosUsados = new Set(Object.values(estado.conexoes));
+  const cartoesUsados = new Set(Object.values(estado.conexoes));
 
   return (
     <div className="space-y-2">
@@ -80,14 +82,14 @@ export function LigarColunas() {
         </ul>
 
         <ul className="space-y-1.5">
-          {ALVOS_TELA5.map((alvo) => {
-            const usado = alvosUsados.has(alvo.id);
+          {CARTOES_TELA5.map((cartao) => {
+            const usado = cartoesUsados.has(cartao.id);
             return (
-              <li key={alvo.id} className="flex items-center gap-1.5">
+              <li key={cartao.id} className="flex items-center gap-1.5">
                 <button
                   type="button"
                   disabled={usado}
-                  onClick={() => conectar(alvo.id)}
+                  onClick={() => conectar(cartao.id)}
                   className={cn(
                     "flex-1 rounded-xl border-2 border-dashed bg-card px-3 py-1.5 text-[18px] font-bold shadow-sm transition-colors disabled:cursor-not-allowed",
                     usado
@@ -95,9 +97,9 @@ export function LigarColunas() {
                       : "border-investigacao/60 hover:bg-investigacao/10",
                   )}
                 >
-                  {alvo.texto}
+                  {cartao.forma}
                 </button>
-                <BotaoAudio texto={alvo.texto} id={`forma-${alvo.id}`} tamanho="sm" />
+                <BotaoAudio texto={cartao.forma} id={`forma-${cartao.id}`} tamanho="sm" />
               </li>
             );
           })}
