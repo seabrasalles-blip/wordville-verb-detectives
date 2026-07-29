@@ -60,6 +60,28 @@ export function BalaoLex({
     </div>
   );
 
+  if (variante === "apresentacao") {
+    return (
+      <div className={cn("surge flex h-full flex-col justify-end", className)}>
+        <div className="relative w-full">
+          {balao}
+          {/* rabicho ligando o balão à cabeça de Lex */}
+          <span
+            aria-hidden="true"
+            className="absolute -bottom-3 left-10 size-6 rotate-45 border-r-[3px] border-b-[3px] border-investigacao/40 bg-card"
+          />
+        </div>
+        <img
+          src={lex}
+          alt="Inspetora Lex, a detetive de Wordville"
+          width={768}
+          height={1024}
+          className="mt-2 h-[230px] w-auto self-start object-contain drop-shadow-xl"
+        />
+      </div>
+    );
+  }
+
   if (variante === "lateral") {
     return (
       <div className={cn("surge flex h-full flex-col items-center justify-end gap-1", className)}>
