@@ -82,9 +82,10 @@ function telaConcluida(tela: number, estado: ReturnType<typeof useCaso>["estado"
 }
 
 function Casca() {
-  const { estado, avancar, voltar, reiniciar } = useCaso();
+  const { estado, despachar, avancar, voltar, reiniciar } = useCaso();
   const tela = estado.tela;
   const [confirmando, setConfirmando] = useState(false);
+  const [ajuda, setAjuda] = useState(false);
   const [processando, setProcessando] = useState(false);
   const travaRef = useRef(false);
 
@@ -108,99 +109,123 @@ function Casca() {
   );
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black/5 p-0 [@media(min-height:707px)]:p-2 [@media(min-height:743px)]:p-4">
-      <div className="relative flex h-[675px] w-full max-w-[1200px] flex-col overflow-hidden rounded-2xl border border-investigacao/20 bg-background shadow-2xl">
-        <header className="shrink-0 border-b-4 border-investigacao/20 bg-card">
-          <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 py-1.5">
-            <h1 className="text-lg font-bold text-investigacao">
-              🕵️‍♀️ O Caso dos Verbos Desaparecidos
-            </h1>
-            <button
-              type="button"
-              onClick={() => setConfirmando(true)}
-              className="ml-auto inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-semibold text-muted-foreground hover:bg-secondary"
-            >
-              <RotateCcw className="size-4" aria-hidden="true" /> Recomeçar
-            </button>
-          </div>
-          <div className="mx-auto flex max-w-5xl items-center gap-2 px-4 pb-1.5">
-            {concluidas.map((ok, i) => (
-              <span
-                key={i}
-                aria-hidden="true"
-                className={cn(
-                  "h-1.5 flex-1 rounded-full",
-                  ok ? "bg-acerto" : i + 1 === tela ? "bg-investigacao" : "bg-secondary",
-                )}
-              />
-            ))}
-            <span className="ml-2 text-[15px] font-semibold text-muted-foreground">
-              {tela}/{TOTAL_TELAS}
-            </span>
-          </div>
-        </header>
+    <div className="ceu-wordville flex min-h-screen items-center justify-center p-0 [@media(min-height:707px)]:p-2 [@media(min-height:743px)]:p-4">
+      <div className="relative flex h-[675px] w-full max-w-[1200px] flex-col overflow-hidden rounded-[2rem] border-4 border-investigacao/25 bg-background shadow-2xl">
+        {!estado.iniciou ? (
+          <Capa aoIniciar={() => despachar({ tipo: "iniciar" })} />
+        ) : (
+          <>
+            <header className="shrink-0 border-b-4 border-investigacao/20 bg-card">
+              <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 py-1.5">
+                <h1 className="flex items-center gap-2 text-lg font-extrabold text-investigacao">
+                  <span aria-hidden="true">🕵️‍♀️</span> O Caso dos Verbos Desaparecidos
+                </h1>
+                <span className="etiqueta hidden border-pista bg-pista text-[14px] text-pista-foreground sm:inline-block">
+                  Wordville
+                </span>
+                <div className="ml-auto flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setAjuda(true)}
+                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-bold text-investigacao hover:bg-investigacao/10"
+                  >
+                    <HelpCircle className="size-4" aria-hidden="true" /> Como jogar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmando(true)}
+                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-semibold text-muted-foreground hover:bg-secondary"
+                  >
+                    <RotateCcw className="size-4" aria-hidden="true" /> Recomeçar
+                  </button>
+                </div>
+              </div>
+              <div className="mx-auto flex max-w-5xl items-center gap-1.5 px-4 pb-1.5">
+                {concluidas.map((ok, i) => (
+                  <span
+                    key={i}
+                    aria-hidden="true"
+                    className={cn(
+                      "h-2 flex-1 rounded-full transition-colors",
+                      ok
+                        ? "bg-acerto"
+                        : i + 1 === tela
+                          ? "bg-pista ring-2 ring-investigacao/40"
+                          : "bg-secondary",
+                    )}
+                  />
+                ))}
+                <span className="ml-2 rounded-full bg-investigacao px-2.5 py-0.5 text-[14px] font-bold text-investigacao-foreground">
+                  {tela}/{TOTAL_TELAS}
+                </span>
+              </div>
+            </header>
 
-        <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col overflow-hidden px-4 py-1.5">
-          <p className="mb-1 text-[13px] font-bold tracking-wide text-muted-foreground uppercase">
-            Tela {tela} — {TITULOS[tela - 1]}
-          </p>
-          {tela === 1 ? <Tela1 /> : null}
-          {tela === 2 ? <CacaPalavras /> : null}
-          {tela === 3 ? <Tela3 /> : null}
-          {tela === 4 ? (
-            <TelaLacunas
-              lacunas={LACUNAS_TELA4}
-              banco={["go", "goes"]}
-              comando="Observe quem pratica a ação e escolha a forma correta do verbo."
-            />
-          ) : null}
-          {tela === 5 ? <LigarColunas /> : null}
-          {tela === 6 ? <Tela6 /> : null}
-          {tela === 7 ? (
-            <TelaLacunas
-              lacunas={LACUNAS_TELA7}
-              banco={["go", "goes", "play", "plays"]}
-              comando="Observe quem pratica a ação e escolha a forma correta do verbo."
-              aoConcluir="Todos os cartazes estão consertados! Vamos ao escritório."
-            />
-          ) : null}
-          {tela === 8 ? <Tela8 /> : null}
-          {tela === 9 ? <MontarFrase /> : null}
-          {tela === 10 ? <Tela10 /> : null}
-        </main>
+            <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col overflow-hidden px-4 py-1.5">
+              <p className="mb-1 flex items-center gap-2 text-[13px] font-extrabold tracking-wide text-investigacao uppercase">
+                <span aria-hidden="true">🔎</span> Tela {tela} — {TITULOS[tela - 1]}
+              </p>
+              {tela === 1 ? <Tela1 /> : null}
+              {tela === 2 ? <CacaPalavras /> : null}
+              {tela === 3 ? <Tela3 /> : null}
+              {tela === 4 ? (
+                <TelaLacunas
+                  lacunas={LACUNAS_TELA4}
+                  banco={["go", "goes"]}
+                  comando="Observe quem pratica a ação e escolha a forma correta do verbo."
+                />
+              ) : null}
+              {tela === 5 ? <LigarColunas /> : null}
+              {tela === 6 ? <Tela6 /> : null}
+              {tela === 7 ? (
+                <TelaLacunas
+                  lacunas={LACUNAS_TELA7}
+                  banco={["go", "goes", "play", "plays"]}
+                  comando="Observe quem pratica a ação e escolha a forma correta do verbo."
+                  aoConcluir="Todos os cartazes estão consertados! Vamos ao escritório."
+                />
+              ) : null}
+              {tela === 8 ? <Tela8 /> : null}
+              {tela === 9 ? <MontarFrase /> : null}
+              {tela === 10 ? <Tela10 /> : null}
+            </main>
 
-        <footer className="shrink-0 border-t-4 border-investigacao/20 bg-card/95">
-          <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-1.5">
-            <button
-              type="button"
-              onClick={() => navegar(voltar)}
-              disabled={tela === 1 || processando}
-              aria-disabled={tela === 1 || processando}
-              className="inline-flex items-center gap-1.5 rounded-full border-2 border-investigacao/40 px-3.5 py-1.5 text-[17px] font-bold text-investigacao disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <ArrowLeft className="size-4" aria-hidden="true" /> Voltar
-            </button>
-            {tela < TOTAL_TELAS ? (
-              <div className="ml-auto flex items-center gap-2">
-                {!liberado ? (
-                  <span className="text-[15px] text-muted-foreground">
-                    Termine a investigação desta tela para continuar
-                  </span>
-                ) : null}
+            <footer className="shrink-0 border-t-4 border-investigacao/20 bg-card/95">
+              <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-1.5">
                 <button
                   type="button"
-                  onClick={() => navegar(avancar)}
-                  disabled={!liberado || processando}
-                  aria-disabled={!liberado || processando}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-investigacao px-5 py-1.5 text-[17px] font-bold text-investigacao-foreground shadow-lg transition-transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed disabled:opacity-40"
+                  onClick={() => navegar(voltar)}
+                  disabled={tela === 1 || processando}
+                  aria-disabled={tela === 1 || processando}
+                  className="botao-fofo inline-flex items-center gap-1.5 border-2 border-investigacao/40 bg-card px-4 py-1.5 text-[17px] text-investigacao disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  {tela === 1 ? "Vamos investigar!" : "Continuar"}
-                  <ArrowRight className="size-4" aria-hidden="true" />
+                  <ArrowLeft className="size-4" aria-hidden="true" /> Voltar
                 </button>
+                {tela < TOTAL_TELAS ? (
+                  <div className="ml-auto flex items-center gap-2">
+                    {!liberado ? (
+                      <span className="text-[15px] font-semibold text-muted-foreground">
+                        Termine a investigação desta tela para continuar
+                      </span>
+                    ) : null}
+                    <button
+                      type="button"
+                      onClick={() => navegar(avancar)}
+                      disabled={!liberado || processando}
+                      aria-disabled={!liberado || processando}
+                      className="botao-fofo inline-flex items-center gap-1.5 bg-investigacao px-6 py-2 text-[17px] text-investigacao-foreground disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      {tela === 1 ? "Vamos investigar!" : "Continuar"}
+                      <ArrowRight className="size-4" aria-hidden="true" />
+                    </button>
+                  </div>
+                ) : null}
               </div>
-            ) : null}
-          </div>
-        </footer>
+            </footer>
+
+            <ComoJogar aberto={ajuda} aoFechar={() => setAjuda(false)} />
+          </>
+        )}
 
         <DialogoReiniciar
           aberto={confirmando}
@@ -214,6 +239,7 @@ function Casca() {
     </div>
   );
 }
+
 
 function Cartaz({
   frase,
