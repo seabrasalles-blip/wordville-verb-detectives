@@ -360,9 +360,8 @@ function Tela8() {
   const { estado, despachar } = useCaso();
   return (
     <div className="space-y-3">
-      <p className="text-base font-semibold">
-        No escritório da Inspetora Lex tem um quadro branco com duas perguntas.
-      </p>
+      <p className="text-base font-semibold">Responda as duas perguntas do quadro da Lex.</p>
+
       <div className="grid gap-3 sm:grid-cols-2">
         {PERGUNTAS_TELA8.map((q) => {
           const escolhida = estado.metacognicao[q.id];
