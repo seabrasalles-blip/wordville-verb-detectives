@@ -109,10 +109,12 @@ export function CacaPalavras() {
 
     const dl = linha - ultima.linha;
     const dc = coluna - ultima.coluna;
-    const vizinha = Math.abs(dl) <= 1 && Math.abs(dc) <= 1;
+    // apenas horizontal esquerda→direita e vertical cima→baixo
+    const permitida = (dl === 0 && dc === 1) || (dl === 1 && dc === 0);
 
-    if (!vizinha) {
+    if (!permitida) {
       contínuo.current = false;
+      direcaoInvalida.current = true;
       atualizar([...atual, { linha, coluna }]);
       return;
     }
@@ -120,9 +122,11 @@ export function CacaPalavras() {
       direcao.current = { dl, dc };
     } else if (direcao.current.dl !== dl || direcao.current.dc !== dc) {
       contínuo.current = false;
+      direcaoInvalida.current = true;
     }
     atualizar([...atual, { linha, coluna }]);
   };
+
 
   const iniciar = (linha: number, coluna: number) => {
     if (limpando.current) window.clearTimeout(limpando.current);
