@@ -19,6 +19,8 @@ import { useFala } from "@/hooks/use-fala";
 const CHAVE = "caso-verbos-desaparecidos-v1";
 
 export type EstadoCaso = {
+  /** Falso enquanto a criança está na capa. */
+  iniciou: boolean;
   tela: number;
   encontradas: PalavraCaca[];
   /** Grade sorteada para a tentativa atual do caça-palavras. */
@@ -35,6 +37,7 @@ export type EstadoCaso = {
 };
 
 const inicial: EstadoCaso = {
+  iniciou: false,
   tela: 1,
   encontradas: [],
   gradeId: GRADES_CACA[0].id,
@@ -48,10 +51,13 @@ const inicial: EstadoCaso = {
   medalha: false,
 };
 
+
 type Acao =
+  | { tipo: "iniciar" }
   | { tipo: "ir"; tela: number }
   | { tipo: "avancar" }
   | { tipo: "voltar" }
+
   | { tipo: "encontrou"; palavra: PalavraCaca; caminho: { linha: number; coluna: number }[] }
   | { tipo: "novaGrade" }
   | { tipo: "responder"; id: string; valor: string }
@@ -67,8 +73,11 @@ type Acao =
 
 function reducer(estado: EstadoCaso, acao: Acao): EstadoCaso {
   switch (acao.tipo) {
+    case "iniciar":
+      return { ...estado, iniciou: true };
     case "ir":
       return { ...estado, tela: Math.min(TOTAL_TELAS, Math.max(1, acao.tela)) };
+
     case "avancar":
       return { ...estado, tela: Math.min(TOTAL_TELAS, estado.tela + 1) };
     case "voltar":
@@ -180,7 +189,9 @@ function sanear(dados: unknown): EstadoCaso {
       : GRADES_CACA[0].id;
 
   return {
+    iniciou: d.iniciou === true,
     tela,
+
     encontradas: encontradas.filter((p) => caminhos[p]),
     gradeId,
     caminhos,

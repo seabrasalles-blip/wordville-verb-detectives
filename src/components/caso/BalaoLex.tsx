@@ -24,11 +24,57 @@ type Props = {
   tom?: Tom;
   /** Frase em inglês para o alto-falante opcional do balão. */
   audio?: string;
+  /** "lateral" coloca Lex grande embaixo do balão, em coluna própria. */
+  variante?: "linha" | "lateral";
   className?: string;
 };
 
 /** Balão de fala da Inspetora Lex, consistente em todas as telas. */
-export function BalaoLex({ children, tom = "investigacao", audio, className }: Props) {
+export function BalaoLex({
+  children,
+  tom = "investigacao",
+  audio,
+  variante = "linha",
+  className,
+}: Props) {
+  const balao = (
+    <div
+      className={cn(
+        "cartao-pista relative flex-1 p-3 text-[17px] leading-snug",
+        tons[tom],
+      )}
+    >
+      <span
+        aria-hidden="true"
+        className="absolute -top-4 left-3 grid size-8 place-items-center rounded-full border-2 border-current bg-card text-base shadow-sm"
+      >
+        {icones[tom]}
+      </span>
+      <div className="mt-2 space-y-2">{children}</div>
+      {audio ? (
+        <div className="mt-2">
+          <BotaoAudio texto={audio} tamanho="sm" rotulo="Ouvir" />
+        </div>
+      ) : null}
+    </div>
+  );
+
+  if (variante === "lateral") {
+    return (
+      <div className={cn("surge flex h-full flex-col items-center justify-end gap-1", className)}>
+        {balao}
+        <img
+          src={lex}
+          alt="Inspetora Lex, a detetive de Wordville"
+          width={768}
+          height={1024}
+          loading="lazy"
+          className="w-28 shrink-0 drop-shadow-xl md:w-32"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={cn("surge flex items-end gap-2.5", className)}>
       <img
@@ -37,30 +83,13 @@ export function BalaoLex({ children, tom = "investigacao", audio, className }: P
         width={768}
         height={1024}
         loading="lazy"
-        className="hidden w-14 shrink-0 drop-shadow-md sm:block md:w-16"
+        className="hidden w-16 shrink-0 drop-shadow-md sm:block md:w-20"
       />
-      <div
-        className={cn(
-          "relative flex-1 rounded-2xl border-2 p-2.5 text-sm leading-snug shadow-sm md:text-[15px]",
-          tons[tom],
-        )}
-      >
-        <span
-          aria-hidden="true"
-          className="absolute -top-3.5 left-3 grid size-7 place-items-center rounded-full border-2 border-current bg-card text-sm"
-        >
-          {icones[tom]}
-        </span>
-        <div className="mt-1.5 space-y-2">{children}</div>
-        {audio ? (
-          <div className="mt-2">
-            <BotaoAudio texto={audio} tamanho="sm" rotulo="Ouvir" />
-          </div>
-        ) : null}
-      </div>
+      {balao}
     </div>
   );
 }
+
 
 /** Frase em inglês destacada dentro dos textos em português. */
 export function Ingles({ children }: { children: ReactNode }) {

@@ -73,34 +73,43 @@
 }
 
 :root {
-  --radius: 1rem;
-  --background: oklch(0.98 0.015 240);
-  --foreground: oklch(0.28 0.06 255);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.28 0.06 255);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.28 0.06 255);
-  --primary: oklch(0.55 0.16 250);
-  --primary-foreground: oklch(0.99 0.005 240);
-  --secondary: oklch(0.94 0.04 245);
-  --secondary-foreground: oklch(0.35 0.09 255);
-  --muted: oklch(0.95 0.02 245);
-  --muted-foreground: oklch(0.5 0.05 255);
-  --accent: oklch(0.92 0.09 95);
-  --accent-foreground: oklch(0.33 0.07 70);
-  --destructive: oklch(0.7 0.15 55);
-  --destructive-foreground: oklch(0.99 0.005 240);
-  --investigacao: oklch(0.55 0.16 250);
-  --investigacao-foreground: oklch(0.99 0.005 240);
-  --pista: oklch(0.88 0.14 95);
-  --pista-foreground: oklch(0.33 0.07 70);
-  --acerto: oklch(0.62 0.15 150);
-  --acerto-foreground: oklch(0.99 0.005 150);
-  --reorienta: oklch(0.72 0.15 60);
-  --reorienta-foreground: oklch(0.28 0.08 60);
-  --border: oklch(0.89 0.03 245);
-  --input: oklch(0.89 0.03 245);
-  --ring: oklch(0.55 0.16 250);
+  --radius: 1.5rem;
+  --background: oklch(0.96 0.045 95);
+  --foreground: oklch(0.3 0.08 260);
+  --card: oklch(0.995 0.012 95);
+  --card-foreground: oklch(0.3 0.08 260);
+  --popover: oklch(0.995 0.012 95);
+  --popover-foreground: oklch(0.3 0.08 260);
+  --primary: oklch(0.58 0.21 255);
+  --primary-foreground: oklch(0.99 0.01 250);
+  --secondary: oklch(0.93 0.06 250);
+  --secondary-foreground: oklch(0.38 0.12 258);
+  --muted: oklch(0.94 0.04 250);
+  --muted-foreground: oklch(0.48 0.08 260);
+  --accent: oklch(0.87 0.16 90);
+  --accent-foreground: oklch(0.35 0.09 70);
+  --destructive: oklch(0.65 0.19 25);
+  --destructive-foreground: oklch(0.99 0.01 60);
+  --investigacao: oklch(0.58 0.21 255);
+  --investigacao-foreground: oklch(0.99 0.01 250);
+  --pista: oklch(0.85 0.17 88);
+  --pista-foreground: oklch(0.34 0.09 70);
+  --acerto: oklch(0.68 0.19 145);
+  --acerto-foreground: oklch(0.99 0.01 150);
+  --reorienta: oklch(0.66 0.19 35);
+  --reorienta-foreground: oklch(0.99 0.01 40);
+  --border: oklch(0.86 0.05 250);
+  --input: oklch(0.86 0.05 250);
+  --ring: oklch(0.58 0.21 255);
+  --gradiente-ceu: linear-gradient(
+    160deg,
+    oklch(0.93 0.08 230) 0%,
+    oklch(0.96 0.06 95) 55%,
+    oklch(0.94 0.09 60) 100%
+  );
+  --sombra-fofa: 0 6px 0 0 color-mix(in oklch, var(--investigacao) 22%, transparent),
+    0 12px 26px -12px color-mix(in oklch, var(--investigacao) 55%, transparent);
+
 
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -235,4 +244,69 @@
 @utility surge {
   animation: lex-surge 0.35s ease-out both;
 }
+
+@keyframes lex-flutua {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@utility flutua {
+  animation: lex-flutua 3.2s ease-in-out infinite;
+}
+
+/** Botão infantil: grande, arredondado, com sombra sólida embaixo. */
+@utility botao-fofo {
+  border-radius: 9999px;
+  font-weight: 800;
+  box-shadow: 0 5px 0 0 color-mix(in oklch, black 18%, transparent);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease;
+
+  &:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 0 color-mix(in oklch, black 18%, transparent);
+  }
+
+  &:disabled {
+    transform: none;
+    box-shadow: none;
+    filter: none;
+  }
+}
+
+/** Cartão de evidência: base lúdica de todos os blocos. */
+@utility cartao-pista {
+  border-radius: 1.5rem;
+  border-width: 3px;
+  background-color: var(--color-card);
+  box-shadow:
+    0 4px 0 0 color-mix(in oklch, var(--color-investigacao) 18%, transparent),
+    0 14px 24px -16px color-mix(in oklch, var(--color-investigacao) 60%, transparent);
+}
+
+/** Etiqueta de detetive, levemente inclinada. */
+@utility etiqueta {
+  border-radius: 9999px;
+  border-width: 2px;
+  padding: 0.125rem 0.75rem;
+  font-weight: 800;
+  transform: rotate(-2deg);
+}
+
+@utility ceu-wordville {
+  background-image: var(--gradiente-ceu);
+}
+
 
