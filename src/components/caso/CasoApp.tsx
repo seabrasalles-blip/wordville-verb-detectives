@@ -406,8 +406,6 @@ function Tela8() {
 
 function Tela9() {
   const { estado, despachar, fala } = useCaso();
-  const texto =
-    "Caso resolvido! Todos os cartazes de Wordville estão corretos graças a você! Você descobriu que o verbo muda de som e de letra com he, she ou it — e vale para vários verbos, como go e play! Aqui está sua medalha de Assistente-Detetive. Até o próximo caso!";
 
   return (
     <div className="space-y-2">
@@ -417,16 +415,17 @@ function Tela9() {
         width={1536}
         height={768}
         loading="lazy"
-        className="h-16 w-full rounded-2xl border-2 border-acerto object-cover shadow-md sm:h-20"
+        className="h-14 w-full rounded-2xl border-2 border-acerto object-cover shadow-md sm:h-16"
       />
-      <div className="grid gap-2 sm:grid-cols-2">
-        <Cartaz frase="He goes to school." icone="🏫" audioId="final-1" />
-        <Cartaz frase="She plays soccer." icone="⚽️" audioId="final-2" />
-      </div>
+      <Grupos />
       <BalaoLex tom="acerto">
-        <p>{texto}</p>
-        <BotaoAudio texto={texto} id="final-fala" rotulo="Ouvir a Inspetora" tamanho="sm" />
+        <p>
+          Você descobriu a pista! Com <Ingles>he</Ingles>, <Ingles>she</Ingles> e{" "}
+          <Ingles>it</Ingles>, usamos goes e plays. Com <Ingles>I</Ingles>, <Ingles>you</Ingles>,{" "}
+          <Ingles>we</Ingles> e <Ingles>they</Ingles>, usamos go e play.
+        </p>
       </BalaoLex>
+
 
       {estado.medalha ? (
         <div className="medalha-anima flex items-center justify-center gap-3">
