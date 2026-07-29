@@ -1,58 +1,56 @@
 import { useState } from "react";
-import { Check, Search } from "lucide-react";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { FORMAS_TELA5, PARES_TELA5 } from "@/lib/caso-conteudo";
+import { ALVOS_TELA5, GRUPO_DO_SUJEITO, PARES_TELA5 } from "@/lib/caso-conteudo";
 import { useCaso } from "./CasoProvider";
-import { BalaoLex } from "./BalaoLex";
+import { AreaFeedback, Feedback } from "./Feedback";
 import { BotaoAudio } from "./BotaoAudio";
 
-/** Tela 5: ligar sujeito → forma verbal por cliques. */
+/** Tela 5: ligar sujeito → forma verbal. A validação usa ids, nunca o texto. */
 export function LigarColunas() {
   const { estado, despachar, fala } = useCaso();
   const [sujeito, setSujeito] = useState<string | null>(null);
-  const [dica, setDica] = useState<string | null>(null);
-  const [acerto, setAcerto] = useState<string | null>(null);
+  const [aviso, setAviso] = useState<{ tipo: "success" | "error"; texto: string } | null>(null);
 
-  const conectar = (idForma: string, forma: string) => {
-    if (!sujeito) return;
+  const conectar = (idAlvo: string) => {
+    const alvo = ALVOS_TELA5.find((a) => a.id === idAlvo);
+    if (!alvo) return;
+    if (Object.values(estado.conexoes).includes(idAlvo)) return;
+    if (!sujeito) {
+      setAviso({ tipo: "error", texto: "Escolha primeiro o sujeito, depois o verbo." });
+      return;
+    }
     const par = PARES_TELA5.find((p) => p.id === sujeito);
-    if (!par) return;
+    if (!par || estado.conexoes[par.id]) return;
 
-    if (par.forma === forma) {
-      despachar({ tipo: "conectar", id: par.id, forma: idForma });
-      fala.falar(`${par.sujeito} ${par.forma}`, `par-${par.id}`);
-      setDica(null);
-      setAcerto(
-        par.forma === "goes"
-          ? `Certo! '${par.sujeito}' está no grupo de he, she e it: usamos 'goes'.`
-          : `Certo! '${par.sujeito}' está no grupo de I, you, we e they: usamos 'go'.`,
-      );
+    if (alvo.parId === par.id) {
+      despachar({ tipo: "conectar", id: par.id, forma: alvo.id });
+      fala.falar(`${par.sujeito} ${alvo.texto}`, `par-${par.id}`);
+      setAviso({
+        tipo: "success",
+        texto: `${par.sujeito} combina com ${alvo.texto}.`,
+      });
       setSujeito(null);
       return;
     }
 
-    const tentativas = estado.tentativas[par.id] ?? 0;
     despachar({ tipo: "errar", id: par.id });
-    setAcerto(null);
-    setDica(
-      tentativas === 0
-        ? `Observe quem pratica a ação: '${par.sujeito}'. Ele está no grupo de I, you, we, they ou no grupo de he, she, it?`
-        : `Lembre: I, you, we, they → go. He, she, it → goes. Tente novamente.`,
-    );
-
+    setAviso({
+      tipo: "error",
+      texto: `${par.sujeito} não combina com ${alvo.texto}. ${GRUPO_DO_SUJEITO[par.id] ?? "Observe o sujeito antes de escolher."}`,
+    });
   };
 
-  const formasUsadas = new Set(Object.values(estado.conexoes));
+  const alvosUsados = new Set(Object.values(estado.conexoes));
 
   return (
-    <div className="space-y-3">
-      <p className="text-base font-semibold">
-        Observe quem pratica a ação. Clique no sujeito e depois no verbo correto.
+    <div className="space-y-2">
+      <p className="text-[18px] font-semibold">
+        Clique no sujeito e depois no verbo que combina com ele.
       </p>
 
-
       <div className="grid grid-cols-2 gap-3 sm:gap-5">
-        <ul className="space-y-2">
+        <ul className="space-y-1.5">
           {PARES_TELA5.map((par) => {
             const ligado = Boolean(estado.conexoes[par.id]);
             return (
@@ -62,7 +60,7 @@ export function LigarColunas() {
                   disabled={ligado}
                   onClick={() => setSujeito(par.id)}
                   className={cn(
-                    "flex w-full items-center gap-2 rounded-xl border-2 bg-card px-3 py-2 text-base font-bold shadow-sm transition-colors",
+                    "flex w-full items-center gap-2 rounded-xl border-2 bg-card px-3 py-1.5 text-[18px] font-bold shadow-sm transition-colors disabled:cursor-not-allowed",
                     ligado
                       ? "border-acerto bg-acerto/15 text-acerto"
                       : sujeito === par.id
@@ -81,45 +79,41 @@ export function LigarColunas() {
           })}
         </ul>
 
-        <ul className="space-y-2">
-          {FORMAS_TELA5.map((forma) => {
-            const usada = formasUsadas.has(forma.id);
+        <ul className="space-y-1.5">
+          {ALVOS_TELA5.map((alvo) => {
+            const usado = alvosUsados.has(alvo.id);
             return (
-              <li key={forma.id} className="flex items-center gap-1.5">
+              <li key={alvo.id} className="flex items-center gap-1.5">
                 <button
                   type="button"
-                  disabled={usada}
-                  onClick={() => conectar(forma.id, forma.texto)}
+                  disabled={usado}
+                  onClick={() => conectar(alvo.id)}
                   className={cn(
-                    "flex-1 rounded-xl border-2 border-dashed bg-card px-3 py-2 text-base font-bold shadow-sm transition-colors",
-                    usada
+                    "flex-1 rounded-xl border-2 border-dashed bg-card px-3 py-1.5 text-[18px] font-bold shadow-sm transition-colors disabled:cursor-not-allowed",
+                    usado
                       ? "border-acerto border-solid bg-acerto/15 text-acerto"
                       : "border-investigacao/60 hover:bg-investigacao/10",
                   )}
                 >
-                  {forma.texto}
+                  {alvo.texto}
                 </button>
-                <BotaoAudio texto={forma.texto} id={`forma-${forma.id}`} tamanho="sm" />
+                <BotaoAudio texto={alvo.texto} id={`forma-${alvo.id}`} tamanho="sm" />
               </li>
             );
           })}
         </ul>
       </div>
 
-      {dica ? (
-        <BalaoLex tom="reorienta">
-          <p className="flex items-start gap-2">
-            <Search className="mt-0.5 size-4 shrink-0 text-reorienta" aria-hidden="true" />
-            <span>{dica}</span>
-          </p>
-        </BalaoLex>
-      ) : null}
-
-      {acerto ? (
-        <BalaoLex tom="acerto">
-          <p>{acerto}</p>
-        </BalaoLex>
-      ) : null}
+      <AreaFeedback>
+        {aviso ? (
+          <Feedback
+            type={aviso.tipo}
+            message={aviso.texto}
+            onClose={() => setAviso(null)}
+            autoClose={aviso.tipo === "success"}
+          />
+        ) : null}
+      </AreaFeedback>
     </div>
   );
 }
