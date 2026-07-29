@@ -174,19 +174,19 @@ function Cartaz({
   return (
     <div
       className={cn(
-        "rounded-3xl border-4 border-investigacao bg-card p-4 text-center shadow-md",
+        "rounded-2xl border-2 border-investigacao bg-card p-2.5 text-center shadow-md",
         tremulando && "tremula border-reorienta",
       )}
     >
-      <span aria-hidden="true" className="text-5xl">
+      <span aria-hidden="true" className="text-3xl">
         {icone}
       </span>
-      <p className="mt-2 text-xl font-bold text-investigacao sm:text-2xl">
+      <p className="mt-1 text-base font-bold text-investigacao sm:text-lg">
         <Ingles>{frase}</Ingles>
       </p>
-      {legenda ? <p className="mt-1 text-base text-muted-foreground">{legenda}</p> : null}
-      <div className="mt-3 flex justify-center">
-        <BotaoAudio texto={frase} id={audioId} />
+      {legenda ? <p className="mt-0.5 text-xs text-muted-foreground">{legenda}</p> : null}
+      <div className="mt-2 flex justify-center">
+        <BotaoAudio texto={frase} id={audioId} tamanho="sm" />
       </div>
     </div>
   );
@@ -194,27 +194,27 @@ function Cartaz({
 
 function Tela1() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <img
         src={wordville}
         alt="Rua principal da cidade de Wordville, cheia de cartazes"
         width={1536}
         height={768}
-        className="w-full rounded-3xl border-4 border-investigacao shadow-md"
+        className="h-24 w-full rounded-2xl border-2 border-investigacao object-cover shadow-md sm:h-28"
       />
-      <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center">
+      <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
         <Cartaz frase="He go to school" icone="🏫" tremulando audioId="cartaz-1" />
-        <span aria-hidden="true" className="mx-auto text-6xl">
+        <span aria-hidden="true" className="mx-auto text-4xl">
           🔍
         </span>
       </div>
       <BalaoLex>
         <p>
-          Olá! Eu sou a Inspetora Lex, detetive de Wordville. Algo estranho está acontecendo na
-          nossa cidade: as palavras nos cartazes estão mudando de forma! Olha só esse cartaz
-          aqui: <Ingles>He go to school</Ingles>. Tem algo esquisito, não tem?
+          Olá! Eu sou a Inspetora Lex, detetive de Wordville. Algo estranho está acontecendo: as
+          palavras nos cartazes estão mudando de forma! Olha só esse cartaz:{" "}
+          <Ingles>He go to school</Ingles>. Tem algo esquisito, não tem?
         </p>
-        <p>Eu preciso de um assistente-detetive esperto para me ajudar a investigar. Você topa?</p>
+        <p>Preciso de um assistente-detetive esperto para me ajudar. Você topa?</p>
       </BalaoLex>
     </div>
   );
@@ -223,8 +223,8 @@ function Tela1() {
 function Tela3() {
   const [revelado, setRevelado] = useState(false);
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2">
+    <div className="space-y-3">
+      <div className="grid gap-3 sm:grid-cols-2">
         <Cartaz
           frase="I go to school every day."
           legenda="Uma menina apontando para si mesma"
@@ -240,27 +240,26 @@ function Tela3() {
       </div>
       <BalaoLex>
         <p>
-          Olhe estas duas pistas com atenção de detetive. Ouça as duas frases. Nas duas, alguém
-          vai para a escola. Mas repare no verbo: em uma está <Ingles>go</Ingles> e na outra está{" "}
-          <Ingles>goes</Ingles>. O que mudou entre as duas frases? Quem está fazendo a ação é a
-          mesma pessoa?
+          Olhe estas duas pistas com atenção. Ouça as duas frases. Nas duas, alguém vai para a
+          escola. Mas repare no verbo: em uma está <Ingles>go</Ingles> e na outra está{" "}
+          <Ingles>goes</Ingles>. O que mudou entre as duas frases? Quem faz a ação é a mesma
+          pessoa?
         </p>
       </BalaoLex>
       {!revelado ? (
         <button
           type="button"
           onClick={() => setRevelado(true)}
-          className="rounded-full bg-pista px-6 py-3 text-lg font-bold text-pista-foreground shadow-md"
+          className="rounded-full bg-pista px-5 py-2 text-sm font-bold text-pista-foreground shadow-md"
         >
           Entendi, continuar.
         </button>
       ) : (
         <BalaoLex tom="pista">
           <p>
-            Reparou? Quando falamos de nós mesmos (<Ingles>I</Ingles>), usamos{" "}
-            <Ingles>go</Ingles>. Quando falamos de outra pessoa (<Ingles>She</Ingles>), a palavra
-            ganhou algo no final e virou <Ingles>goes</Ingles>. Essa é nossa primeira pista do
-            caso!
+            Reparou? Quando falamos de nós mesmos (<Ingles>I</Ingles>), usamos <Ingles>go</Ingles>.
+            Quando falamos de outra pessoa (<Ingles>She</Ingles>), a palavra ganhou algo no final e
+            virou <Ingles>goes</Ingles>. Primeira pista do caso!
           </p>
         </BalaoLex>
       )}
@@ -270,12 +269,11 @@ function Tela3() {
 
 function Tela6() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <BalaoLex>
         <p>
-          Lembra do som que você ouviu na Tela 2? <Ingles>Goes</Ingles> e <Ingles>plays</Ingles>{" "}
-          têm um final parecido. Será que a mesma regra vale aqui? Ouça as opções antes de
-          arrastar.
+          Lembra do som da Tela 2? <Ingles>Goes</Ingles> e <Ingles>plays</Ingles> têm um final
+          parecido. Será que a mesma regra vale aqui? Ouça as opções antes de arrastar.
         </p>
       </BalaoLex>
       <TelaLacunas
@@ -290,43 +288,48 @@ function Tela6() {
 function Tela8() {
   const { estado, despachar } = useCaso();
   return (
-    <div className="space-y-6">
-      <p className="text-xl font-semibold">
+    <div className="space-y-3">
+      <p className="text-base font-semibold">
         No escritório da Inspetora Lex tem um quadro branco com duas perguntas.
       </p>
-      {PERGUNTAS_TELA8.map((q) => {
-        const escolhida = estado.metacognicao[q.id];
-        return (
-          <div key={q.id} className="rounded-3xl border-4 border-investigacao bg-card p-4 sm:p-5">
-            <h2 className="text-xl font-bold text-investigacao">{q.titulo}</h2>
-            <p className="mt-1 text-lg">{q.pergunta}</p>
-            <div className="mt-4 grid gap-3">
-              {q.opcoes.map((op, i) => (
-                <button
-                  key={op.texto}
-                  type="button"
-                  onClick={() => despachar({ tipo: "metacognicao", id: q.id, indice: i })}
-                  className={cn(
-                    "rounded-2xl border-4 px-4 py-3 text-left text-lg font-semibold transition-colors",
-                    escolhida === i
-                      ? op.correta
-                        ? "border-acerto bg-acerto/15"
-                        : "border-reorienta bg-reorienta/15"
-                      : "border-investigacao/40 hover:bg-investigacao/10",
-                  )}
+      <div className="grid gap-3 sm:grid-cols-2">
+        {PERGUNTAS_TELA8.map((q) => {
+          const escolhida = estado.metacognicao[q.id];
+          return (
+            <div key={q.id} className="rounded-2xl border-2 border-investigacao bg-card p-3">
+              <h2 className="text-base font-bold text-investigacao">{q.titulo}</h2>
+              <p className="mt-0.5 text-sm">{q.pergunta}</p>
+              <div className="mt-2 grid gap-2">
+                {q.opcoes.map((op, i) => (
+                  <button
+                    key={op.texto}
+                    type="button"
+                    onClick={() => despachar({ tipo: "metacognicao", id: q.id, indice: i })}
+                    className={cn(
+                      "rounded-xl border-2 px-3 py-1.5 text-left text-sm font-semibold transition-colors",
+                      escolhida === i
+                        ? op.correta
+                          ? "border-acerto bg-acerto/15"
+                          : "border-reorienta bg-reorienta/15"
+                        : "border-investigacao/40 hover:bg-investigacao/10",
+                    )}
+                  >
+                    {op.texto}
+                  </button>
+                ))}
+              </div>
+              {escolhida !== undefined ? (
+                <BalaoLex
+                  tom={q.opcoes[escolhida].correta ? "acerto" : "reorienta"}
+                  className="mt-2"
                 >
-                  {op.texto}
-                </button>
-              ))}
+                  <p>{q.opcoes[escolhida].feedback}</p>
+                </BalaoLex>
+              ) : null}
             </div>
-            {escolhida !== undefined ? (
-              <BalaoLex tom={q.opcoes[escolhida].correta ? "acerto" : "reorienta"} className="mt-4">
-                <p>{q.opcoes[escolhida].feedback}</p>
-              </BalaoLex>
-            ) : null}
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -337,16 +340,16 @@ function Tela9() {
     "Caso resolvido! Todos os cartazes de Wordville estão corretos, e tudo graças a você! Você descobriu que o verbo muda de som e de letra quando falamos de he, she ou it — e que essa regra vale para vários verbos, como go e play! Aqui está sua medalha de Assistente-Detetive. Até o próximo caso!";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <img
         src={wordville}
         alt="Rua de Wordville com os cartazes corrigidos e a cidade em festa"
         width={1536}
         height={768}
         loading="lazy"
-        className="w-full rounded-3xl border-4 border-acerto shadow-md"
+        className="h-24 w-full rounded-2xl border-2 border-acerto object-cover shadow-md sm:h-28"
       />
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2">
         <Cartaz frase="He goes to school." icone="🏫" audioId="final-1" />
         <Cartaz frase="She plays soccer." icone="⚽️" audioId="final-2" />
       </div>
@@ -356,16 +359,16 @@ function Tela9() {
       </BalaoLex>
 
       {estado.medalha ? (
-        <div className="medalha-anima flex flex-col items-center gap-3">
+        <div className="medalha-anima flex flex-col items-center gap-2">
           <img
             src={medalha}
             alt="Medalha de Assistente-Detetive"
             width={768}
             height={768}
             loading="lazy"
-            className="w-48 drop-shadow-xl"
+            className="w-24 drop-shadow-xl"
           />
-          <p className="text-2xl font-bold text-acerto">Assistente-Detetive de Wordville! 🎉</p>
+          <p className="text-lg font-bold text-acerto">Assistente-Detetive de Wordville! 🎉</p>
         </div>
       ) : (
         <button
@@ -374,7 +377,7 @@ function Tela9() {
             despachar({ tipo: "medalha" });
             fala.falar("He goes to school.", "final-1");
           }}
-          className="rounded-full bg-acerto px-8 py-4 text-xl font-bold text-acerto-foreground shadow-lg transition-transform hover:scale-105"
+          className="rounded-full bg-acerto px-6 py-2.5 text-base font-bold text-acerto-foreground shadow-lg transition-transform hover:scale-105"
         >
           Receber medalha!
         </button>
