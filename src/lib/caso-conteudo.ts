@@ -314,7 +314,14 @@ export const LACUNAS_TELA7: Lacuna[] = [
   },
 ];
 
-export const PARES_TELA5: { id: string; sujeito: string; icone: string; forma: string }[] = [
+export type FormaVerbal = "go" | "goes";
+
+export const PARES_TELA5: {
+  id: string;
+  sujeito: string;
+  icone: string;
+  forma: FormaVerbal;
+}[] = [
   { id: "p-i", sujeito: "I", icone: "🙋", forma: "go" },
   { id: "p-she", sujeito: "She", icone: "👧", forma: "goes" },
   { id: "p-we", sujeito: "We", icone: "👨‍👩‍👧", forma: "go" },
@@ -323,25 +330,17 @@ export const PARES_TELA5: { id: string; sujeito: string; icone: string; forma: s
 ];
 
 /**
- * Alvos da tela 5: cada alvo tem identificador próprio e pertence a um único par.
- * A validação usa `parId`, nunca o texto (que se repete entre alvos).
+ * Cartões da tela 5. O `id` serve só para controlar qual cartão foi usado;
+ * a correção linguística usa exclusivamente a `forma` (go / goes).
  */
-export const ALVOS_TELA5: { id: string; texto: string; parId: string }[] = [
-  { id: "a1", texto: "goes", parId: "p-she" },
-  { id: "a2", texto: "go", parId: "p-i" },
-  { id: "a3", texto: "goes", parId: "p-he" },
-  { id: "a4", texto: "go", parId: "p-they" },
-  { id: "a5", texto: "go", parId: "p-we" },
+export const CARTOES_TELA5: { id: string; forma: FormaVerbal }[] = [
+  { id: "c1", forma: "goes" },
+  { id: "c2", forma: "go" },
+  { id: "c3", forma: "goes" },
+  { id: "c4", forma: "go" },
+  { id: "c5", forma: "go" },
 ];
 
-/** Grupo a que cada sujeito pertence, para feedbacks dinâmicos. */
-export const GRUPO_DO_SUJEITO: Record<string, string> = {
-  "p-i": "I pertence ao grupo de you, we e they.",
-  "p-we": "We pertence ao grupo de I, you e they.",
-  "p-they": "They pertence ao grupo de I, you e we.",
-  "p-she": "She pertence ao grupo de he e it.",
-  "p-he": "He pertence ao grupo de she e it.",
-};
 
 /** Tela 9: montar a frase com blocos ordenados. */
 export type Montagem = {
