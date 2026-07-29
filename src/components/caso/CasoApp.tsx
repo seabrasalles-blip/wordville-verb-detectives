@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, HelpCircle, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import wordville from "@/assets/wordville.jpg";
 import medalha from "@/assets/medalha.png";
@@ -19,6 +19,8 @@ import {
 import { CasoProvider, useCaso } from "./CasoProvider";
 import { BalaoLex, Ingles } from "./BalaoLex";
 import { BotaoAudio } from "./BotaoAudio";
+import { Capa } from "./Capa";
+import { ComoJogar } from "./ComoJogar";
 import { CacaPalavras } from "./CacaPalavras";
 import { DialogoReiniciar } from "./DialogoReiniciar";
 import { AreaFeedback, Feedback } from "./Feedback";
