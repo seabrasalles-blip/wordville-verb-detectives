@@ -7,7 +7,13 @@ import {
   useReducer,
   type ReactNode,
 } from "react";
-import { PALAVRAS_CACA, TOTAL_TELAS, type PalavraCaca } from "@/lib/caso-conteudo";
+import {
+  GRADES_CACA,
+  PALAVRAS_CACA,
+  TOTAL_TELAS,
+  sortearGradeId,
+  type PalavraCaca,
+} from "@/lib/caso-conteudo";
 import { useFala } from "@/hooks/use-fala";
 
 const CHAVE = "caso-verbos-desaparecidos-v1";
@@ -15,6 +21,10 @@ const CHAVE = "caso-verbos-desaparecidos-v1";
 export type EstadoCaso = {
   tela: number;
   encontradas: PalavraCaca[];
+  /** Grade sorteada para a tentativa atual do caça-palavras. */
+  gradeId: string;
+  /** Caminho de células de cada palavra encontrada na grade atual. */
+  caminhos: Record<string, { linha: number; coluna: number }[]>;
   respostas: Record<string, string>;
   tentativas: Record<string, number>;
   conexoes: Record<string, string>;
@@ -27,6 +37,8 @@ export type EstadoCaso = {
 const inicial: EstadoCaso = {
   tela: 1,
   encontradas: [],
+  gradeId: GRADES_CACA[0].id,
+  caminhos: {},
   respostas: {},
   tentativas: {},
   conexoes: {},
@@ -40,7 +52,8 @@ type Acao =
   | { tipo: "ir"; tela: number }
   | { tipo: "avancar" }
   | { tipo: "voltar" }
-  | { tipo: "encontrou"; palavra: PalavraCaca }
+  | { tipo: "encontrou"; palavra: PalavraCaca; caminho: { linha: number; coluna: number }[] }
+  | { tipo: "novaGrade" }
   | { tipo: "responder"; id: string; valor: string }
   | { tipo: "errar"; id: string }
   | { tipo: "conectar"; id: string; forma: string }
@@ -63,7 +76,18 @@ function reducer(estado: EstadoCaso, acao: Acao): EstadoCaso {
     case "encontrou":
       return estado.encontradas.includes(acao.palavra)
         ? estado
-        : { ...estado, encontradas: [...estado.encontradas, acao.palavra] };
+        : {
+            ...estado,
+            encontradas: [...estado.encontradas, acao.palavra],
+            caminhos: { ...estado.caminhos, [acao.palavra]: acao.caminho },
+          };
+    case "novaGrade":
+      return {
+        ...estado,
+        gradeId: sortearGradeId(estado.gradeId),
+        encontradas: [],
+        caminhos: {},
+      };
     case "responder":
       return { ...estado, respostas: { ...estado.respostas, [acao.id]: acao.valor } };
     case "errar":
@@ -84,7 +108,7 @@ function reducer(estado: EstadoCaso, acao: Acao): EstadoCaso {
     case "restaurar":
       return acao.estado;
     case "reiniciar":
-      return inicial;
+      return { ...inicial, gradeId: sortearGradeId(estado.gradeId) };
     default:
       return estado;
   }
@@ -135,9 +159,31 @@ function sanear(dados: unknown): EstadoCaso {
       ) as PalavraCaca[])
     : [];
 
+  const caminhos: Record<string, { linha: number; coluna: number }[]> = {};
+  if (d.caminhos && typeof d.caminhos === "object") {
+    for (const [k, v] of Object.entries(d.caminhos as Record<string, unknown>)) {
+      if (!Array.isArray(v)) continue;
+      const celulas = v.filter(
+        (c): c is { linha: number; coluna: number } =>
+          !!c &&
+          typeof c === "object" &&
+          Number.isInteger((c as { linha: unknown }).linha) &&
+          Number.isInteger((c as { coluna: unknown }).coluna),
+      );
+      if (celulas.length > 0 && encontradas.includes(k as PalavraCaca)) caminhos[k] = celulas;
+    }
+  }
+
+  const gradeId =
+    typeof d.gradeId === "string" && GRADES_CACA.some((g) => g.id === d.gradeId)
+      ? d.gradeId
+      : GRADES_CACA[0].id;
+
   return {
     tela,
-    encontradas,
+    encontradas: encontradas.filter((p) => caminhos[p]),
+    gradeId,
+    caminhos,
     respostas: registro(d.respostas),
     tentativas: numeros(d.tentativas),
     conexoes: registro(d.conexoes),
@@ -157,6 +203,8 @@ export function CasoProvider({ children }: { children: ReactNode }) {
       const salvo = window.localStorage.getItem(CHAVE);
       if (salvo) {
         despachar({ tipo: "restaurar", estado: sanear(JSON.parse(salvo)) });
+      } else {
+        despachar({ tipo: "novaGrade" });
       }
     } catch {
       /* localStorage indisponível ou corrompido: começa do início */
