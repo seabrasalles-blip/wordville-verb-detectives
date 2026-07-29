@@ -142,6 +142,8 @@ export function CacaPalavras() {
     arrastando.current = true;
     direcao.current = null;
     contínuo.current = true;
+    direcaoInvalida.current = false;
+
     atualizar([{ linha, coluna }]);
   };
 
@@ -154,7 +156,9 @@ export function CacaPalavras() {
   return (
     <div className="space-y-2">
       <p className="text-[18px] font-semibold">
-        Arraste sobre as letras, na ordem, para encontrar as palavras.
+        Encontre as palavras na horizontal ou na vertical. Leia da esquerda para a direita ou de
+        cima para baixo.
+
       </p>
 
       <div className="grid gap-4 lg:grid-cols-[auto_1fr]">
