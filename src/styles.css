@@ -245,3 +245,68 @@
   animation: lex-surge 0.35s ease-out both;
 }
 
+@keyframes lex-flutua {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@utility flutua {
+  animation: lex-flutua 3.2s ease-in-out infinite;
+}
+
+/** Botão infantil: grande, arredondado, com sombra sólida embaixo. */
+@utility botao-fofo {
+  border-radius: 9999px;
+  font-weight: 800;
+  box-shadow: 0 5px 0 0 color-mix(in oklch, black 18%, transparent);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease;
+
+  &:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 0 color-mix(in oklch, black 18%, transparent);
+  }
+
+  &:disabled {
+    transform: none;
+    box-shadow: none;
+    filter: none;
+  }
+}
+
+/** Cartão de evidência: base lúdica de todos os blocos. */
+@utility cartao-pista {
+  border-radius: 1.5rem;
+  border-width: 3px;
+  background-color: var(--color-card);
+  box-shadow:
+    0 4px 0 0 color-mix(in oklch, var(--color-investigacao) 18%, transparent),
+    0 14px 24px -16px color-mix(in oklch, var(--color-investigacao) 60%, transparent);
+}
+
+/** Etiqueta de detetive, levemente inclinada. */
+@utility etiqueta {
+  border-radius: 9999px;
+  border-width: 2px;
+  padding: 0.125rem 0.75rem;
+  font-weight: 800;
+  transform: rotate(-2deg);
+}
+
+@utility ceu-wordville {
+  background-image: var(--gradiente-ceu);
+}
+
+
