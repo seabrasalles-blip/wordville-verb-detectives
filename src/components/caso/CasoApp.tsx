@@ -65,7 +65,7 @@ function Casca() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-black/5 p-2 sm:p-4">
     <div className="relative flex h-[675px] w-full max-w-[1200px] flex-col overflow-hidden rounded-2xl border border-investigacao/20 bg-background shadow-2xl">
-      <header className="border-b-4 border-investigacao/20 bg-card">
+      <header className="shrink-0 border-b-4 border-investigacao/20 bg-card">
         <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-3 px-4 py-3">
           <h1 className="text-lg font-bold text-investigacao sm:text-xl">
             🕵️‍♀️ O Caso dos Verbos Desaparecidos
