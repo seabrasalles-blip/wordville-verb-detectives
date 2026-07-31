@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Check, Search, Lightbulb, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FalaLex } from "./DialogoLex";
 
 export type FeedbackType = "success" | "error" | "hint";
 
@@ -10,8 +11,11 @@ export interface FeedbackProps {
   message: string;
   onClose?: () => void;
   autoClose?: boolean;
+  /** Desliga o alto-falante do feedback (usado em avisos muito curtos). */
+  semAudio?: boolean;
   className?: string;
 }
+
 
 const estilos: Record<FeedbackType, string> = {
   success: "border-acerto bg-acerto/10",
