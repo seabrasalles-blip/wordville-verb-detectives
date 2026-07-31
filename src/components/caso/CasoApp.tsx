@@ -1,11 +1,15 @@
-import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, HelpCircle, RotateCcw } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, HelpCircle, Map, RotateCcw, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import wordville from "@/assets/wordville.jpg";
 import medalha from "@/assets/medalha.png";
 import {
+  BANCO_EXTRA,
   CARTOES_TELA5,
+  FALAS,
+  FALA_FINAL_EXTRA,
   GRUPOS,
+  LACUNAS_EXTRA,
   LACUNAS_TELA4,
   LACUNAS_TELA6,
   LACUNAS_TELA7,
@@ -13,33 +17,31 @@ import {
   PALAVRAS_CACA,
   PARES_TELA5,
   PERGUNTAS_TELA8,
+  TELAS,
+  TELAS_COM_RAMO,
+  TELA_EXTRA,
   TOTAL_TELAS,
   fraseDaMontagem,
 } from "@/lib/caso-conteudo";
+import { errosDaTela } from "@/lib/relatorio";
 import { CasoProvider, useCaso } from "./CasoProvider";
 import { BalaoLex, Ingles } from "./BalaoLex";
+import { BarraProgresso } from "./BarraProgresso";
 import { BotaoAudio } from "./BotaoAudio";
 import { Capa } from "./Capa";
 import { ComoJogar } from "./ComoJogar";
 import { CacaPalavras } from "./CacaPalavras";
+import { DialogoLex } from "./DialogoLex";
 import { DialogoReiniciar } from "./DialogoReiniciar";
 import { AreaFeedback, Feedback } from "./Feedback";
 import { LigarColunas } from "./LigarColunas";
+import { MapaCaso } from "./MapaCaso";
+import { ModoProfessor } from "./ModoProfessor";
 import { MontarFrase } from "./MontarFrase";
+import { PraticaExtra } from "./PraticaExtra";
 import { TelaLacunas } from "./TelaLacunas";
 
-const TITULOS = [
-  "Abertura",
-  "Caça-palavras",
-  "Observação guiada",
-  "go ou goes?",
-  "Sujeito → verbo",
-  "Agora com play",
-  "Revisão mista",
-  "O que você aprendeu",
-  "Monte a frase",
-  "Caso resolvido",
-];
+const TITULOS = TELAS.map((t) => t.titulo);
 
 export function CasoApp() {
   return (
@@ -51,6 +53,8 @@ export function CasoApp() {
 
 /** Critério pedagógico de conclusão de cada tela. */
 function telaConcluida(tela: number, estado: ReturnType<typeof useCaso>["estado"]) {
+  // enquanto a prática extra está aberta, a tela não avança
+  if (estado.ramos[tela] === "aberto") return false;
   switch (tela) {
     case 1:
       return estado.respostas["t1-visto"] === "sim";
@@ -76,7 +80,11 @@ function telaConcluida(tela: number, estado: ReturnType<typeof useCaso>["estado"
       });
     case 9:
       return MONTAGENS.every((m) => estado.montagens[m.id] === fraseDaMontagem(m));
-    case 10:
+    case TELA_EXTRA:
+      if (!estado.config.extensaoAtiva) return true;
+      if (estado.extensao === "pulada") return true;
+      return LACUNAS_EXTRA.every((l) => estado.respostas[l.id] === l.resposta);
+    case 11:
       return estado.medalha;
     default:
       return true;
@@ -88,16 +96,35 @@ function Casca() {
   const tela = estado.tela;
   const [confirmando, setConfirmando] = useState(false);
   const [ajuda, setAjuda] = useState(false);
+  const [mapa, setMapa] = useState(false);
+  const [professor, setProfessor] = useState(false);
   const [processando, setProcessando] = useState(false);
   const travaRef = useRef(false);
 
   const liberado = telaConcluida(tela, estado);
+  const ramoAberto = estado.ramos[tela] === "aberto";
 
   // libera a trava assim que a tela muda
   useEffect(() => {
     travaRef.current = false;
     setProcessando(false);
   }, [tela]);
+
+  // tempo em cada tela, para o relatório do professor
+  useEffect(() => {
+    const inicio = Date.now();
+    return () => despachar({ tipo: "tempo", tela, ms: Date.now() - inicio });
+  }, [tela, despachar]);
+
+  // prática adicional depois de erros repetidos na mesma tela
+  const dificuldade = estado.config.dificuldade;
+  useEffect(() => {
+    if (dificuldade === "desafio") return;
+    if (!TELAS_COM_RAMO.includes(tela)) return;
+    if (estado.ramos[tela]) return;
+    const limiar = dificuldade === "facilitada" ? 1 : 2;
+    if (errosDaTela(estado, tela) >= limiar) despachar({ tipo: "abrirRamo", tela });
+  }, [dificuldade, estado, tela, despachar]);
 
   const navegar = (acao: () => void) => {
     if (travaRef.current) return;
@@ -106,9 +133,7 @@ function Casca() {
     acao();
   };
 
-  const concluidas = Array.from({ length: TOTAL_TELAS }, (_, i) =>
-    telaConcluida(i + 1, estado),
-  );
+  const concluidas = Array.from({ length: TOTAL_TELAS }, (_, i) => telaConcluida(i + 1, estado));
 
   return (
     <div className="ceu-wordville flex min-h-screen items-center justify-center p-0 [@media(min-height:707px)]:p-2 [@media(min-height:743px)]:p-4">
@@ -118,7 +143,7 @@ function Casca() {
         ) : (
           <>
             <header className="shrink-0 border-b-4 border-investigacao/20 bg-card">
-              <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 py-1.5">
+              <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-4 py-1.5">
                 <h1 className="flex items-center gap-2 text-lg font-extrabold text-investigacao">
                   <span aria-hidden="true">🕵️‍♀️</span> O Caso dos Verbos Desaparecidos
                 </h1>
@@ -128,10 +153,24 @@ function Casca() {
                 <div className="ml-auto flex items-center gap-1">
                   <button
                     type="button"
+                    onClick={() => setMapa(true)}
+                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-bold text-investigacao hover:bg-investigacao/10"
+                  >
+                    <Map className="size-4" aria-hidden="true" /> Mapa do Caso
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => setAjuda(true)}
                     className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-bold text-investigacao hover:bg-investigacao/10"
                   >
                     <HelpCircle className="size-4" aria-hidden="true" /> Como jogar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setProfessor(true)}
+                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-semibold text-muted-foreground hover:bg-secondary"
+                  >
+                    <GraduationCap className="size-4" aria-hidden="true" /> Professor
                   </button>
                   <button
                     type="button"
@@ -142,54 +181,65 @@ function Casca() {
                   </button>
                 </div>
               </div>
-              <div className="mx-auto flex max-w-5xl items-center gap-1.5 px-4 pb-1.5">
-                {concluidas.map((ok, i) => (
-                  <span
-                    key={i}
-                    aria-hidden="true"
-                    className={cn(
-                      "h-2 flex-1 rounded-full transition-colors",
-                      ok
-                        ? "bg-acerto"
-                        : i + 1 === tela
-                          ? "bg-pista ring-2 ring-investigacao/40"
-                          : "bg-secondary",
-                    )}
-                  />
-                ))}
-                <span className="ml-2 rounded-full bg-investigacao px-2.5 py-0.5 text-[14px] font-bold text-investigacao-foreground">
-                  {tela}/{TOTAL_TELAS}
-                </span>
-              </div>
+              <BarraProgresso concluidas={concluidas} />
             </header>
 
             <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col overflow-hidden px-4 py-1.5">
               <p className="mb-1 flex items-center gap-2 text-[13px] font-extrabold tracking-wide text-investigacao uppercase">
                 <span aria-hidden="true">🔎</span> Tela {tela} — {TITULOS[tela - 1]}
+                {ramoAberto ? " · prática extra" : ""}
               </p>
-              {tela === 1 ? <Tela1 /> : null}
-              {tela === 2 ? <CacaPalavras /> : null}
-              {tela === 3 ? <Tela3 /> : null}
-              {tela === 4 ? (
-                <TelaLacunas
-                  lacunas={LACUNAS_TELA4}
-                  banco={["go", "goes"]}
-                  comando="Observe quem pratica a ação e escolha a forma correta do verbo."
-                />
-              ) : null}
-              {tela === 5 ? <LigarColunas /> : null}
-              {tela === 6 ? <Tela6 /> : null}
-              {tela === 7 ? (
-                <TelaLacunas
-                  lacunas={LACUNAS_TELA7}
-                  banco={["go", "goes", "play", "plays"]}
-                  comando="Observe quem pratica a ação e escolha a forma correta do verbo."
-                  aoConcluir="Todos os cartazes estão consertados! Vamos ao escritório."
-                />
-              ) : null}
-              {tela === 8 ? <Tela8 /> : null}
-              {tela === 9 ? <MontarFrase /> : null}
-              {tela === 10 ? <Tela10 /> : null}
+              {ramoAberto ? (
+                <PraticaExtra tela={tela} />
+              ) : (
+                <>
+                  {tela === 1 ? <Tela1 /> : null}
+                  {tela === 2 ? (
+                    <>
+                      <DialogoLex segmentos={FALAS.t2} id="t2" className="mb-2" />
+                      <CacaPalavras />
+                    </>
+                  ) : null}
+                  {tela === 3 ? <Tela3 /> : null}
+                  {tela === 4 ? (
+                    <>
+                      <DialogoLex segmentos={FALAS.t4} id="t4" className="mb-2" />
+                      <TelaLacunas
+                        lacunas={LACUNAS_TELA4}
+                        banco={["go", "goes"]}
+                        comando="Observe quem pratica a ação e escolha a forma correta do verbo."
+                      />
+                    </>
+                  ) : null}
+                  {tela === 5 ? (
+                    <>
+                      <DialogoLex segmentos={FALAS.t5} id="t5" className="mb-2" />
+                      <LigarColunas />
+                    </>
+                  ) : null}
+                  {tela === 6 ? <Tela6 /> : null}
+                  {tela === 7 ? (
+                    <>
+                      <DialogoLex segmentos={FALAS.t7} id="t7" className="mb-2" />
+                      <TelaLacunas
+                        lacunas={LACUNAS_TELA7}
+                        banco={["go", "goes", "play", "plays"]}
+                        comando="Observe quem pratica a ação e escolha a forma correta do verbo."
+                        aoConcluir="Todos os cartazes estão consertados! Vamos ao escritório."
+                      />
+                    </>
+                  ) : null}
+                  {tela === 8 ? <Tela8 /> : null}
+                  {tela === 9 ? (
+                    <>
+                      <DialogoLex segmentos={FALAS.t9} id="t9" className="mb-2" />
+                      <MontarFrase />
+                    </>
+                  ) : null}
+                  {tela === TELA_EXTRA ? <TelaExtra /> : null}
+                  {tela === 11 ? <TelaFinal /> : null}
+                </>
+              )}
             </main>
 
             <footer className="shrink-0 border-t-4 border-investigacao/20 bg-card/95">
@@ -207,8 +257,24 @@ function Casca() {
                   <div className="ml-auto flex items-center gap-2">
                     {!liberado ? (
                       <span className="text-[15px] font-semibold text-muted-foreground">
-                        Termine a investigação desta tela para continuar
+                        {ramoAberto
+                          ? "Termine a prática extra para continuar"
+                          : "Termine a investigação desta tela para continuar"}
                       </span>
+                    ) : null}
+                    {tela === TELA_EXTRA &&
+                    estado.config.extensaoAtiva &&
+                    estado.extensao !== "feita" ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          despachar({ tipo: "extensao", valor: "pulada" });
+                          navegar(avancar);
+                        }}
+                        className="botao-fofo border-2 border-investigacao/40 bg-card px-4 py-1.5 text-[16px] text-investigacao"
+                      >
+                        Pular caso extra
+                      </button>
                     ) : null}
                     <button
                       type="button"
@@ -226,6 +292,8 @@ function Casca() {
             </footer>
 
             <ComoJogar aberto={ajuda} aoFechar={() => setAjuda(false)} />
+            <MapaCaso aberto={mapa} aoFechar={() => setMapa(false)} concluidas={concluidas} />
+            <ModoProfessor aberto={professor} aoFechar={() => setProfessor(false)} />
           </>
         )}
 
@@ -241,7 +309,6 @@ function Casca() {
     </div>
   );
 }
-
 
 function Cartaz({
   frase,
@@ -310,6 +377,8 @@ function Grupos() {
 function Tela1() {
   const { estado, despachar } = useCaso();
   const visto = estado.respostas["t1-visto"] === "sim";
+  const [ouviuTudo, setOuviuTudo] = useState(false);
+  const terminar = useCallback(() => setOuviuTudo(true), []);
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-2">
       <img
@@ -320,13 +389,7 @@ function Tela1() {
         className="h-[74px] w-full shrink-0 rounded-3xl border-4 border-pista object-cover shadow-md"
       />
       <div className="grid min-h-0 flex-1 grid-cols-[38%_1fr] gap-4">
-        <BalaoLex variante="apresentacao">
-          <p className="text-[18px] leading-snug">
-            Olá! Eu sou a <strong>Inspetora Lex</strong>. Os verbos dos cartazes de Wordville estão
-            errados.
-          </p>
-          <p className="text-[18px] leading-snug">Você me ajuda a encontrar as pistas?</p>
-        </BalaoLex>
+        <DialogoLex segmentos={FALAS.t1} id="t1" variante="apresentacao" aoTerminar={terminar} />
 
         <div className="flex min-h-0 items-center">
           <section className="cartao-pista w-full rotate-[-0.6deg] border-investigacao bg-card p-4">
@@ -348,10 +411,11 @@ function Tela1() {
               {!visto ? (
                 <button
                   type="button"
+                  disabled={!ouviuTudo}
                   onClick={() => despachar({ tipo: "responder", id: "t1-visto", valor: "sim" })}
-                  className="botao-fofo bg-pista px-6 py-2.5 text-[18px] text-pista-foreground"
+                  className="botao-fofo bg-pista px-6 py-2.5 text-[18px] text-pista-foreground disabled:cursor-not-allowed disabled:opacity-45"
                 >
-                  Ver a frase correta
+                  {ouviuTudo ? "Ver a frase correta" : "Ouça a Inspetora Lex primeiro"}
                 </button>
               ) : (
                 <div className="surge flex w-full items-center justify-center gap-3 rounded-3xl border-[3px] border-acerto bg-acerto/10 px-4 py-2">
@@ -382,7 +446,7 @@ function Tela3() {
 
   return (
     <div className="space-y-2">
-      <p className="text-[18px] font-semibold">Observe as frases. Quem pratica a ação?</p>
+      <DialogoLex segmentos={FALAS.t3} id="t3" />
       <div className="grid gap-2 sm:grid-cols-2">
         <Cartaz frase="I go to school." icone="🙋‍♀️" audioId="t3-a" />
         <Cartaz frase="She goes to school." icone="👧" audioId="t3-b" />
@@ -390,7 +454,9 @@ function Tela3() {
 
       {!revelado ? (
         <div className="space-y-2">
-          <p className="text-[18px] font-semibold">Compare os dois exemplos. O que mudou no verbo?</p>
+          <p className="text-[18px] font-semibold">
+            Compare os dois exemplos. O que mudou no verbo?
+          </p>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
@@ -400,7 +466,10 @@ function Tela3() {
                 setErro(false);
                 despachar({ tipo: "observou" });
               }}
-              className={cn(neutro, escolha === "certa" && "border-pista bg-pista text-pista-foreground")}
+              className={cn(
+                neutro,
+                escolha === "certa" && "border-pista bg-pista text-pista-foreground",
+              )}
             >
               go virou goes
             </button>
@@ -424,7 +493,7 @@ function Tela3() {
             {erro ? (
               <Feedback
                 type="error"
-                message="Olhe o verbo das duas frases. Compare go e goes. Tente novamente."
+                message="Escute I go e She goes. O segundo tem um som a mais no final do verbo."
                 onClose={() => setErro(false)}
               />
             ) : null}
@@ -433,13 +502,7 @@ function Tela3() {
       ) : (
         <>
           <Grupos />
-          <BalaoLex tom="pista">
-            <p className="text-[17px]">
-              Com <Ingles>he</Ingles>, <Ingles>she</Ingles> e <Ingles>it</Ingles>, o verbo muda.
-              Play vira plays e go vira goes. Com <Ingles>I</Ingles>, <Ingles>you</Ingles>,{" "}
-              <Ingles>we</Ingles> e <Ingles>they</Ingles>, usamos play e go sem mudança.
-            </p>
-          </BalaoLex>
+          <DialogoLex segmentos={FALAS.t3fim} id="t3fim" tom="pista" />
         </>
       )}
     </div>
@@ -449,6 +512,7 @@ function Tela3() {
 function Tela6() {
   return (
     <div className="space-y-2">
+      <DialogoLex segmentos={FALAS.t6} id="t6" />
       <div className="cartao-pista flex flex-wrap items-center gap-2 border-pista px-3 py-1.5">
         <span aria-hidden="true" className="text-2xl">
           🐶
@@ -479,7 +543,7 @@ function Tela8() {
   const { estado, despachar } = useCaso();
   return (
     <div className="space-y-2">
-      <p className="text-[18px] font-semibold">Responda as duas perguntas do quadro da Lex.</p>
+      <DialogoLex segmentos={FALAS.t8} id="t8" />
 
       <div className="grid gap-3 sm:grid-cols-2">
         {PERGUNTAS_TELA8.map((q) => {
@@ -488,7 +552,9 @@ function Tela8() {
           const certa = opcao?.correta === true;
           return (
             <div key={q.id} className="cartao-pista border-investigacao/70 p-2.5">
-              <h2 className="etiqueta inline-block border-pista bg-pista text-[16px] text-pista-foreground">{q.titulo}</h2>
+              <h2 className="etiqueta inline-block border-pista bg-pista text-[16px] text-pista-foreground">
+                {q.titulo}
+              </h2>
               <p className="mt-0.5 text-[18px]">{q.pergunta}</p>
               <div className="mt-2 grid gap-2">
                 {q.opcoes.map((op, i) => (
@@ -514,9 +580,7 @@ function Tela8() {
                 {opcao ? (
                   <Feedback
                     type={certa ? "success" : "error"}
-                    message={
-                      certa ? opcao.feedback : `${opcao.feedback} Escolha novamente.`
-                    }
+                    message={certa ? opcao.feedback : `${opcao.feedback} Escolha novamente.`}
                     className="mt-2"
                   />
                 ) : null}
@@ -529,8 +593,49 @@ function Tela8() {
   );
 }
 
-function Tela10() {
+/** Tela opcional: a mesma regra com like, watch e read. */
+function TelaExtra() {
+  const { estado, despachar } = useCaso();
+  const feita = LACUNAS_EXTRA.every((l) => estado.respostas[l.id] === l.resposta);
+  const watchOk = estado.respostas["tx-watches"] === "watches";
+
+  useEffect(() => {
+    if (feita && estado.extensao !== "feita") despachar({ tipo: "extensao", valor: "feita" });
+  }, [feita, estado.extensao, despachar]);
+
+  if (!estado.config.extensaoAtiva) {
+    return (
+      <div className="space-y-2">
+        <DialogoLex segmentos={FALAS.t10} id="t10-off" tom="pista" />
+        <p className="text-[18px] font-semibold">
+          O caso extra está desligado nas configurações do professor. Você pode continuar para o
+          fechamento.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      <DialogoLex
+        segmentos={watchOk ? FALAS.t10watch : FALAS.t10}
+        id={watchOk ? "t10w" : "t10"}
+        tom="pista"
+      />
+      <TelaLacunas
+        lacunas={LACUNAS_EXTRA}
+        banco={BANCO_EXTRA}
+        colunas={3}
+        comando="Novos verbos, mesma regra: observe quem pratica a ação."
+        aoConcluir="Você provou que a regra vale para outros verbos também!"
+      />
+    </div>
+  );
+}
+
+function TelaFinal() {
   const { estado, despachar, fala } = useCaso();
+  const comExtra = estado.extensao === "feita";
 
   return (
     <div className="space-y-2">
@@ -543,13 +648,11 @@ function Tela10() {
         className="h-14 w-full rounded-2xl border-2 border-acerto object-cover shadow-md"
       />
       <Grupos />
-      <BalaoLex tom="acerto">
-        <p className="text-[17px]">
-          Você descobriu a pista! Com <Ingles>he</Ingles>, <Ingles>she</Ingles> e{" "}
-          <Ingles>it</Ingles>, usamos goes e plays. Com <Ingles>I</Ingles>, <Ingles>you</Ingles>,{" "}
-          <Ingles>we</Ingles> e <Ingles>they</Ingles>, usamos go e play.
-        </p>
-      </BalaoLex>
+      <DialogoLex
+        segmentos={comExtra ? FALA_FINAL_EXTRA : FALAS.t11}
+        id={comExtra ? "t11x" : "t11"}
+        tom="acerto"
+      />
 
       {estado.medalha ? (
         <div className="medalha-anima flex items-center justify-center gap-3">
@@ -561,16 +664,14 @@ function Tela10() {
             loading="lazy"
             className="w-14 drop-shadow-xl"
           />
-          <p className="text-[18px] font-bold text-acerto">
-            Assistente-Detetive de Wordville! 🎉
-          </p>
+          <p className="text-[18px] font-bold text-acerto">Assistente-Detetive de Wordville! 🎉</p>
         </div>
       ) : (
         <button
           type="button"
           onClick={() => {
             despachar({ tipo: "medalha" });
-            fala.falar("He goes to school.", "final-1");
+            if (estado.config.audioIngles) fala.falar("He goes to school.", "final-1");
           }}
           className="botao-fofo mx-auto block bg-acerto px-7 py-2 text-[17px] text-acerto-foreground"
         >

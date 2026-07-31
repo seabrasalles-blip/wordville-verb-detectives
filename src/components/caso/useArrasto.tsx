@@ -10,9 +10,7 @@ const TOLERANCIA = 24;
 
 /** Encontra a lacuna sob o ponto ou a mais próxima dentro da tolerância. */
 function lacunaNoPonto(x: number, y: number): string | null {
-  const direto = document
-    .elementFromPoint(x, y)
-    ?.closest<HTMLElement>("[data-lacuna]");
+  const direto = document.elementFromPoint(x, y)?.closest<HTMLElement>("[data-lacuna]");
   if (direto?.dataset.lacuna) return direto.dataset.lacuna;
 
   let melhor: { id: string; dist: number } | null = null;

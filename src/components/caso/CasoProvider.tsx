@@ -21,6 +21,30 @@ import { useFala } from "@/hooks/use-fala";
 
 const CHAVE = "caso-verbos-desaparecidos-v1";
 
+export type ModoCaca = "arrasto" | "toque";
+export type Dificuldade = "facilitada" | "padrao" | "desafio";
+
+export type ConfigCaso = {
+  /** Narração das falas da Lex em português. */
+  audioLex: boolean;
+  /** Áudio das palavras e frases em inglês. */
+  audioIngles: boolean;
+  /** Interação do caça-palavras. */
+  modoCaca: ModoCaca;
+  /** "facilitada" abre prática extra com 1 erro; "desafio" desliga a prática extra. */
+  dificuldade: Dificuldade;
+  /** Mostra a tela opcional de novos verbos (like, watch, read). */
+  extensaoAtiva: boolean;
+};
+
+const configInicial: ConfigCaso = {
+  audioLex: true,
+  audioIngles: true,
+  modoCaca: "arrasto",
+  dificuldade: "padrao",
+  extensaoAtiva: true,
+};
+
 export type EstadoCaso = {
   /** Falso enquanto a criança está na capa. */
   iniciou: boolean;
@@ -37,6 +61,15 @@ export type EstadoCaso = {
   metacognicao: Record<string, number>;
   observou: boolean;
   medalha: boolean;
+  config: ConfigCaso;
+  /** Estado da prática extra de cada tela: aberta ou já concluída. */
+  ramos: Record<string, "aberto" | "concluido">;
+  /** Erros cometidos dentro da prática extra de cada tela. */
+  errosRamo: Record<string, number>;
+  /** Tempo acumulado em cada tela, em milissegundos. */
+  tempos: Record<string, number>;
+  /** Situação da tela opcional de novos verbos. */
+  extensao: "pendente" | "feita" | "pulada";
 };
 
 const inicial: EstadoCaso = {
@@ -52,15 +85,18 @@ const inicial: EstadoCaso = {
   metacognicao: {},
   observou: false,
   medalha: false,
+  config: configInicial,
+  ramos: {},
+  errosRamo: {},
+  tempos: {},
+  extensao: "pendente",
 };
-
 
 type Acao =
   | { tipo: "iniciar" }
   | { tipo: "ir"; tela: number }
   | { tipo: "avancar" }
   | { tipo: "voltar" }
-
   | { tipo: "encontrou"; palavra: PalavraCaca; caminho: { linha: number; coluna: number }[] }
   | { tipo: "novaGrade" }
   | { tipo: "responder"; id: string; valor: string }
@@ -70,9 +106,14 @@ type Acao =
   | { tipo: "observou" }
   | { tipo: "metacognicao"; id: string; indice: number }
   | { tipo: "medalha" }
+  | { tipo: "config"; mudanca: Partial<ConfigCaso> }
+  | { tipo: "abrirRamo"; tela: number }
+  | { tipo: "concluirRamo"; tela: number }
+  | { tipo: "errarRamo"; tela: number }
+  | { tipo: "tempo"; tela: number; ms: number }
+  | { tipo: "extensao"; valor: EstadoCaso["extensao"] }
   | { tipo: "restaurar"; estado: EstadoCaso }
   | { tipo: "reiniciar" };
-
 
 function reducer(estado: EstadoCaso, acao: Acao): EstadoCaso {
   switch (acao.tipo) {
@@ -80,7 +121,6 @@ function reducer(estado: EstadoCaso, acao: Acao): EstadoCaso {
       return { ...estado, iniciou: true };
     case "ir":
       return { ...estado, tela: Math.min(TOTAL_TELAS, Math.max(1, acao.tela)) };
-
     case "avancar":
       return { ...estado, tela: Math.min(TOTAL_TELAS, estado.tela + 1) };
     case "voltar":
@@ -117,10 +157,34 @@ function reducer(estado: EstadoCaso, acao: Acao): EstadoCaso {
       return { ...estado, metacognicao: { ...estado.metacognicao, [acao.id]: acao.indice } };
     case "medalha":
       return { ...estado, medalha: true };
+    case "config":
+      return { ...estado, config: { ...estado.config, ...acao.mudanca } };
+    case "abrirRamo":
+      return estado.ramos[acao.tela]
+        ? estado
+        : { ...estado, ramos: { ...estado.ramos, [acao.tela]: "aberto" } };
+    case "concluirRamo":
+      return { ...estado, ramos: { ...estado.ramos, [acao.tela]: "concluido" } };
+    case "errarRamo":
+      return {
+        ...estado,
+        errosRamo: {
+          ...estado.errosRamo,
+          [acao.tela]: (estado.errosRamo[acao.tela] ?? 0) + 1,
+        },
+      };
+    case "tempo":
+      return {
+        ...estado,
+        tempos: { ...estado.tempos, [acao.tela]: (estado.tempos[acao.tela] ?? 0) + acao.ms },
+      };
+    case "extensao":
+      return { ...estado, extensao: acao.valor };
     case "restaurar":
       return acao.estado;
     case "reiniciar":
-      return { ...inicial, gradeId: sortearGradeId(estado.gradeId) };
+      // as preferências do professor sobrevivem ao recomeço do caso
+      return { ...inicial, config: estado.config, gradeId: sortearGradeId(estado.gradeId) };
     default:
       return estado;
   }
@@ -160,6 +224,8 @@ function sanear(dados: unknown): EstadoCaso {
     return saida;
   };
 
+  const booleano = (v: unknown, padrao: boolean) => (typeof v === "boolean" ? v : padrao);
+
   const tela =
     typeof d.tela === "number" && Number.isInteger(d.tela) && d.tela >= 1 && d.tela <= TOTAL_TELAS
       ? d.tela
@@ -167,7 +233,8 @@ function sanear(dados: unknown): EstadoCaso {
 
   const encontradas = Array.isArray(d.encontradas)
     ? (d.encontradas.filter(
-        (p): p is PalavraCaca => typeof p === "string" && (PALAVRAS_CACA as readonly string[]).includes(p),
+        (p): p is PalavraCaca =>
+          typeof p === "string" && (PALAVRAS_CACA as readonly string[]).includes(p),
       ) as PalavraCaca[])
     : [];
 
@@ -199,10 +266,28 @@ function sanear(dados: unknown): EstadoCaso {
     if (planejado && mesmoCaminho(caminho, planejado.caminho)) caminhosValidos[palavra] = caminho;
   }
 
+  const c = (d.config ?? {}) as Record<string, unknown>;
+  const config: ConfigCaso = {
+    audioLex: booleano(c.audioLex, configInicial.audioLex),
+    audioIngles: booleano(c.audioIngles, configInicial.audioIngles),
+    modoCaca: c.modoCaca === "toque" ? "toque" : "arrasto",
+    dificuldade:
+      c.dificuldade === "facilitada" || c.dificuldade === "desafio"
+        ? (c.dificuldade as Dificuldade)
+        : "padrao",
+    extensaoAtiva: booleano(c.extensaoAtiva, configInicial.extensaoAtiva),
+  };
+
+  const ramos: Record<string, "aberto" | "concluido"> = {};
+  if (d.ramos && typeof d.ramos === "object") {
+    for (const [k, v] of Object.entries(d.ramos as Record<string, unknown>)) {
+      if (v === "aberto" || v === "concluido") ramos[k] = v;
+    }
+  }
+
   return {
     iniciou: d.iniciou === true,
     tela,
-
     encontradas: encontradas.filter((p) => caminhosValidos[p]),
     gradeId,
     caminhos: caminhosValidos,
@@ -213,6 +298,14 @@ function sanear(dados: unknown): EstadoCaso {
     metacognicao: numeros(d.metacognicao),
     observou: d.observou === true,
     medalha: d.medalha === true,
+    config,
+    ramos,
+    errosRamo: numeros(d.errosRamo),
+    tempos: numeros(d.tempos),
+    extensao:
+      d.extensao === "feita" || d.extensao === "pulada"
+        ? (d.extensao as "feita" | "pulada")
+        : "pendente",
   };
 }
 
@@ -255,7 +348,6 @@ export function CasoProvider({ children }: { children: ReactNode }) {
     fala.parar();
     despachar({ tipo: "reiniciar" });
   }, [fala]);
-
 
   const valor = useMemo(
     () => ({ estado, despachar, avancar, voltar, reiniciar, fala }),

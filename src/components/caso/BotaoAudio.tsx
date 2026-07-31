@@ -10,10 +10,11 @@ type Props = {
   tamanho?: "sm" | "md";
 };
 
-/** Alto-falante clicável (TTS em inglês). Some quando o navegador não suporta. */
+/** Alto-falante clicável (TTS em inglês). Some quando o navegador não suporta
+ *  ou quando o professor desliga o áudio em inglês. */
 export function BotaoAudio({ texto, id, rotulo, className, tamanho = "md" }: Props) {
-  const { fala } = useCaso();
-  if (!fala.suportado) return null;
+  const { estado, fala } = useCaso();
+  if (!fala.suportado || !estado.config.audioIngles) return null;
 
   const marca = id ?? texto;
   const tocando = fala.falandoId === marca;

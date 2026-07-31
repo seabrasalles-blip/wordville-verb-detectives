@@ -17,10 +17,12 @@ type Props = {
   banco: string[];
   comando: string;
   aoConcluir?: string;
+  /** Número de colunas do quadro de frases (2 por padrão). */
+  colunas?: 2 | 3;
 };
 
-/** Telas 4, 6 e 7: completar lacunas arrastando (ou tocando) os blocos. */
-export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
+/** Telas 4, 6, 7 e caso extra: completar lacunas arrastando (ou tocando) os blocos. */
+export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }: Props) {
   const { estado, despachar, fala } = useCaso();
   const [dica, setDica] = useState<{ id: string; texto: string } | null>(null);
   const [ultimoAcerto, setUltimoAcerto] = useState<Lacuna | null>(null);
@@ -41,7 +43,9 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
       despachar({ tipo: "responder", id: lacuna.id, valor: lacuna.resposta });
       setDica(null);
       setUltimoAcerto(lacuna);
-      fala.falar(`${lacuna.antes} ${lacuna.resposta} ${lacuna.depois}`, `frase-${lacuna.id}`);
+      if (estado.config.audioIngles) {
+        fala.falar(`${lacuna.antes} ${lacuna.resposta} ${lacuna.depois}`, `frase-${lacuna.id}`);
+      }
       return;
     }
 
@@ -58,7 +62,6 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
     setUltimoAcerto(null);
   };
 
-
   const arrasto = useArrasto(soltar);
   const tudoCerto = lacunas.every(
     (l) => normalizar(estado.respostas[l.id] ?? "") === normalizar(l.resposta),
@@ -68,9 +71,15 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
     <div className="space-y-2">
       <p className="text-[18px] font-semibold text-foreground">{comando}</p>
 
-      <div className={cn("grid gap-2", lacunas.length >= 3 && "sm:grid-cols-2")}>
+      <div
+        className={cn(
+          "grid gap-2",
+          lacunas.length >= 3 && (colunas === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"),
+        )}
+      >
         {lacunas.map((lacuna) => {
-          const certo = normalizar(estado.respostas[lacuna.id] ?? "") === normalizar(lacuna.resposta);
+          const certo =
+            normalizar(estado.respostas[lacuna.id] ?? "") === normalizar(lacuna.resposta);
           const errada = dica?.id === lacuna.id && !certo;
           return (
             <div
@@ -121,9 +130,7 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
                 ) : null}
               </div>
 
-              {errada ? (
-                <Feedback type="hint" message={dica.texto} className="mt-1.5" />
-              ) : null}
+              {errada ? <Feedback type="hint" message={dica.texto} className="mt-1.5" /> : null}
             </div>
           );
         })}

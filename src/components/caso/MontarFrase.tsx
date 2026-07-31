@@ -9,15 +9,11 @@ import { BotaoAudio } from "./BotaoAudio";
 /** Tela 9: montar a frase com blocos ordenados (palavras + ordem são validadas). */
 export function MontarFrase() {
   const { estado } = useCaso();
-  const concluidas = MONTAGENS.filter(
-    (m) => estado.montagens[m.id] === fraseDaMontagem(m),
-  ).length;
+  const concluidas = MONTAGENS.filter((m) => estado.montagens[m.id] === fraseDaMontagem(m)).length;
 
   return (
     <div className="space-y-2">
-      <p className="text-[18px] font-semibold">
-        Monte a frase na ordem certa. Toque nos blocos.
-      </p>
+      <p className="text-[18px] font-semibold">Monte a frase na ordem certa. Toque nos blocos.</p>
       <div className="grid gap-2 sm:grid-cols-2">
         {MONTAGENS.map((m, i) => (
           <Situacao key={m.id} montagem={m} bloqueada={i > 0 && concluidas === 0} />

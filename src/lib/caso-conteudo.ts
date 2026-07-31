@@ -1,12 +1,13 @@
-export const TOTAL_TELAS = 10;
+/** 9 telas do caso + caso extra (10) + fechamento (11). */
+export const TOTAL_TELAS = 11;
+/** Tela opcional de extensão (novos verbos). */
+export const TELA_EXTRA = 10;
+export const TELA_FINAL = 11;
 
 export const PALAVRAS_CACA = ["GO", "GOES", "PLAY", "PLAYS"] as const;
 export type PalavraCaca = (typeof PALAVRAS_CACA)[number];
 
-export const EVIDENCIAS: Record<
-  PalavraCaca,
-  { icone: string; fala: string; texto: string }
-> = {
+export const EVIDENCIAS: Record<PalavraCaca, { icone: string; fala: string; texto: string }> = {
   GO: {
     icone: "🚶‍♀️➡️",
     fala: "go",
@@ -53,10 +54,41 @@ export const GRADES_CACA: GradeCaca[] = [
       ["J", "Z", "O", "F", "X", "D", "S", "M"],
     ],
     palavras: [
-      { palavra: "GO", caminho: [{ linha: 6, coluna: 2 }, { linha: 7, coluna: 2 }] },
-      { palavra: "GOES", caminho: [{ linha: 4, coluna: 1 }, { linha: 4, coluna: 2 }, { linha: 4, coluna: 3 }, { linha: 4, coluna: 4 }] },
-      { palavra: "PLAY", caminho: [{ linha: 2, coluna: 1 }, { linha: 2, coluna: 2 }, { linha: 2, coluna: 3 }, { linha: 2, coluna: 4 }] },
-      { palavra: "PLAYS", caminho: [{ linha: 3, coluna: 6 }, { linha: 4, coluna: 6 }, { linha: 5, coluna: 6 }, { linha: 6, coluna: 6 }, { linha: 7, coluna: 6 }] },
+      {
+        palavra: "GO",
+        caminho: [
+          { linha: 6, coluna: 2 },
+          { linha: 7, coluna: 2 },
+        ],
+      },
+      {
+        palavra: "GOES",
+        caminho: [
+          { linha: 4, coluna: 1 },
+          { linha: 4, coluna: 2 },
+          { linha: 4, coluna: 3 },
+          { linha: 4, coluna: 4 },
+        ],
+      },
+      {
+        palavra: "PLAY",
+        caminho: [
+          { linha: 2, coluna: 1 },
+          { linha: 2, coluna: 2 },
+          { linha: 2, coluna: 3 },
+          { linha: 2, coluna: 4 },
+        ],
+      },
+      {
+        palavra: "PLAYS",
+        caminho: [
+          { linha: 3, coluna: 6 },
+          { linha: 4, coluna: 6 },
+          { linha: 5, coluna: 6 },
+          { linha: 6, coluna: 6 },
+          { linha: 7, coluna: 6 },
+        ],
+      },
     ],
   },
   {
@@ -72,10 +104,41 @@ export const GRADES_CACA: GradeCaca[] = [
       ["W", "R", "Z", "J", "X", "S", "T", "H"],
     ],
     palavras: [
-      { palavra: "GO", caminho: [{ linha: 1, coluna: 4 }, { linha: 1, coluna: 5 }] },
-      { palavra: "GOES", caminho: [{ linha: 4, coluna: 5 }, { linha: 5, coluna: 5 }, { linha: 6, coluna: 5 }, { linha: 7, coluna: 5 }] },
-      { palavra: "PLAY", caminho: [{ linha: 5, coluna: 0 }, { linha: 5, coluna: 1 }, { linha: 5, coluna: 2 }, { linha: 5, coluna: 3 }] },
-      { palavra: "PLAYS", caminho: [{ linha: 2, coluna: 7 }, { linha: 3, coluna: 7 }, { linha: 4, coluna: 7 }, { linha: 5, coluna: 7 }, { linha: 6, coluna: 7 }] },
+      {
+        palavra: "GO",
+        caminho: [
+          { linha: 1, coluna: 4 },
+          { linha: 1, coluna: 5 },
+        ],
+      },
+      {
+        palavra: "GOES",
+        caminho: [
+          { linha: 4, coluna: 5 },
+          { linha: 5, coluna: 5 },
+          { linha: 6, coluna: 5 },
+          { linha: 7, coluna: 5 },
+        ],
+      },
+      {
+        palavra: "PLAY",
+        caminho: [
+          { linha: 5, coluna: 0 },
+          { linha: 5, coluna: 1 },
+          { linha: 5, coluna: 2 },
+          { linha: 5, coluna: 3 },
+        ],
+      },
+      {
+        palavra: "PLAYS",
+        caminho: [
+          { linha: 2, coluna: 7 },
+          { linha: 3, coluna: 7 },
+          { linha: 4, coluna: 7 },
+          { linha: 5, coluna: 7 },
+          { linha: 6, coluna: 7 },
+        ],
+      },
     ],
   },
   {
@@ -91,10 +154,41 @@ export const GRADES_CACA: GradeCaca[] = [
       ["Z", "R", "D", "J", "N", "S", "Z", "H"],
     ],
     palavras: [
-      { palavra: "GO", caminho: [{ linha: 5, coluna: 1 }, { linha: 5, coluna: 2 }] },
-      { palavra: "GOES", caminho: [{ linha: 1, coluna: 2 }, { linha: 1, coluna: 3 }, { linha: 1, coluna: 4 }, { linha: 1, coluna: 5 }] },
-      { palavra: "PLAY", caminho: [{ linha: 0, coluna: 2 }, { linha: 0, coluna: 3 }, { linha: 0, coluna: 4 }, { linha: 0, coluna: 5 }] },
-      { palavra: "PLAYS", caminho: [{ linha: 3, coluna: 5 }, { linha: 4, coluna: 5 }, { linha: 5, coluna: 5 }, { linha: 6, coluna: 5 }, { linha: 7, coluna: 5 }] },
+      {
+        palavra: "GO",
+        caminho: [
+          { linha: 5, coluna: 1 },
+          { linha: 5, coluna: 2 },
+        ],
+      },
+      {
+        palavra: "GOES",
+        caminho: [
+          { linha: 1, coluna: 2 },
+          { linha: 1, coluna: 3 },
+          { linha: 1, coluna: 4 },
+          { linha: 1, coluna: 5 },
+        ],
+      },
+      {
+        palavra: "PLAY",
+        caminho: [
+          { linha: 0, coluna: 2 },
+          { linha: 0, coluna: 3 },
+          { linha: 0, coluna: 4 },
+          { linha: 0, coluna: 5 },
+        ],
+      },
+      {
+        palavra: "PLAYS",
+        caminho: [
+          { linha: 3, coluna: 5 },
+          { linha: 4, coluna: 5 },
+          { linha: 5, coluna: 5 },
+          { linha: 6, coluna: 5 },
+          { linha: 7, coluna: 5 },
+        ],
+      },
     ],
   },
   {
@@ -110,10 +204,41 @@ export const GRADES_CACA: GradeCaca[] = [
       ["W", "X", "H", "Z", "V", "R", "R", "T"],
     ],
     palavras: [
-      { palavra: "GO", caminho: [{ linha: 2, coluna: 3 }, { linha: 2, coluna: 4 }] },
-      { palavra: "GOES", caminho: [{ linha: 4, coluna: 2 }, { linha: 4, coluna: 3 }, { linha: 4, coluna: 4 }, { linha: 4, coluna: 5 }] },
-      { palavra: "PLAY", caminho: [{ linha: 0, coluna: 0 }, { linha: 1, coluna: 0 }, { linha: 2, coluna: 0 }, { linha: 3, coluna: 0 }] },
-      { palavra: "PLAYS", caminho: [{ linha: 1, coluna: 2 }, { linha: 1, coluna: 3 }, { linha: 1, coluna: 4 }, { linha: 1, coluna: 5 }, { linha: 1, coluna: 6 }] },
+      {
+        palavra: "GO",
+        caminho: [
+          { linha: 2, coluna: 3 },
+          { linha: 2, coluna: 4 },
+        ],
+      },
+      {
+        palavra: "GOES",
+        caminho: [
+          { linha: 4, coluna: 2 },
+          { linha: 4, coluna: 3 },
+          { linha: 4, coluna: 4 },
+          { linha: 4, coluna: 5 },
+        ],
+      },
+      {
+        palavra: "PLAY",
+        caminho: [
+          { linha: 0, coluna: 0 },
+          { linha: 1, coluna: 0 },
+          { linha: 2, coluna: 0 },
+          { linha: 3, coluna: 0 },
+        ],
+      },
+      {
+        palavra: "PLAYS",
+        caminho: [
+          { linha: 1, coluna: 2 },
+          { linha: 1, coluna: 3 },
+          { linha: 1, coluna: 4 },
+          { linha: 1, coluna: 5 },
+          { linha: 1, coluna: 6 },
+        ],
+      },
     ],
   },
   {
@@ -129,10 +254,41 @@ export const GRADES_CACA: GradeCaca[] = [
       ["D", "S", "W", "J", "Q", "N", "Q", "F"],
     ],
     palavras: [
-      { palavra: "GO", caminho: [{ linha: 1, coluna: 0 }, { linha: 2, coluna: 0 }] },
-      { palavra: "GOES", caminho: [{ linha: 4, coluna: 1 }, { linha: 5, coluna: 1 }, { linha: 6, coluna: 1 }, { linha: 7, coluna: 1 }] },
-      { palavra: "PLAY", caminho: [{ linha: 0, coluna: 1 }, { linha: 1, coluna: 1 }, { linha: 2, coluna: 1 }, { linha: 3, coluna: 1 }] },
-      { palavra: "PLAYS", caminho: [{ linha: 1, coluna: 3 }, { linha: 2, coluna: 3 }, { linha: 3, coluna: 3 }, { linha: 4, coluna: 3 }, { linha: 5, coluna: 3 }] },
+      {
+        palavra: "GO",
+        caminho: [
+          { linha: 1, coluna: 0 },
+          { linha: 2, coluna: 0 },
+        ],
+      },
+      {
+        palavra: "GOES",
+        caminho: [
+          { linha: 4, coluna: 1 },
+          { linha: 5, coluna: 1 },
+          { linha: 6, coluna: 1 },
+          { linha: 7, coluna: 1 },
+        ],
+      },
+      {
+        palavra: "PLAY",
+        caminho: [
+          { linha: 0, coluna: 1 },
+          { linha: 1, coluna: 1 },
+          { linha: 2, coluna: 1 },
+          { linha: 3, coluna: 1 },
+        ],
+      },
+      {
+        palavra: "PLAYS",
+        caminho: [
+          { linha: 1, coluna: 3 },
+          { linha: 2, coluna: 3 },
+          { linha: 3, coluna: 3 },
+          { linha: 4, coluna: 3 },
+          { linha: 5, coluna: 3 },
+        ],
+      },
     ],
   },
   {
@@ -148,10 +304,41 @@ export const GRADES_CACA: GradeCaca[] = [
       ["M", "C", "P", "L", "A", "Y", "D", "D"],
     ],
     palavras: [
-      { palavra: "GO", caminho: [{ linha: 4, coluna: 0 }, { linha: 4, coluna: 1 }] },
-      { palavra: "GOES", caminho: [{ linha: 2, coluna: 7 }, { linha: 3, coluna: 7 }, { linha: 4, coluna: 7 }, { linha: 5, coluna: 7 }] },
-      { palavra: "PLAY", caminho: [{ linha: 7, coluna: 2 }, { linha: 7, coluna: 3 }, { linha: 7, coluna: 4 }, { linha: 7, coluna: 5 }] },
-      { palavra: "PLAYS", caminho: [{ linha: 1, coluna: 1 }, { linha: 1, coluna: 2 }, { linha: 1, coluna: 3 }, { linha: 1, coluna: 4 }, { linha: 1, coluna: 5 }] },
+      {
+        palavra: "GO",
+        caminho: [
+          { linha: 4, coluna: 0 },
+          { linha: 4, coluna: 1 },
+        ],
+      },
+      {
+        palavra: "GOES",
+        caminho: [
+          { linha: 2, coluna: 7 },
+          { linha: 3, coluna: 7 },
+          { linha: 4, coluna: 7 },
+          { linha: 5, coluna: 7 },
+        ],
+      },
+      {
+        palavra: "PLAY",
+        caminho: [
+          { linha: 7, coluna: 2 },
+          { linha: 7, coluna: 3 },
+          { linha: 7, coluna: 4 },
+          { linha: 7, coluna: 5 },
+        ],
+      },
+      {
+        palavra: "PLAYS",
+        caminho: [
+          { linha: 1, coluna: 1 },
+          { linha: 1, coluna: 2 },
+          { linha: 1, coluna: 3 },
+          { linha: 1, coluna: 4 },
+          { linha: 1, coluna: 5 },
+        ],
+      },
     ],
   },
   {
@@ -167,10 +354,41 @@ export const GRADES_CACA: GradeCaca[] = [
       ["R", "V", "V", "P", "L", "A", "Y", "S"],
     ],
     palavras: [
-      { palavra: "GO", caminho: [{ linha: 2, coluna: 6 }, { linha: 3, coluna: 6 }] },
-      { palavra: "GOES", caminho: [{ linha: 3, coluna: 1 }, { linha: 4, coluna: 1 }, { linha: 5, coluna: 1 }, { linha: 6, coluna: 1 }] },
-      { palavra: "PLAY", caminho: [{ linha: 1, coluna: 3 }, { linha: 1, coluna: 4 }, { linha: 1, coluna: 5 }, { linha: 1, coluna: 6 }] },
-      { palavra: "PLAYS", caminho: [{ linha: 7, coluna: 3 }, { linha: 7, coluna: 4 }, { linha: 7, coluna: 5 }, { linha: 7, coluna: 6 }, { linha: 7, coluna: 7 }] },
+      {
+        palavra: "GO",
+        caminho: [
+          { linha: 2, coluna: 6 },
+          { linha: 3, coluna: 6 },
+        ],
+      },
+      {
+        palavra: "GOES",
+        caminho: [
+          { linha: 3, coluna: 1 },
+          { linha: 4, coluna: 1 },
+          { linha: 5, coluna: 1 },
+          { linha: 6, coluna: 1 },
+        ],
+      },
+      {
+        palavra: "PLAY",
+        caminho: [
+          { linha: 1, coluna: 3 },
+          { linha: 1, coluna: 4 },
+          { linha: 1, coluna: 5 },
+          { linha: 1, coluna: 6 },
+        ],
+      },
+      {
+        palavra: "PLAYS",
+        caminho: [
+          { linha: 7, coluna: 3 },
+          { linha: 7, coluna: 4 },
+          { linha: 7, coluna: 5 },
+          { linha: 7, coluna: 6 },
+          { linha: 7, coluna: 7 },
+        ],
+      },
     ],
   },
   {
@@ -186,10 +404,41 @@ export const GRADES_CACA: GradeCaca[] = [
       ["D", "F", "P", "L", "A", "Y", "S", "S"],
     ],
     palavras: [
-      { palavra: "GO", caminho: [{ linha: 1, coluna: 5 }, { linha: 1, coluna: 6 }] },
-      { palavra: "GOES", caminho: [{ linha: 4, coluna: 7 }, { linha: 5, coluna: 7 }, { linha: 6, coluna: 7 }, { linha: 7, coluna: 7 }] },
-      { palavra: "PLAY", caminho: [{ linha: 0, coluna: 0 }, { linha: 1, coluna: 0 }, { linha: 2, coluna: 0 }, { linha: 3, coluna: 0 }] },
-      { palavra: "PLAYS", caminho: [{ linha: 7, coluna: 2 }, { linha: 7, coluna: 3 }, { linha: 7, coluna: 4 }, { linha: 7, coluna: 5 }, { linha: 7, coluna: 6 }] },
+      {
+        palavra: "GO",
+        caminho: [
+          { linha: 1, coluna: 5 },
+          { linha: 1, coluna: 6 },
+        ],
+      },
+      {
+        palavra: "GOES",
+        caminho: [
+          { linha: 4, coluna: 7 },
+          { linha: 5, coluna: 7 },
+          { linha: 6, coluna: 7 },
+          { linha: 7, coluna: 7 },
+        ],
+      },
+      {
+        palavra: "PLAY",
+        caminho: [
+          { linha: 0, coluna: 0 },
+          { linha: 1, coluna: 0 },
+          { linha: 2, coluna: 0 },
+          { linha: 3, coluna: 0 },
+        ],
+      },
+      {
+        palavra: "PLAYS",
+        caminho: [
+          { linha: 7, coluna: 2 },
+          { linha: 7, coluna: 3 },
+          { linha: 7, coluna: 4 },
+          { linha: 7, coluna: 5 },
+          { linha: 7, coluna: 6 },
+        ],
+      },
     ],
   },
 ];
@@ -280,9 +529,7 @@ export function validarGrade(grade: GradeCaca): string[] {
 }
 
 /** Só grades aprovadas pelo validador chegam à criança. */
-export const GRADES_VALIDAS: GradeCaca[] = GRADES_CACA.filter(
-  (g) => validarGrade(g).length === 0,
-);
+export const GRADES_VALIDAS: GradeCaca[] = GRADES_CACA.filter((g) => validarGrade(g).length === 0);
 
 export function gradeEhValida(id: string) {
   return GRADES_VALIDAS.some((g) => g.id === id);
@@ -318,7 +565,7 @@ export const GRUPOS = [
 
 export type TipoDica = "conceitual" | "procedimental" | "atencional";
 
-export type FamiliaVerbal = "go" | "play";
+export type FamiliaVerbal = "go" | "play" | "like" | "watch" | "read";
 
 export type Lacuna = {
   id: string;
@@ -348,7 +595,8 @@ export const LACUNAS_TELA4: Lacuna[] = [
     ilustracao: "👦",
     acertoTexto: "Muito bem! 'He' está no grupo de he, she e it. Por isso: go recebe ES → goes.",
     dicas: {
-      conceitual: "Quem pratica a ação é 'He'. Ele está no grupo de he, she e it. Qual forma usamos?",
+      conceitual:
+        "Quem pratica a ação é 'He'. Ele está no grupo de he, she e it. Qual forma usamos?",
       procedimental: DICA_SUJEITO,
       atencional: "Compare os grupos: I, you, we, they → go. He, she, it → goes.",
     },
@@ -363,7 +611,8 @@ export const LACUNAS_TELA4: Lacuna[] = [
     ilustracao: "👨‍👩‍👧",
     acertoTexto: "Muito bem! 'We' está no grupo de I, you, we e they. O verbo fica 'go'.",
     dicas: {
-      conceitual: "Quem pratica a ação é 'We'. Ele está no grupo de I, you, we e they. Qual forma usamos?",
+      conceitual:
+        "Quem pratica a ação é 'We'. Ele está no grupo de I, you, we e they. Qual forma usamos?",
       procedimental: DICA_SUJEITO,
       atencional: "Compare os grupos: I, you, we, they → go. He, she, it → goes.",
     },
@@ -378,7 +627,8 @@ export const LACUNAS_TELA4: Lacuna[] = [
     ilustracao: "👧",
     acertoTexto: "Muito bem! 'She' está no grupo de he, she e it. Por isso: go recebe ES → goes.",
     dicas: {
-      conceitual: "Quem pratica a ação é 'She'. Ela está no grupo de he, she e it. Qual forma usamos?",
+      conceitual:
+        "Quem pratica a ação é 'She'. Ela está no grupo de he, she e it. Qual forma usamos?",
       procedimental: DICA_SUJEITO,
       atencional: "Compare os grupos: I, you, we, they → go. He, she, it → goes.",
     },
@@ -396,7 +646,8 @@ export const LACUNAS_TELA6: Lacuna[] = [
     ilustracao: "👧⚽️",
     acertoTexto: "Isso! 'She' está no grupo de he, she e it. Na escrita, play recebe S → plays.",
     dicas: {
-      conceitual: "Quem pratica a ação é 'She'. Ela está no grupo de he, she e it. Qual forma usamos?",
+      conceitual:
+        "Quem pratica a ação é 'She'. Ela está no grupo de he, she e it. Qual forma usamos?",
       atencional: "Compare com 'She goes'. Escolha o verbo correto para 'She'.",
     },
   },
@@ -410,7 +661,8 @@ export const LACUNAS_TELA6: Lacuna[] = [
     ilustracao: "🧒⚽️",
     acertoTexto: "Isso! 'I' está no grupo de I, you, we e they. O verbo fica 'play'.",
     dicas: {
-      conceitual: "Quem pratica a ação é 'I'. Ele está no grupo de I, you, we e they. Qual forma usamos?",
+      conceitual:
+        "Quem pratica a ação é 'I'. Ele está no grupo de I, you, we e they. Qual forma usamos?",
       atencional: "Compare com 'I go'. Escolha o verbo correto para 'I'.",
     },
   },
@@ -516,7 +768,6 @@ export const CARTOES_TELA5: { id: string; forma: FormaVerbal }[] = [
   { id: "c5", forma: "go" },
 ];
 
-
 /** Tela 9: montar a frase com blocos ordenados. */
 export type Montagem = {
   id: string;
@@ -559,9 +810,7 @@ export const MONTAGENS: Montagem[] = [
 ];
 
 export function fraseDaMontagem(m: Montagem) {
-  return m.solucao
-    .map((id) => m.blocos.find((b) => b.id === id)?.texto ?? "")
-    .join(" ");
+  return m.solucao.map((id) => m.blocos.find((b) => b.id === id)?.texto ?? "").join(" ");
 }
 
 export const ERRO_MONTAGEM = "Observe a ordem das palavras e a forma do verbo.";
@@ -620,21 +869,49 @@ export const PERGUNTAS_TELA8: {
   },
 ];
 
-
 /** Grupo do sujeito, para os feedbacks de concordância. */
 export function grupoDoSujeito(sujeito: string): "base" | "terceira" {
   return ["he", "she", "it"].includes(sujeito.trim().toLowerCase()) ? "terceira" : "base";
 }
 
+/** Flexão de 3ª pessoa e sufixo escrito de cada verbo do caso. */
+export const FLEXAO: Record<FamiliaVerbal, { forma: string; sufixo: string }> = {
+  go: { forma: "goes", sufixo: "ES" },
+  play: { forma: "plays", sufixo: "S" },
+  like: { forma: "likes", sufixo: "S" },
+  watch: { forma: "watches", sufixo: "ES" },
+  read: { forma: "reads", sufixo: "S" },
+};
+
+const FAMILIA_POR_PALAVRA: Record<string, FamiliaVerbal> = {
+  go: "go",
+  goes: "go",
+  play: "play",
+  plays: "play",
+  like: "like",
+  likes: "like",
+  watch: "watch",
+  watches: "watch",
+  read: "read",
+  reads: "read",
+};
+
 export function familiaDaPalavra(palavra: string): FamiliaVerbal {
-  const p = palavra.trim().toLowerCase();
-  return p === "go" || p === "goes" ? "go" : "play";
+  return FAMILIA_POR_PALAVRA[palavra.trim().toLowerCase()] ?? "play";
 }
+
+const IDEIAS: Record<FamiliaVerbal, string> = {
+  go: "ir",
+  play: "jogar",
+  like: "gostar",
+  watch: "assistir",
+  read: "ler",
+};
 
 /** Sentido do verbo dentro da frase, em português. */
 function ideiaDoVerbo(lacuna: Lacuna) {
-  if (lacuna.familia === "go") return "ir";
-  return lacuna.acao.includes("jogar") ? "jogar" : "brincar";
+  if (lacuna.familia === "play") return lacuna.acao.includes("jogar") ? "jogar" : "brincar";
+  return IDEIAS[lacuna.familia];
 }
 
 /**
@@ -649,8 +926,8 @@ export function feedbackLacuna(lacuna: Lacuna, palavra: string, tentativa: numbe
   const base = lacuna.familia;
   const ideia = ideiaDoVerbo(lacuna);
   const terceira = grupoDoSujeito(sujeito) === "terceira";
-  const terminacao = base === "go" ? "ES" : "S";
-  const flexionada = base === "go" ? "goes" : "plays";
+  const terminacao = FLEXAO[base].sufixo;
+  const flexionada = FLEXAO[base].forma;
   const frase = `${lacuna.antes} ${lacuna.resposta} ${lacuna.depois}`;
 
   // 1) Verbo certo, forma errada: reconhece o que a criança já entendeu.
@@ -662,7 +939,7 @@ export function feedbackLacuna(lacuna: Lacuna, palavra: string, tentativa: numbe
   }
 
   // 2) Terminação já combina com o sujeito, mas o verbo é o outro.
-  const marcada = escolha === "goes" || escolha === "plays";
+  const marcada = escolha === FLEXAO[familiaEscolhida].forma;
   if (marcada === terceira && tentativa === 0) {
     return `Você percebeu que ${sujeito} pede essa forma, mas observe a ação: a frase fala sobre ${lacuna.acao}. O verbo necessário é ${base}.`;
   }
@@ -679,3 +956,295 @@ export function feedbackLacuna(lacuna: Lacuna, palavra: string, tentativa: numbe
   return `Compare: ${frase}`;
 }
 
+/* ===================== Falas da Inspetora em segmentos ===================== */
+
+/**
+ * Falas da Lex em segmentos de no máximo 2 frases curtas.
+ * Tudo em português: é a língua de instrução das crianças.
+ */
+export const FALAS: Record<string, string[]> = {
+  t1: [
+    "Olá! Eu sou a Inspetora Lex.",
+    "Os verbos dos cartazes de Wordville estão errados. Você me ajuda?",
+  ],
+  t2: [
+    "Nossa primeira pista está escondida nesta grade.",
+    "Procure GO, GOES, PLAY e PLAYS. Leia da esquerda para a direita ou de cima para baixo.",
+  ],
+  t2fim: [
+    "Reunimos as quatro evidências!",
+    "Escute o final de goes e de plays. Ouviu o som a mais?",
+  ],
+  t3: ["Observe as duas frases com atenção.", "O que mudou no verbo? Compare go e goes."],
+  t3fim: [
+    "Descobrimos a pista! Com he, she e it, o verbo ganha um som a mais.",
+    "Na escrita: play recebe S e go recebe ES.",
+  ],
+  t4: ["Alguns cartazes perderam o verbo.", "Veja quem pratica a ação e escolha go ou goes."],
+  t5: ["Agora vamos organizar os suspeitos.", "Ligue cada sujeito à forma do verbo que combina."],
+  t6: ["Chegou a vez do verbo play.", "Observe o sujeito e escolha play ou plays."],
+  t7: [
+    "Revisão mista! Aqui há dois verbos diferentes.",
+    "Pense primeiro na ação, depois no sujeito.",
+  ],
+  t8: ["Vamos anotar o que você descobriu.", "Responda as duas perguntas do meu quadro."],
+  t9: ["Última missão: montar as frases.", "Coloque os blocos na ordem certa."],
+  t10: [
+    "Detetive, encontramos mais cartazes com verbos diferentes!",
+    "Será que a mesma regra funciona para eles?",
+  ],
+  t10watch: [
+    "Olha esse: watch vira watches! Ganhou e-s no final, não só s.",
+    "Mas escute o som: é o mesmo som das nossas pistas.",
+  ],
+  t11: [
+    "Caso resolvido, detetive! O verbo muda com he, she e it.",
+    "Com I, you, we e they, o verbo fica do jeito simples.",
+  ],
+  ramo: [
+    "Detetive, encontrei uma pista extra!",
+    "Vamos praticar um pouco mais antes de continuar.",
+  ],
+};
+
+/** Fechamento quando a criança também resolveu o caso extra. */
+export const FALA_FINAL_EXTRA = [
+  "Você descobriu que o verbo muda com he, she e it.",
+  "E isso vale para go, play, like, watch e read!",
+];
+
+/* ===================== Prática extra (ramificação) ===================== */
+
+export type ItemPratica = {
+  id: string;
+  antes: string;
+  depois: string;
+  resposta: string;
+  opcoes: string[];
+  ilustracao: string;
+  /** Ajuda direta da Lex depois de dois erros no ramo. */
+  ajuda: string;
+};
+
+export const RAMOS: Record<number, { titulo: string; itens: ItemPratica[] }> = {
+  4: {
+    titulo: "Quadro de pistas extra — go ou goes?",
+    itens: [
+      {
+        id: "r4-it",
+        antes: "It",
+        depois: "to school every day.",
+        resposta: "goes",
+        opcoes: ["go", "goes"],
+        ilustracao: "🚌",
+        ajuda: "Vou te ajudar: it fica no grupo de he e she. Com it, usamos goes.",
+      },
+      {
+        id: "r4-they",
+        antes: "They",
+        depois: "to school every day.",
+        resposta: "go",
+        opcoes: ["go", "goes"],
+        ilustracao: "👫",
+        ajuda: "Vou te ajudar: they fica no grupo de I, you, we e they. Com they, usamos go.",
+      },
+    ],
+  },
+  5: {
+    titulo: "Quadro de pistas extra — sujeito e verbo",
+    itens: [
+      {
+        id: "r5-it",
+        antes: "It",
+        depois: "to the park.",
+        resposta: "goes",
+        opcoes: ["go", "goes"],
+        ilustracao: "🐶",
+        ajuda: "Vou te ajudar: it sempre combina com goes.",
+      },
+      {
+        id: "r5-he",
+        antes: "He",
+        depois: "to the park.",
+        resposta: "goes",
+        opcoes: ["go", "goes"],
+        ilustracao: "👦",
+        ajuda: "Vou te ajudar: he sempre combina com goes. Vamos colocar juntos!",
+      },
+    ],
+  },
+  6: {
+    titulo: "Quadro de pistas extra — play ou plays?",
+    itens: [
+      {
+        id: "r6-he",
+        antes: "He",
+        depois: "soccer on Saturdays.",
+        resposta: "plays",
+        opcoes: ["play", "plays"],
+        ilustracao: "👦⚽️",
+        ajuda: "Vou te ajudar: he combina com plays.",
+      },
+      {
+        id: "r6-we",
+        antes: "We",
+        depois: "soccer on Saturdays.",
+        resposta: "play",
+        opcoes: ["play", "plays"],
+        ilustracao: "👨‍👩‍👧⚽️",
+        ajuda: "Vou te ajudar: we combina com play.",
+      },
+    ],
+  },
+  7: {
+    titulo: "Quadro de pistas extra — revisão",
+    itens: [
+      {
+        id: "r7-she",
+        antes: "She",
+        depois: "to the park.",
+        resposta: "goes",
+        opcoes: ["go", "goes", "play", "plays"],
+        ilustracao: "👧🌳",
+        ajuda: "Vou te ajudar: a frase fala de ir ao parque e o sujeito é she. Fica goes.",
+      },
+      {
+        id: "r7-i",
+        antes: "I",
+        depois: "soccer.",
+        resposta: "play",
+        opcoes: ["go", "goes", "play", "plays"],
+        ilustracao: "🧒⚽️",
+        ajuda: "Vou te ajudar: a frase fala de jogar futebol e o sujeito é I. Fica play.",
+      },
+      {
+        id: "r7-he",
+        antes: "He",
+        depois: "to school.",
+        resposta: "goes",
+        opcoes: ["go", "goes", "play", "plays"],
+        ilustracao: "👦🏫",
+        ajuda: "Vou te ajudar: ir à escola com he fica goes.",
+      },
+      {
+        id: "r7-they",
+        antes: "They",
+        depois: "soccer.",
+        resposta: "play",
+        opcoes: ["go", "goes", "play", "plays"],
+        ilustracao: "👫⚽️",
+        ajuda: "Vou te ajudar: jogar futebol com they fica play.",
+      },
+    ],
+  },
+};
+
+export const TELAS_COM_RAMO = [4, 5, 6, 7];
+
+/* ===================== Caso extra: novos verbos ===================== */
+
+export const LACUNAS_EXTRA: Lacuna[] = [
+  {
+    id: "tx-likes",
+    antes: "She",
+    depois: "ice cream.",
+    resposta: "likes",
+    familia: "like",
+    acao: "gostar de sorvete",
+    ilustracao: "🍦",
+    acertoTexto: "Isso! Com she, like recebe S → likes.",
+    dicas: {
+      conceitual:
+        "Quem pratica a ação é 'She', do grupo de he, she e it. O verbo ganha um som a mais.",
+      atencional: "Ouça like e likes. O som a mais no final é a nossa pista.",
+    },
+  },
+  {
+    id: "tx-like",
+    antes: "I",
+    depois: "ice cream.",
+    resposta: "like",
+    familia: "like",
+    acao: "gostar de sorvete",
+    ilustracao: "🧒🍦",
+    acertoTexto: "Isso! Com I, o verbo fica like.",
+    dicas: {
+      conceitual: "Quem pratica a ação é 'I', do grupo de I, you, we e they.",
+      atencional: "Ouça I like e She likes. Só o segundo tem o som a mais.",
+    },
+  },
+  {
+    id: "tx-watches",
+    antes: "He",
+    depois: "TV.",
+    resposta: "watches",
+    familia: "watch",
+    acao: "assistir TV",
+    ilustracao: "📺",
+    acertoTexto: "Muito bem! Watch recebe ES → watches, com o mesmo som das outras pistas.",
+    dicas: {
+      conceitual: "Quem pratica a ação é 'He'. Esse verbo recebe ES, não só S.",
+      atencional: "Ouça watch e watches. O som a mais está no final.",
+    },
+  },
+  {
+    id: "tx-watch",
+    antes: "We",
+    depois: "TV.",
+    resposta: "watch",
+    familia: "watch",
+    acao: "assistir TV",
+    ilustracao: "👨‍👩‍👧📺",
+    acertoTexto: "Isso! Com we, o verbo fica watch.",
+    dicas: {
+      conceitual: "Quem pratica a ação é 'We', do grupo de I, you, we e they.",
+      atencional: "Ouça We watch e He watches. Compare o final.",
+    },
+  },
+  {
+    id: "tx-reads",
+    antes: "She",
+    depois: "books.",
+    resposta: "reads",
+    familia: "read",
+    acao: "ler livros",
+    ilustracao: "📚",
+    acertoTexto: "Boa! Com she, read recebe S → reads.",
+    dicas: {
+      conceitual: "Quem pratica a ação é 'She', do grupo de he, she e it.",
+      atencional: "Ouça read e reads. O som a mais é a pista.",
+    },
+  },
+  {
+    id: "tx-read",
+    antes: "I",
+    depois: "books.",
+    resposta: "read",
+    familia: "read",
+    acao: "ler livros",
+    ilustracao: "🧒📚",
+    acertoTexto: "Boa! Com I, o verbo fica read.",
+    dicas: {
+      conceitual: "Quem pratica a ação é 'I', do grupo de I, you, we e they.",
+      atencional: "Ouça I read e She reads. Compare o final.",
+    },
+  },
+];
+
+export const BANCO_EXTRA = ["like", "likes", "watch", "watches", "read", "reads"];
+
+/* ===================== Nomes das telas (mapa do caso) ===================== */
+
+export const TELAS = [
+  { n: 1, titulo: "Abertura", icone: "🕵️‍♀️", pratica: false },
+  { n: 2, titulo: "Caça-palavras", icone: "🔍", pratica: false },
+  { n: 3, titulo: "Observação guiada", icone: "👀", pratica: false },
+  { n: 4, titulo: "go ou goes?", icone: "🏫", pratica: true },
+  { n: 5, titulo: "Sujeito → verbo", icone: "🔗", pratica: true },
+  { n: 6, titulo: "Agora com play", icone: "⚽️", pratica: true },
+  { n: 7, titulo: "Revisão mista", icone: "🧩", pratica: true },
+  { n: 8, titulo: "O que você aprendeu", icone: "📝", pratica: false },
+  { n: 9, titulo: "Monte a frase", icone: "🧱", pratica: true },
+  { n: 10, titulo: "Caso extra: novos suspeitos", icone: "🌟", pratica: true },
+  { n: 11, titulo: "Caso resolvido", icone: "🏅", pratica: false },
+] as const;
