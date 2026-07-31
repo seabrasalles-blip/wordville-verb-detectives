@@ -365,6 +365,8 @@ function Grupos() {
 function Tela1() {
   const { estado, despachar } = useCaso();
   const visto = estado.respostas["t1-visto"] === "sim";
+  const [ouviuTudo, setOuviuTudo] = useState(false);
+  const terminar = useCallback(() => setOuviuTudo(true), []);
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-2">
       <img
@@ -375,13 +377,7 @@ function Tela1() {
         className="h-[74px] w-full shrink-0 rounded-3xl border-4 border-pista object-cover shadow-md"
       />
       <div className="grid min-h-0 flex-1 grid-cols-[38%_1fr] gap-4">
-        <BalaoLex variante="apresentacao">
-          <p className="text-[18px] leading-snug">
-            Olá! Eu sou a <strong>Inspetora Lex</strong>. Os verbos dos cartazes de Wordville estão
-            errados.
-          </p>
-          <p className="text-[18px] leading-snug">Você me ajuda a encontrar as pistas?</p>
-        </BalaoLex>
+        <DialogoLex segmentos={FALAS.t1} id="t1" variante="apresentacao" aoTerminar={terminar} />
 
         <div className="flex min-h-0 items-center">
           <section className="cartao-pista w-full rotate-[-0.6deg] border-investigacao bg-card p-4">
@@ -403,12 +399,14 @@ function Tela1() {
               {!visto ? (
                 <button
                   type="button"
+                  disabled={!ouviuTudo}
                   onClick={() => despachar({ tipo: "responder", id: "t1-visto", valor: "sim" })}
-                  className="botao-fofo bg-pista px-6 py-2.5 text-[18px] text-pista-foreground"
+                  className="botao-fofo bg-pista px-6 py-2.5 text-[18px] text-pista-foreground disabled:cursor-not-allowed disabled:opacity-45"
                 >
-                  Ver a frase correta
+                  {ouviuTudo ? "Ver a frase correta" : "Ouça a Inspetora Lex primeiro"}
                 </button>
               ) : (
+
                 <div className="surge flex w-full items-center justify-center gap-3 rounded-3xl border-[3px] border-acerto bg-acerto/10 px-4 py-2">
                   <span aria-hidden="true" className="text-2xl">
                     ✅
