@@ -97,16 +97,35 @@ function Casca() {
   const tela = estado.tela;
   const [confirmando, setConfirmando] = useState(false);
   const [ajuda, setAjuda] = useState(false);
+  const [mapa, setMapa] = useState(false);
+  const [professor, setProfessor] = useState(false);
   const [processando, setProcessando] = useState(false);
   const travaRef = useRef(false);
 
   const liberado = telaConcluida(tela, estado);
+  const ramoAberto = estado.ramos[tela] === "aberto";
 
   // libera a trava assim que a tela muda
   useEffect(() => {
     travaRef.current = false;
     setProcessando(false);
   }, [tela]);
+
+  // tempo em cada tela, para o relatório do professor
+  useEffect(() => {
+    const inicio = Date.now();
+    return () => despachar({ tipo: "tempo", tela, ms: Date.now() - inicio });
+  }, [tela, despachar]);
+
+  // prática adicional depois de erros repetidos na mesma tela
+  const dificuldade = estado.config.dificuldade;
+  useEffect(() => {
+    if (dificuldade === "desafio") return;
+    if (!TELAS_COM_RAMO.includes(tela)) return;
+    if (estado.ramos[tela]) return;
+    const limiar = dificuldade === "facilitada" ? 1 : 2;
+    if (errosDaTela(estado, tela) >= limiar) despachar({ tipo: "abrirRamo", tela });
+  }, [dificuldade, estado, tela, despachar]);
 
   const navegar = (acao: () => void) => {
     if (travaRef.current) return;
@@ -127,7 +146,7 @@ function Casca() {
         ) : (
           <>
             <header className="shrink-0 border-b-4 border-investigacao/20 bg-card">
-              <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 py-1.5">
+              <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-4 py-1.5">
                 <h1 className="flex items-center gap-2 text-lg font-extrabold text-investigacao">
                   <span aria-hidden="true">🕵️‍♀️</span> O Caso dos Verbos Desaparecidos
                 </h1>
@@ -137,10 +156,24 @@ function Casca() {
                 <div className="ml-auto flex items-center gap-1">
                   <button
                     type="button"
+                    onClick={() => setMapa(true)}
+                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-bold text-investigacao hover:bg-investigacao/10"
+                  >
+                    <Map className="size-4" aria-hidden="true" /> Mapa do Caso
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => setAjuda(true)}
                     className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-bold text-investigacao hover:bg-investigacao/10"
                   >
                     <HelpCircle className="size-4" aria-hidden="true" /> Como jogar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setProfessor(true)}
+                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-semibold text-muted-foreground hover:bg-secondary"
+                  >
+                    <GraduationCap className="size-4" aria-hidden="true" /> Professor
                   </button>
                   <button
                     type="button"
@@ -151,54 +184,50 @@ function Casca() {
                   </button>
                 </div>
               </div>
-              <div className="mx-auto flex max-w-5xl items-center gap-1.5 px-4 pb-1.5">
-                {concluidas.map((ok, i) => (
-                  <span
-                    key={i}
-                    aria-hidden="true"
-                    className={cn(
-                      "h-2 flex-1 rounded-full transition-colors",
-                      ok
-                        ? "bg-acerto"
-                        : i + 1 === tela
-                          ? "bg-pista ring-2 ring-investigacao/40"
-                          : "bg-secondary",
-                    )}
-                  />
-                ))}
-                <span className="ml-2 rounded-full bg-investigacao px-2.5 py-0.5 text-[14px] font-bold text-investigacao-foreground">
-                  {tela}/{TOTAL_TELAS}
-                </span>
-              </div>
+              <BarraProgresso concluidas={concluidas} />
             </header>
 
             <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col overflow-hidden px-4 py-1.5">
               <p className="mb-1 flex items-center gap-2 text-[13px] font-extrabold tracking-wide text-investigacao uppercase">
                 <span aria-hidden="true">🔎</span> Tela {tela} — {TITULOS[tela - 1]}
+                {ramoAberto ? " · prática extra" : ""}
               </p>
-              {tela === 1 ? <Tela1 /> : null}
-              {tela === 2 ? <CacaPalavras /> : null}
-              {tela === 3 ? <Tela3 /> : null}
-              {tela === 4 ? (
-                <TelaLacunas
-                  lacunas={LACUNAS_TELA4}
-                  banco={["go", "goes"]}
-                  comando="Observe quem pratica a ação e escolha a forma correta do verbo."
-                />
-              ) : null}
-              {tela === 5 ? <LigarColunas /> : null}
-              {tela === 6 ? <Tela6 /> : null}
-              {tela === 7 ? (
-                <TelaLacunas
-                  lacunas={LACUNAS_TELA7}
-                  banco={["go", "goes", "play", "plays"]}
-                  comando="Observe quem pratica a ação e escolha a forma correta do verbo."
-                  aoConcluir="Todos os cartazes estão consertados! Vamos ao escritório."
-                />
-              ) : null}
-              {tela === 8 ? <Tela8 /> : null}
-              {tela === 9 ? <MontarFrase /> : null}
-              {tela === 10 ? <Tela10 /> : null}
+              {ramoAberto ? (
+                <PraticaExtra tela={tela} />
+              ) : (
+                <>
+                  {tela === 1 ? <Tela1 /> : null}
+                  {tela === 2 ? <CacaPalavras /> : null}
+                  {tela === 3 ? <Tela3 /> : null}
+                  {tela === 4 ? (
+                    <>
+                      <DialogoLex segmentos={FALAS.t4} id="t4" className="mb-2" />
+                      <TelaLacunas
+                        lacunas={LACUNAS_TELA4}
+                        banco={["go", "goes"]}
+                        comando="Observe quem pratica a ação e escolha a forma correta do verbo."
+                      />
+                    </>
+                  ) : null}
+                  {tela === 5 ? <LigarColunas /> : null}
+                  {tela === 6 ? <Tela6 /> : null}
+                  {tela === 7 ? (
+                    <>
+                      <DialogoLex segmentos={FALAS.t7} id="t7" className="mb-2" />
+                      <TelaLacunas
+                        lacunas={LACUNAS_TELA7}
+                        banco={["go", "goes", "play", "plays"]}
+                        comando="Observe quem pratica a ação e escolha a forma correta do verbo."
+                        aoConcluir="Todos os cartazes estão consertados! Vamos ao escritório."
+                      />
+                    </>
+                  ) : null}
+                  {tela === 8 ? <Tela8 /> : null}
+                  {tela === 9 ? <MontarFrase /> : null}
+                  {tela === TELA_EXTRA ? <TelaExtra /> : null}
+                  {tela === 11 ? <TelaFinal /> : null}
+                </>
+              )}
             </main>
 
             <footer className="shrink-0 border-t-4 border-investigacao/20 bg-card/95">
@@ -216,8 +245,22 @@ function Casca() {
                   <div className="ml-auto flex items-center gap-2">
                     {!liberado ? (
                       <span className="text-[15px] font-semibold text-muted-foreground">
-                        Termine a investigação desta tela para continuar
+                        {ramoAberto
+                          ? "Termine a prática extra para continuar"
+                          : "Termine a investigação desta tela para continuar"}
                       </span>
+                    ) : null}
+                    {tela === TELA_EXTRA && estado.config.extensaoAtiva && estado.extensao !== "feita" ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          despachar({ tipo: "extensao", valor: "pulada" });
+                          navegar(avancar);
+                        }}
+                        className="botao-fofo border-2 border-investigacao/40 bg-card px-4 py-1.5 text-[16px] text-investigacao"
+                      >
+                        Pular caso extra
+                      </button>
                     ) : null}
                     <button
                       type="button"
@@ -235,8 +278,11 @@ function Casca() {
             </footer>
 
             <ComoJogar aberto={ajuda} aoFechar={() => setAjuda(false)} />
+            <MapaCaso aberto={mapa} aoFechar={() => setMapa(false)} concluidas={concluidas} />
+            <ModoProfessor aberto={professor} aoFechar={() => setProfessor(false)} />
           </>
         )}
+
 
         <DialogoReiniciar
           aberto={confirmando}
