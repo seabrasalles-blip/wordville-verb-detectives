@@ -1,47 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { Volume2, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import lex from "@/assets/lex.png";
-import { useCaso } from "./CasoProvider";
-
-/** Alto-falante das falas da Inspetora Lex (português). */
-export function FalaLex({
-  texto,
-  id,
-  rotulo,
-  className,
-}: {
-  texto: string;
-  id?: string;
-  rotulo?: string;
-  className?: string;
-}) {
-  const { estado, fala } = useCaso();
-  if (!fala.suportado || !estado.config.audioLex) return null;
-
-  const marca = id ?? texto;
-  const tocando = fala.falandoId === marca;
-
-  return (
-    <button
-      type="button"
-      onClick={() => fala.falarPt(texto, marca)}
-      aria-label={rotulo ?? "Ouvir a fala da Inspetora Lex"}
-      className={cn(
-        "inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-pista text-pista-foreground shadow-sm transition-transform hover:scale-105 focus-visible:ring-4 focus-visible:ring-investigacao/40 focus-visible:outline-none",
-        tocando && "pulsa",
-        className,
-      )}
-    >
-      <Volume2 className="size-5" aria-hidden="true" />
-    </button>
-  );
-}
 
 type Props = {
   /** Falas curtas da Lex: no máximo 2 frases por segmento. */
   segmentos: string[];
-  /** Identificador estável para o áudio e para reiniciar o diálogo. */
+  /** Identificador estável para reiniciar o diálogo. */
   id: string;
   tom?: "investigacao" | "acerto" | "pista";
   /** "compacta" mostra apenas um segmento por vez, sem a imagem da Lex. */
@@ -50,6 +15,7 @@ type Props = {
   aoTerminar?: () => void;
   className?: string;
 };
+
 
 const tons = {
   investigacao: "border-investigacao/40 bg-card",
