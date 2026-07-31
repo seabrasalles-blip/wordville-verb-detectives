@@ -435,7 +435,7 @@ function Tela3() {
 
   return (
     <div className="space-y-2">
-      <p className="text-[18px] font-semibold">Observe as frases. Quem pratica a ação?</p>
+      <DialogoLex segmentos={FALAS.t3} id="t3" />
       <div className="grid gap-2 sm:grid-cols-2">
         <Cartaz frase="I go to school." icone="🙋‍♀️" audioId="t3-a" />
         <Cartaz frase="She goes to school." icone="👧" audioId="t3-b" />
@@ -477,7 +477,7 @@ function Tela3() {
             {erro ? (
               <Feedback
                 type="error"
-                message="Olhe o verbo das duas frases. Compare go e goes. Tente novamente."
+                message="Escute I go e She goes. O segundo tem um som a mais no final do verbo."
                 onClose={() => setErro(false)}
               />
             ) : null}
@@ -486,18 +486,13 @@ function Tela3() {
       ) : (
         <>
           <Grupos />
-          <BalaoLex tom="pista">
-            <p className="text-[17px]">
-              Com <Ingles>he</Ingles>, <Ingles>she</Ingles> e <Ingles>it</Ingles>, o verbo muda.
-              Play vira plays e go vira goes. Com <Ingles>I</Ingles>, <Ingles>you</Ingles>,{" "}
-              <Ingles>we</Ingles> e <Ingles>they</Ingles>, usamos play e go sem mudança.
-            </p>
-          </BalaoLex>
+          <DialogoLex segmentos={FALAS.t3fim} id="t3fim" tom="pista" />
         </>
       )}
     </div>
   );
 }
+
 
 function Tela6() {
   return (
