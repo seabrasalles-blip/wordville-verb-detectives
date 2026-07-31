@@ -194,7 +194,12 @@ function Casca() {
               ) : (
                 <>
                   {tela === 1 ? <Tela1 /> : null}
-                  {tela === 2 ? <CacaPalavras /> : null}
+                  {tela === 2 ? (
+                    <>
+                      <DialogoLex segmentos={FALAS.t2} id="t2" className="mb-2" />
+                      <CacaPalavras />
+                    </>
+                  ) : null}
                   {tela === 3 ? <Tela3 /> : null}
                   {tela === 4 ? (
                     <>
@@ -206,7 +211,12 @@ function Casca() {
                       />
                     </>
                   ) : null}
-                  {tela === 5 ? <LigarColunas /> : null}
+                  {tela === 5 ? (
+                    <>
+                      <DialogoLex segmentos={FALAS.t5} id="t5" className="mb-2" />
+                      <LigarColunas />
+                    </>
+                  ) : null}
                   {tela === 6 ? <Tela6 /> : null}
                   {tela === 7 ? (
                     <>
@@ -220,7 +230,12 @@ function Casca() {
                     </>
                   ) : null}
                   {tela === 8 ? <Tela8 /> : null}
-                  {tela === 9 ? <MontarFrase /> : null}
+                  {tela === 9 ? (
+                    <>
+                      <DialogoLex segmentos={FALAS.t9} id="t9" className="mb-2" />
+                      <MontarFrase />
+                    </>
+                  ) : null}
                   {tela === TELA_EXTRA ? <TelaExtra /> : null}
                   {tela === 11 ? <TelaFinal /> : null}
                 </>
