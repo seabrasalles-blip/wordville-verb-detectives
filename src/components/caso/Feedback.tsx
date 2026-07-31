@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Check, Search, Lightbulb, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { FalaLex } from "./DialogoLex";
+
 
 export type FeedbackType = "success" | "error" | "hint";
 
