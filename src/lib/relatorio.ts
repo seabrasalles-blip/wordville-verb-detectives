@@ -167,7 +167,11 @@ export function relatorio(estado: EstadoRelatorio): LinhaRelatorio[] {
     erros: errosDaTela(estado, t.n) + (estado.errosRamo[t.n] ?? 0),
     estrelas: estrelasDaTela(estado, t.n),
     praticaExtra:
-      estado.ramos[t.n] === "concluido" ? "concluída" : estado.ramos[t.n] === "aberto" ? "aberta" : "não",
+      estado.ramos[t.n] === "concluido"
+        ? "concluída"
+        : estado.ramos[t.n] === "aberto"
+          ? "aberta"
+          : "não",
     segundos: Math.round((estado.tempos[t.n] ?? 0) / 1000),
   }));
 }
@@ -176,7 +180,9 @@ export function relatorioCsv(estado: EstadoRelatorio) {
   const linhas = relatorio(estado);
   const cabecalho = "tela;titulo;acertos;total;erros;estrelas;pratica_extra;segundos";
   const corpo = linhas.map((l) =>
-    [l.tela, l.titulo, l.acertos, l.total, l.erros, l.estrelas, l.praticaExtra, l.segundos].join(";"),
+    [l.tela, l.titulo, l.acertos, l.total, l.erros, l.estrelas, l.praticaExtra, l.segundos].join(
+      ";",
+    ),
   );
   return [cabecalho, ...corpo].join("\n");
 }

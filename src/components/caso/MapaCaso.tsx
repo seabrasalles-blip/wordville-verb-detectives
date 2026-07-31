@@ -72,11 +72,17 @@ export function MapaCaso({
                     {t.n}. {t.titulo}
                   </span>
                   {totalDaTela(t.n) > 0 ? (
-                    <span className="flex items-center gap-0.5" aria-label={`${estrelas} de 3 estrelas`}>
+                    <span
+                      className="flex items-center gap-0.5"
+                      aria-label={`${estrelas} de 3 estrelas`}
+                    >
                       {[0, 1, 2].map((i) => (
                         <Star
                           key={i}
-                          className={cn("size-4", i < estrelas ? "fill-pista text-pista" : "text-muted-foreground/40")}
+                          className={cn(
+                            "size-4",
+                            i < estrelas ? "fill-pista text-pista" : "text-muted-foreground/40",
+                          )}
                           aria-hidden="true"
                         />
                       ))}

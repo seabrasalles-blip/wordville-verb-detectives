@@ -27,7 +27,11 @@ export function BarraProgresso({ concluidas }: { concluidas: boolean[] }) {
               title={`Tela ${n}${totalDaTela(n) > 0 ? ` · ${estrelasTela} de 3 estrelas` : ""}`}
               className={cn(
                 "relative h-2.5 flex-1 rounded-full transition-colors",
-                ok ? "bg-acerto" : n === tela ? "bg-pista ring-2 ring-investigacao/40" : "bg-secondary",
+                ok
+                  ? "bg-acerto"
+                  : n === tela
+                    ? "bg-pista ring-2 ring-investigacao/40"
+                    : "bg-secondary",
               )}
             >
               {estrelasTela > 0 ? (

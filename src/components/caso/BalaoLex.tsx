@@ -39,12 +39,7 @@ export function BalaoLex({
   className,
 }: Props) {
   const balao = (
-    <div
-      className={cn(
-        "cartao-pista relative flex-1 p-3 text-[17px] leading-snug",
-        tons[tom],
-      )}
-    >
+    <div className={cn("cartao-pista relative flex-1 p-3 text-[17px] leading-snug", tons[tom])}>
       <span
         aria-hidden="true"
         className="absolute -top-4 left-3 grid size-8 place-items-center rounded-full border-2 border-current bg-card text-base shadow-sm"
@@ -112,7 +107,6 @@ export function BalaoLex({
     </div>
   );
 }
-
 
 /** Frase em inglês destacada dentro dos textos em português. */
 export function Ingles({ children }: { children: ReactNode }) {

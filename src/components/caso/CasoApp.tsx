@@ -91,7 +91,6 @@ function telaConcluida(tela: number, estado: ReturnType<typeof useCaso>["estado"
   }
 }
 
-
 function Casca() {
   const { estado, despachar, avancar, voltar, reiniciar } = useCaso();
   const tela = estado.tela;
@@ -134,9 +133,7 @@ function Casca() {
     acao();
   };
 
-  const concluidas = Array.from({ length: TOTAL_TELAS }, (_, i) =>
-    telaConcluida(i + 1, estado),
-  );
+  const concluidas = Array.from({ length: TOTAL_TELAS }, (_, i) => telaConcluida(i + 1, estado));
 
   return (
     <div className="ceu-wordville flex min-h-screen items-center justify-center p-0 [@media(min-height:707px)]:p-2 [@media(min-height:743px)]:p-4">
@@ -250,7 +247,9 @@ function Casca() {
                           : "Termine a investigação desta tela para continuar"}
                       </span>
                     ) : null}
-                    {tela === TELA_EXTRA && estado.config.extensaoAtiva && estado.extensao !== "feita" ? (
+                    {tela === TELA_EXTRA &&
+                    estado.config.extensaoAtiva &&
+                    estado.extensao !== "feita" ? (
                       <button
                         type="button"
                         onClick={() => {
@@ -283,7 +282,6 @@ function Casca() {
           </>
         )}
 
-
         <DialogoReiniciar
           aberto={confirmando}
           aoCancelar={() => setConfirmando(false)}
@@ -296,7 +294,6 @@ function Casca() {
     </div>
   );
 }
-
 
 function Cartaz({
   frase,
@@ -406,7 +403,6 @@ function Tela1() {
                   {ouviuTudo ? "Ver a frase correta" : "Ouça a Inspetora Lex primeiro"}
                 </button>
               ) : (
-
                 <div className="surge flex w-full items-center justify-center gap-3 rounded-3xl border-[3px] border-acerto bg-acerto/10 px-4 py-2">
                   <span aria-hidden="true" className="text-2xl">
                     ✅
@@ -443,7 +439,9 @@ function Tela3() {
 
       {!revelado ? (
         <div className="space-y-2">
-          <p className="text-[18px] font-semibold">Compare os dois exemplos. O que mudou no verbo?</p>
+          <p className="text-[18px] font-semibold">
+            Compare os dois exemplos. O que mudou no verbo?
+          </p>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
@@ -453,7 +451,10 @@ function Tela3() {
                 setErro(false);
                 despachar({ tipo: "observou" });
               }}
-              className={cn(neutro, escolha === "certa" && "border-pista bg-pista text-pista-foreground")}
+              className={cn(
+                neutro,
+                escolha === "certa" && "border-pista bg-pista text-pista-foreground",
+              )}
             >
               go virou goes
             </button>
@@ -493,7 +494,6 @@ function Tela3() {
   );
 }
 
-
 function Tela6() {
   return (
     <div className="space-y-2">
@@ -530,7 +530,6 @@ function Tela8() {
     <div className="space-y-2">
       <DialogoLex segmentos={FALAS.t8} id="t8" />
 
-
       <div className="grid gap-3 sm:grid-cols-2">
         {PERGUNTAS_TELA8.map((q) => {
           const escolhida = estado.metacognicao[q.id];
@@ -538,7 +537,9 @@ function Tela8() {
           const certa = opcao?.correta === true;
           return (
             <div key={q.id} className="cartao-pista border-investigacao/70 p-2.5">
-              <h2 className="etiqueta inline-block border-pista bg-pista text-[16px] text-pista-foreground">{q.titulo}</h2>
+              <h2 className="etiqueta inline-block border-pista bg-pista text-[16px] text-pista-foreground">
+                {q.titulo}
+              </h2>
               <p className="mt-0.5 text-[18px]">{q.pergunta}</p>
               <div className="mt-2 grid gap-2">
                 {q.opcoes.map((op, i) => (
@@ -564,9 +565,7 @@ function Tela8() {
                 {opcao ? (
                   <Feedback
                     type={certa ? "success" : "error"}
-                    message={
-                      certa ? opcao.feedback : `${opcao.feedback} Escolha novamente.`
-                    }
+                    message={certa ? opcao.feedback : `${opcao.feedback} Escolha novamente.`}
                     className="mt-2"
                   />
                 ) : null}
@@ -603,7 +602,11 @@ function TelaExtra() {
 
   return (
     <div className="space-y-2">
-      <DialogoLex segmentos={watchOk ? FALAS.t10watch : FALAS.t10} id={watchOk ? "t10w" : "t10"} tom="pista" />
+      <DialogoLex
+        segmentos={watchOk ? FALAS.t10watch : FALAS.t10}
+        id={watchOk ? "t10w" : "t10"}
+        tom="pista"
+      />
       <TelaLacunas
         lacunas={LACUNAS_EXTRA}
         banco={BANCO_EXTRA}
@@ -646,9 +649,7 @@ function TelaFinal() {
             loading="lazy"
             className="w-14 drop-shadow-xl"
           />
-          <p className="text-[18px] font-bold text-acerto">
-            Assistente-Detetive de Wordville! 🎉
-          </p>
+          <p className="text-[18px] font-bold text-acerto">Assistente-Detetive de Wordville! 🎉</p>
         </div>
       ) : (
         <button
@@ -665,4 +666,3 @@ function TelaFinal() {
     </div>
   );
 }
-

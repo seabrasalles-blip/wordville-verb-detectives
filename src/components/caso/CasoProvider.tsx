@@ -233,7 +233,8 @@ function sanear(dados: unknown): EstadoCaso {
 
   const encontradas = Array.isArray(d.encontradas)
     ? (d.encontradas.filter(
-        (p): p is PalavraCaca => typeof p === "string" && (PALAVRAS_CACA as readonly string[]).includes(p),
+        (p): p is PalavraCaca =>
+          typeof p === "string" && (PALAVRAS_CACA as readonly string[]).includes(p),
       ) as PalavraCaca[])
     : [];
 
@@ -302,7 +303,9 @@ function sanear(dados: unknown): EstadoCaso {
     errosRamo: numeros(d.errosRamo),
     tempos: numeros(d.tempos),
     extensao:
-      d.extensao === "feita" || d.extensao === "pulada" ? (d.extensao as "feita" | "pulada") : "pendente",
+      d.extensao === "feita" || d.extensao === "pulada"
+        ? (d.extensao as "feita" | "pulada")
+        : "pendente",
   };
 }
 

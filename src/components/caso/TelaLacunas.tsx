@@ -29,7 +29,6 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }
   const [processando, setProcessando] = useState(false);
   const bancoMisto = new Set(banco.map(familiaDaPalavra)).size > 1;
 
-
   const soltar = (idLacuna: string, palavra: string) => {
     if (processando) return;
     const lacuna = lacunas.find((l) => l.id === idLacuna);
@@ -63,7 +62,6 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }
     setUltimoAcerto(null);
   };
 
-
   const arrasto = useArrasto(soltar);
   const tudoCerto = lacunas.every(
     (l) => normalizar(estado.respostas[l.id] ?? "") === normalizar(l.resposta),
@@ -80,7 +78,8 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }
         )}
       >
         {lacunas.map((lacuna) => {
-          const certo = normalizar(estado.respostas[lacuna.id] ?? "") === normalizar(lacuna.resposta);
+          const certo =
+            normalizar(estado.respostas[lacuna.id] ?? "") === normalizar(lacuna.resposta);
           const errada = dica?.id === lacuna.id && !certo;
           return (
             <div
@@ -131,9 +130,7 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }
                 ) : null}
               </div>
 
-              {errada ? (
-                <Feedback type="hint" message={dica.texto} className="mt-1.5" />
-              ) : null}
+              {errada ? <Feedback type="hint" message={dica.texto} className="mt-1.5" /> : null}
             </div>
           );
         })}

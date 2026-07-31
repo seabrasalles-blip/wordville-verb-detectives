@@ -16,7 +16,6 @@ export interface FeedbackProps {
   className?: string;
 }
 
-
 const estilos: Record<FeedbackType, string> = {
   success: "border-acerto bg-acerto/10",
   error: "border-reorienta bg-reorienta/15",

@@ -65,16 +65,10 @@ export function useFala() {
   );
 
   /** Frases do caso, em inglês. */
-  const falar = useCallback(
-    (texto: string, id?: string) => dizer(texto, id, "en"),
-    [dizer],
-  );
+  const falar = useCallback((texto: string, id?: string) => dizer(texto, id, "en"), [dizer]);
 
   /** Falas da Inspetora Lex, em português. */
-  const falarPt = useCallback(
-    (texto: string, id?: string) => dizer(texto, id, "pt"),
-    [dizer],
-  );
+  const falarPt = useCallback((texto: string, id?: string) => dizer(texto, id, "pt"), [dizer]);
 
   const parar = useCallback(() => {
     if (!suportado) return;

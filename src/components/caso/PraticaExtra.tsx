@@ -56,7 +56,9 @@ export function PraticaExtra({ tela }: { tela: number }) {
       <DialogoLex segmentos={FALAS.ramo} id={`ramo-${tela}`} tom="pista" />
       <h2 className="text-[18px] font-extrabold text-investigacao">{ramo.titulo}</h2>
 
-      <div className={cn("grid gap-2", ramo.itens.length > 2 ? "sm:grid-cols-2" : "sm:grid-cols-2")}>
+      <div
+        className={cn("grid gap-2", ramo.itens.length > 2 ? "sm:grid-cols-2" : "sm:grid-cols-2")}
+      >
         {ramo.itens.map((item) => {
           const certo = escolhas[item.id] === item.resposta;
           return (

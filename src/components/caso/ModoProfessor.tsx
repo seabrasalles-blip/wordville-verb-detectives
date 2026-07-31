@@ -78,7 +78,9 @@ export function ModoProfessor({ aberto, aoFechar }: { aberto: boolean; aoFechar:
               onChange={(e) => setSenha(e.target.value)}
               className="w-full max-w-xs rounded-xl border-2 border-investigacao/40 bg-card px-3 py-2 text-[17px]"
             />
-            {erro ? <p className="text-[16px] font-semibold text-reorienta">Senha incorreta.</p> : null}
+            {erro ? (
+              <p className="text-[16px] font-semibold text-reorienta">Senha incorreta.</p>
+            ) : null}
             <button
               type="submit"
               className="botao-fofo bg-investigacao px-5 py-1.5 text-[17px] text-investigacao-foreground"
@@ -89,7 +91,9 @@ export function ModoProfessor({ aberto, aoFechar }: { aberto: boolean; aoFechar:
         ) : (
           <div className="mt-3 space-y-4">
             <section>
-              <h3 className="text-[18px] font-extrabold text-investigacao">Relatório de aprendizagem</h3>
+              <h3 className="text-[18px] font-extrabold text-investigacao">
+                Relatório de aprendizagem
+              </h3>
               <p className="mt-0.5 flex items-center gap-1 text-[16px] font-semibold">
                 <Star className="size-4 fill-pista text-pista" aria-hidden="true" />
                 {estrelasTotais(estado)}/{ESTRELAS_MAXIMAS} estrelas
@@ -128,7 +132,11 @@ export function ModoProfessor({ aberto, aoFechar }: { aberto: boolean; aoFechar:
                 <button
                   type="button"
                   onClick={() =>
-                    baixar("relatorio-wordville.csv", relatorioCsv(estado), "text/csv;charset=utf-8")
+                    baixar(
+                      "relatorio-wordville.csv",
+                      relatorioCsv(estado),
+                      "text/csv;charset=utf-8",
+                    )
                   }
                   className="botao-fofo bg-pista px-4 py-1.5 text-[16px] text-pista-foreground"
                 >
@@ -171,7 +179,9 @@ export function ModoProfessor({ aberto, aoFechar }: { aberto: boolean; aoFechar:
                 <Alternador
                   rotulo="Caça-palavras no modo Toque"
                   ativo={config.modoCaca === "toque"}
-                  aoMudar={(v) => despachar({ tipo: "config", mudanca: { modoCaca: v ? "toque" : "arrasto" } })}
+                  aoMudar={(v) =>
+                    despachar({ tipo: "config", mudanca: { modoCaca: v ? "toque" : "arrasto" } })
+                  }
                 />
               </div>
               <fieldset>

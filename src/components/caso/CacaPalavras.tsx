@@ -11,7 +11,6 @@ import { useCaso } from "./CasoProvider";
 import { BotaoAudio } from "./BotaoAudio";
 import { AreaFeedback, Feedback } from "./Feedback";
 
-
 type Celula = { linha: number; coluna: number };
 
 function chave(l: number, c: number) {
@@ -31,7 +30,6 @@ export function CacaPalavras() {
   const limpando = useRef<number | null>(null);
   const contínuo = useRef(true);
   const direcaoInvalida = useRef(false);
-
 
   const encontradas = new Set<string>(
     Object.values(estado.caminhos).flatMap((cs) => cs.map((p) => chave(p.linha, p.coluna))),
@@ -76,7 +74,10 @@ export function CacaPalavras() {
       const alvo = grade.palavras.find((p) => mesmoCaminho(atual, p.caminho));
 
       if (alvo && estado.encontradas.includes(alvo.palavra)) {
-        setAviso({ tipo: "hint", texto: "Essa evidência já está no mural. Procure outra palavra." });
+        setAviso({
+          tipo: "hint",
+          texto: "Essa evidência já está no mural. Procure outra palavra.",
+        });
         limparDepois();
         return;
       }
@@ -86,7 +87,8 @@ export function CacaPalavras() {
         setCaminho([]);
         setAviso({ tipo: "success", texto: `Você encontrou ${alvo.palavra}!` });
         despachar({ tipo: "encontrou", palavra: alvo.palavra, caminho: atual });
-        if (estado.config.audioIngles) fala.falar(EVIDENCIAS[alvo.palavra].fala, `evid-${alvo.palavra}`);
+        if (estado.config.audioIngles)
+          fala.falar(EVIDENCIAS[alvo.palavra].fala, `evid-${alvo.palavra}`);
         return;
       }
 
@@ -156,8 +158,6 @@ export function CacaPalavras() {
     avaliar(trilha, true, false);
   };
 
-
-
   const marcar = (linha: number, coluna: number) => {
     const atual = caminhoRef.current;
     const ultima = atual[atual.length - 1];
@@ -183,7 +183,6 @@ export function CacaPalavras() {
     }
     atualizar([...atual, { linha, coluna }]);
   };
-
 
   const iniciar = (linha: number, coluna: number) => {
     if (limpando.current) window.clearTimeout(limpando.current);

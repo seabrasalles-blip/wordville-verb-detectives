@@ -41,9 +41,7 @@ export function DialogoReiniciar({ aberto, aoCancelar, aoConfirmar }: Props) {
         <h2 id="titulo-reiniciar" className="text-lg font-bold text-investigacao">
           Reiniciar a investigação?
         </h2>
-        <p className="mt-1 text-[17px]">
-          Seu progresso será apagado e você voltará ao início.
-        </p>
+        <p className="mt-1 text-[17px]">Seu progresso será apagado e você voltará ao início.</p>
         <div className="mt-4 flex flex-wrap justify-end gap-2">
           <button
             ref={cancelarRef}
