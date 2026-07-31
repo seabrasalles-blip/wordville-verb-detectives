@@ -130,7 +130,6 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }
                 ) : null}
               </div>
 
-              {errada ? <Feedback type="hint" message={dica.texto} className="mt-1.5" /> : null}
             </div>
           );
         })}
