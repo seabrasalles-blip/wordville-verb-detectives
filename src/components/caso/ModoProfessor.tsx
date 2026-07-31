@@ -162,11 +162,7 @@ export function ModoProfessor({ aberto, aoFechar }: { aberto: boolean; aoFechar:
               <h3 className="text-[18px] font-extrabold text-investigacao">Configurações</h3>
               <div className="grid gap-2 sm:grid-cols-2">
                 <Alternador
-                  rotulo="Narração das falas da Lex (português)"
-                  ativo={config.audioLex}
-                  aoMudar={(v) => despachar({ tipo: "config", mudanca: { audioLex: v } })}
-                />
-                <Alternador
+
                   rotulo="Áudio das palavras em inglês"
                   ativo={config.audioIngles}
                   aoMudar={(v) => despachar({ tipo: "config", mudanca: { audioIngles: v } })}
