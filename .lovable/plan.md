@@ -1,67 +1,59 @@
-## Causa técnica
+# Wordville v2 — 9 melhorias
 
-Hoje as grades em `src/lib/caso-conteudo.ts` guardam apenas as letras (`{ id, letras }`) e o `CacaPalavras.tsx` valida **só pelo texto** formado no arrasto. Como toda ocorrência de `PLAYS` contém as letras `PLAY` (e `GOES` contém `GO`), selecionar as 4 primeiras letras da ocorrência de PLAYS registra "PLAY" naquele caminho errado; a partir daí a ocorrência própria de PLAY responde "essa evidência já está no mural" e o mural mostra o destaque no lugar errado. Nada na estrutura de dados impede que uma grade tenha só a palavra longa.
+O app hoje tem **10 telas** (1 abertura, 2 caça-palavras, 3 observação, 4 lacunas go/goes, 5 ligar colunas, 6 lacunas play/plays, 7 revisão mista, 8 reflexão, 9 montar frase, 10 fechamento). As telas de prática citadas no prompt (4, 5, 6, 7) correspondem exatamente. Nada é reescrito do zero: tudo entra como mudança incremental. Todo o texto da Lex continua em pt-BR.
 
-## 1. Dados: caminhos planejados por grade
+Como o palco é fixo em 1200×675 sem rolagem, cada novo elemento global tem orçamento vertical definido abaixo.
 
-Alterar o tipo em `src/lib/caso-conteudo.ts`:
+## Fase A — Falas e feedbacks (Melhorias 3, 5, 1)
 
-```ts
-type Celula = { linha: number; coluna: number };
-type PalavraNaGrade = { palavra: PalavraCaca; caminho: Celula[] };
-export type GradeCaca = { id: string; letras: string[][]; palavras: PalavraNaGrade[] };
-```
+- **Falas em segmentos**: novo `InspectorDialogue` (`DialogoLex.tsx`) recebe `segments: string[]`, mostra 1 segmento, botão "Continuar ▸" revela o próximo com fade; o botão de ação da tela só aparece no último segmento. Segmentos já revelados continuam visíveis.
+- **Reescrita**: todas as falas e feedbacks passam a arrays de no máximo 2 frases curtas (≤15 palavras). Feedback correto: 1–2 segmentos; erro conceitual: pergunta-guia + dica; erro atencional: 1 segmento.
+- **Melhoria 5**: eliminar toda formulação de julgamento ("soa completo/natural/certo"). Padrão novo: oferecer os dois áudios, apontar a diferença concreta ("o som a mais no final de *goes*") e ligar à pista já aprendida (he/she/it).
+- **Melhoria 1 — TTS pt-BR**: novo `FalaLex` (botão azul da Inspetora, ícone alto-falante + silhueta) distinto do botão amarelo de exemplos em inglês. Um botão por segmento. `pt-BR`, `rate 0.9`, `pitch 1.1`, pulso enquanto fala, reinicia se clicado durante a fala, oculto sem `speechSynthesis`. O hook `use-fala` ganha suporte a dois idiomas.
 
-As 8 grades passam a declarar explicitamente os 4 caminhos (GO, GOES, PLAY, PLAYS).
+## Fase B — Caça-palavras acessível (Melhoria 9)
 
-## 2. Regeração das grades (script Python descartável)
+Toggle no topo da Tela 2: **Modo Detetive** (arrasto atual, intacto) e **Modo Toque** (botões GO/GOES/PLAY/PLAYS abaixo da grade; ao tocar, as letras do caminho planejado acendem em sequência). Feedback pedagógico idêntico nos dois modos. Padrão sugerido = Toque em dispositivos `pointer: coarse`; preferência salva no localStorage.
 
-Gerar 8 grades 8×8 novas, todas com:
-- as 4 palavras em caminhos **disjuntos** (nenhuma célula compartilhada — a opção mais segura para 8–10 anos);
-- apenas horizontal esquerda→direita e vertical cima→baixo;
-- preenchimento aleatório verificado para **não** criar ocorrências acidentais de nenhuma das 4 palavras em nenhuma das 8 direções fora dos caminhos planejados;
-- GO nunca sendo o prefixo posicional de GOES, idem PLAY/PLAYS.
+## Fase C — Recompensas, mapa do caso (Melhorias 7, 8)
 
-O resultado é colado como literal em `caso-conteudo.ts` (nada gerado em runtime).
+- **Barra de progresso** no cabeçalho existente (sem altura extra): "Caso 3 de 10", ícones por tela que acendem, bônus dourado quando a tela extra existir; contador "⭐ 7/15" no canto.
+- **Estrelas** nas telas 4, 5, 6, 7, 9 e extra: 3 = sem erro, 2 = até 1 erro, 1 = concluída. Pop + brilho em CSS. Telas de observação (1, 2, 3, 8, 10) ganham **selos de pista** — no caça-palavras, 1 selo por palavra encontrada.
+- **Micro-celebrações**: confete CSS leve e brilho verde no cartaz "consertado".
+- **Mapa do Caso**: botão flutuante 📋 no canto superior direito (oculto na capa/Tela 1), overlay com lista de telas (número, nome curto, ícone, ✅/🔵/🔒 e estrelas). Telas concluídas revisitáveis em **modo revisão** (só leitura/áudio, sem refazer, sem alterar estrelas), com "Voltar ao caso". Fecha por ✕ ou clique fora.
 
-## 3. Validador de grade
+## Fase D — Ramificação adaptativa (Melhoria 4)
 
-Função exportada `validarGrade(grade): string[]` que rejeita quando:
-- falta ou sobra caminho para qualquer das 4 palavras;
-- o caminho não é contínuo em direção permitida;
-- as letras do caminho não formam a palavra;
-- o caminho de GO é prefixo do de GOES (ou PLAY do de PLAYS), ou há células compartilhadas;
-- existe ocorrência da palavra fora do caminho planejado.
+Estado por tela passa a registrar `errors` e `branchTriggered`. Com 2 erros numa tela de prática (4, 5, 6, 7), abre-se antes do avanço o "Quadro de Pistas Extra" (mesma paleta, moldura amarela) com a fala da Lex e 2 exercícios novos no mesmo formato, com frases/sujeitos diferentes:
 
-`GRADES_CACA` é filtrada por esse validador na exportação (`GRADES_VALIDAS`), e um teste em `src/lib/caso-conteudo.test.ts` roda o validador sobre todas as grades para que uma grade inválida quebre o build de testes.
+- Tela 4: "It ___ to school every day." → goes; "They ___ …" → go
+- Tela 5: It → goes, He → goes
+- Tela 6: "He ___ soccer on Saturdays." → plays; "We ___ …" → play
+- Tela 7: She → goes, I → play, He → goes, They → play
 
-## 4. Validação por caminho no componente
+Basta 1 acerto para seguir. Contador zera ao entrar no ramo; com 2 erros no ramo, a Lex dá a resposta e libera o avanço (sem loop de frustração). O disparo fica salvo no relatório.
 
-Em `src/components/caso/CacaPalavras.tsx`:
-- ao soltar, comparar o caminho selecionado com os `grade.palavras`: acerto só quando o caminho coincide **exatamente** com um caminho planejado ainda não encontrado;
-- caminho que é prefixo de um caminho planejado (ex.: 4 primeiras células de PLAYS) → dica "Você encontrou o começo de uma palavra. Observe se há mais alguma letra.", sem registrar nada;
-- caminho igual a um já encontrado → "essa evidência já está no mural";
-- células destacadas continuam clicáveis: o destaque `encontradas` é só visual, nenhum `disabled`/`pointer-events-none`, e `iniciar()` limpa apenas a seleção temporária;
-- mural e contador continuam por palavra (1/4 ao achar PLAY, PLAYS independente).
+## Fase E — Modo Professor (Melhoria 10)
 
-## 5. Estado salvo
+Botão discreto "👨‍🏫 Professor" no rodapé, senha fixa `prof2026` (só evita acesso acidental). Overlay em 3 seções:
 
-Em `src/components/caso/CasoProvider.tsx`, o `sanear` passa a:
-- descartar `gradeId` que não exista mais ou não passe no validador, sorteando uma grade válida;
-- manter em `caminhos`/`encontradas` apenas as palavras cujo caminho salvo bate com um caminho planejado da grade atual; o resto é limpo;
-- preservar intactos o progresso das demais telas.
+- **A — Configurações**: áudio da Inspetora on/off; áudio em inglês on/off; modo do caça-palavras auto/arrasto/toque; dificuldade Padrão (2 erros) / Facilitada (1 erro, dicas diretas) / Desafio (sem ramo, só feedback atencional); tela de extensão on/off; zerar progresso.
+- **B — Relatório**: tela atual, tabela por tela (tentativas, erros, acerto de primeira, estrelas, ramo disparado, tempo), resumo geral e exportação JSON/CSV via download local.
+- **C — Sair** e voltar exatamente à tela da criança.
 
-Assim quem tem estado antigo volta à Tela 2 numa grade válida e consegue concluir.
+Estado central passa a gravar tentativas, erros, acertos e tempo em cada interação, no formato `LearningData` do prompt.
 
-## 6. Verificação
+## Fase F — Tela extra de verbos (Melhoria 6)
 
-Playwright em 1200×675, script que, para cada grade válida, executa arrasto célula a célula nas 4 ordens exigidas (GO→GOES→PLAY→PLAYS, GOES→GO→PLAYS→PLAY, PLAY→PLAYS→GO→GOES, PLAYS→PLAY→GOES→GO), confirmando 4/4 e 4 itens no mural; mais um teste de recarregamento (2 palavras → reload → mesma grade, 2 registradas, outras 2 achaveis) e um de nova tentativa. Em todos os passos, checagem de `scrollHeight === clientHeight === 675` e largura 1200, sem erros de console.
+Nova tela opcional entre a reflexão e o fechamento: "Caso Extra: Novos Suspeitos", com like/likes, watch/watches, read/reads em 6 lacunas de arrasto e banco de blocos com áudio próprio. A Lex destaca que *watch* leva **-es**, mas o som é o mesmo das pistas. Botão "Pular caso extra". Se concluída, o fechamento menciona go, play, like, watch e read.
 
-## Arquivos afetados
+## Detalhes técnicos
 
-- `src/lib/caso-conteudo.ts` (tipo, 8 grades novas com caminhos, `validarGrade`, `sortearGradeId` restrito a grades válidas)
-- `src/components/caso/CacaPalavras.tsx` (validação por caminho, células nunca bloqueadas)
-- `src/components/caso/CasoProvider.tsx` (saneamento/migração do estado do caça-palavras)
-- `src/lib/caso-conteudo.test.ts` (novo, valida as 8 grades)
+- Novos arquivos: `DialogoLex.tsx`, `FalaLex.tsx`, `MapaDoCaso.tsx`, `BarraProgresso.tsx`, `PraticaExtra.tsx`, `PainelProfessor.tsx`, `TelaVerbosExtra.tsx`, `src/lib/relatorio.ts`.
+- Alterados: `caso-conteudo.ts` (falas em segmentos, feedbacks, conteúdo do ramo e dos verbos extra), `CasoProvider.tsx` (métricas, estrelas, config, ramo, migração do localStorage v1→v2 preservando progresso), `CasoApp.tsx` (barra, mapa, rodapé, roteamento com ramo e tela extra), `CacaPalavras.tsx`, `TelaLacunas.tsx`, `LigarColunas.tsx`, `MontarFrase.tsx`, `use-fala.ts`, `styles.css` (confete, pop de estrela, brilho).
+- Sem backend, sem CDN: só CSS/transform nas animações, mouse+touch em tudo, paleta atual (sem vermelho), feedback cor+ícone, 16/20px mínimos, fallback silencioso de TTS.
+- Verificação por fase com Playwright em 1200×675: `scrollHeight === clientHeight === 675`, sem erros de console, incluindo overlays abertos, ramo disparado e tela extra.
 
-Layout, fontes e todas as correções pedagógicas anteriores ficam intactos.
+## Ordem de entrega
+
+Fases A → B → C → D → E → F, na ordem recomendada pelo prompt. É um volume grande; cada fase é entregue verificada antes de começar a seguinte.
