@@ -17,15 +17,18 @@ type Props = {
   banco: string[];
   comando: string;
   aoConcluir?: string;
+  /** Número de colunas do quadro de frases (2 por padrão). */
+  colunas?: 2 | 3;
 };
 
-/** Telas 4, 6 e 7: completar lacunas arrastando (ou tocando) os blocos. */
-export function TelaLacunas({ lacunas, banco, comando, aoConcluir }: Props) {
+/** Telas 4, 6, 7 e caso extra: completar lacunas arrastando (ou tocando) os blocos. */
+export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }: Props) {
   const { estado, despachar, fala } = useCaso();
   const [dica, setDica] = useState<{ id: string; texto: string } | null>(null);
   const [ultimoAcerto, setUltimoAcerto] = useState<Lacuna | null>(null);
   const [processando, setProcessando] = useState(false);
   const bancoMisto = new Set(banco.map(familiaDaPalavra)).size > 1;
+
 
   const soltar = (idLacuna: string, palavra: string) => {
     if (processando) return;
