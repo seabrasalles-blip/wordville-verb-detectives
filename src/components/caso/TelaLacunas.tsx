@@ -163,7 +163,14 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }
       </div>
 
       <AreaFeedback>
-        {tudoCerto ? (
+        {dica && !tudoCerto ? (
+          <Feedback
+            type="hint"
+            message={dica.texto}
+            onClose={() => setDica(null)}
+            autoClose
+          />
+        ) : tudoCerto ? (
           <Feedback
             type="success"
             message={aoConcluir ?? "Correto! Todas as frases estão completas."}
