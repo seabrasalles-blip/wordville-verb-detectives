@@ -117,8 +117,11 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }
                   <span>{lacuna.depois}</span>
                 </p>
                 {certo ? (
-                  <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-acerto px-2 py-0.5 text-[15px] font-bold text-acerto-foreground">
-                    <Check className="size-3.5" aria-hidden="true" /> Consertado
+                  <span
+                    aria-label="Consertado"
+                    className="ml-auto inline-flex items-center rounded-full bg-acerto p-1 text-acerto-foreground"
+                  >
+                    <Check className="size-4" aria-hidden="true" />
                   </span>
                 ) : null}
                 {certo ? (
