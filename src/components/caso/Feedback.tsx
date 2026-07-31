@@ -68,7 +68,7 @@ export function Feedback({
         <span className="mr-1 font-bold">{titulo}</span>
         {message}
       </p>
-      {semAudio ? null : <FalaLex texto={`${titulo}. ${message}`} rotulo="Ouvir o aviso da Lex" />}
+      
 
       {onClose ? (
         <button
