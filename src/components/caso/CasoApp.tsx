@@ -579,8 +579,45 @@ function Tela8() {
   );
 }
 
-function Tela10() {
+/** Tela opcional: a mesma regra com like, watch e read. */
+function TelaExtra() {
+  const { estado, despachar } = useCaso();
+  const feita = LACUNAS_EXTRA.every((l) => estado.respostas[l.id] === l.resposta);
+  const watchOk = estado.respostas["tx-watches"] === "watches";
+
+  useEffect(() => {
+    if (feita && estado.extensao !== "feita") despachar({ tipo: "extensao", valor: "feita" });
+  }, [feita, estado.extensao, despachar]);
+
+  if (!estado.config.extensaoAtiva) {
+    return (
+      <div className="space-y-2">
+        <DialogoLex segmentos={FALAS.t10} id="t10-off" tom="pista" />
+        <p className="text-[18px] font-semibold">
+          O caso extra está desligado nas configurações do professor. Você pode continuar para o
+          fechamento.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      <DialogoLex segmentos={watchOk ? FALAS.t10watch : FALAS.t10} id={watchOk ? "t10w" : "t10"} tom="pista" />
+      <TelaLacunas
+        lacunas={LACUNAS_EXTRA}
+        banco={BANCO_EXTRA}
+        colunas={3}
+        comando="Novos verbos, mesma regra: observe quem pratica a ação."
+        aoConcluir="Você provou que a regra vale para outros verbos também!"
+      />
+    </div>
+  );
+}
+
+function TelaFinal() {
   const { estado, despachar, fala } = useCaso();
+  const comExtra = estado.extensao === "feita";
 
   return (
     <div className="space-y-2">
@@ -593,13 +630,11 @@ function Tela10() {
         className="h-14 w-full rounded-2xl border-2 border-acerto object-cover shadow-md"
       />
       <Grupos />
-      <BalaoLex tom="acerto">
-        <p className="text-[17px]">
-          Você descobriu a pista! Com <Ingles>he</Ingles>, <Ingles>she</Ingles> e{" "}
-          <Ingles>it</Ingles>, usamos goes e plays. Com <Ingles>I</Ingles>, <Ingles>you</Ingles>,{" "}
-          <Ingles>we</Ingles> e <Ingles>they</Ingles>, usamos go e play.
-        </p>
-      </BalaoLex>
+      <DialogoLex
+        segmentos={comExtra ? FALA_FINAL_EXTRA : FALAS.t11}
+        id={comExtra ? "t11x" : "t11"}
+        tom="acerto"
+      />
 
       {estado.medalha ? (
         <div className="medalha-anima flex items-center justify-center gap-3">
@@ -620,7 +655,7 @@ function Tela10() {
           type="button"
           onClick={() => {
             despachar({ tipo: "medalha" });
-            fala.falar("He goes to school.", "final-1");
+            if (estado.config.audioIngles) fala.falar("He goes to school.", "final-1");
           }}
           className="botao-fofo mx-auto block bg-acerto px-7 py-2 text-[17px] text-acerto-foreground"
         >
@@ -630,3 +665,4 @@ function Tela10() {
     </div>
   );
 }
+
