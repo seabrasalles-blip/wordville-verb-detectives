@@ -525,15 +525,12 @@ function Tela6() {
           <Ingles>It plays in the garden.</Ingles>
         </p>
         <BotaoAudio texto="It plays in the garden." id="t6-it-frase" tamanho="sm" />
-        <p className="w-full text-[15px] font-semibold text-muted-foreground">
-          Na escrita, algumas palavras recebem S e outras recebem ES: play → plays, go → goes.
-        </p>
       </div>
 
       <TelaLacunas
         lacunas={LACUNAS_TELA6}
         banco={["play", "plays"]}
-        comando="Observe quem pratica a ação e escolha o verbo correto."
+        comando="Observe quem pratica a ação e escolha o verbo correto: play → plays, go → goes."
       />
     </div>
   );
