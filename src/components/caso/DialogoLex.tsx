@@ -24,8 +24,8 @@ const tons = {
 } as const;
 
 /**
- * Diálogo da Inspetora Lex em segmentos, com narração em português e botão
- * "Continuar". A criança controla o ritmo da leitura.
+ * Diálogo da Inspetora Lex em segmentos, com botão "Continuar".
+ * A criança controla o ritmo da leitura.
  */
 export function DialogoLex({
   segmentos,
@@ -35,9 +35,7 @@ export function DialogoLex({
   aoTerminar,
   className,
 }: Props) {
-  const { estado, fala } = useCaso();
   const [indice, setIndice] = useState(0);
-  const narracao = estado.config.audioLex && fala.suportado;
 
   useEffect(() => {
     setIndice(0);
@@ -51,12 +49,6 @@ export function DialogoLex({
     // aoTerminar é chamado sempre que o último segmento aparece
   }, [ultimo, aoTerminar]);
 
-  useEffect(() => {
-    if (!narracao || !atual) return;
-    fala.falarPt(atual, `${id}-${indice}`);
-    // narra automaticamente cada segmento revelado
-  }, [atual, id, indice, narracao]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const balao = useMemo(
     () => (
       <div className={cn("cartao-pista relative flex-1 border-[3px] p-2.5", tons[tom])}>
@@ -65,8 +57,8 @@ export function DialogoLex({
             🕵️‍♀️
           </span>
           <p className="flex-1 text-[18px] leading-snug font-semibold">{atual}</p>
-          <FalaLex texto={atual} id={`${id}-${indice}`} />
         </div>
+
         <div className="mt-1.5 flex items-center gap-2">
           <span className="text-[14px] font-bold text-muted-foreground">
             {indice + 1}/{segmentos.length}
