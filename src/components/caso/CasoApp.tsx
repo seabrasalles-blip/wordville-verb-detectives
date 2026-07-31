@@ -1,11 +1,15 @@
-import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, HelpCircle, RotateCcw } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, HelpCircle, Map, RotateCcw, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import wordville from "@/assets/wordville.jpg";
 import medalha from "@/assets/medalha.png";
 import {
+  BANCO_EXTRA,
   CARTOES_TELA5,
+  FALAS,
+  FALA_FINAL_EXTRA,
   GRUPOS,
+  LACUNAS_EXTRA,
   LACUNAS_TELA4,
   LACUNAS_TELA6,
   LACUNAS_TELA7,
@@ -13,33 +17,31 @@ import {
   PALAVRAS_CACA,
   PARES_TELA5,
   PERGUNTAS_TELA8,
+  TELAS,
+  TELAS_COM_RAMO,
+  TELA_EXTRA,
   TOTAL_TELAS,
   fraseDaMontagem,
 } from "@/lib/caso-conteudo";
+import { errosDaTela } from "@/lib/relatorio";
 import { CasoProvider, useCaso } from "./CasoProvider";
 import { BalaoLex, Ingles } from "./BalaoLex";
+import { BarraProgresso } from "./BarraProgresso";
 import { BotaoAudio } from "./BotaoAudio";
 import { Capa } from "./Capa";
 import { ComoJogar } from "./ComoJogar";
 import { CacaPalavras } from "./CacaPalavras";
+import { DialogoLex } from "./DialogoLex";
 import { DialogoReiniciar } from "./DialogoReiniciar";
 import { AreaFeedback, Feedback } from "./Feedback";
 import { LigarColunas } from "./LigarColunas";
+import { MapaCaso } from "./MapaCaso";
+import { ModoProfessor } from "./ModoProfessor";
 import { MontarFrase } from "./MontarFrase";
+import { PraticaExtra } from "./PraticaExtra";
 import { TelaLacunas } from "./TelaLacunas";
 
-const TITULOS = [
-  "Abertura",
-  "Caça-palavras",
-  "Observação guiada",
-  "go ou goes?",
-  "Sujeito → verbo",
-  "Agora com play",
-  "Revisão mista",
-  "O que você aprendeu",
-  "Monte a frase",
-  "Caso resolvido",
-];
+const TITULOS = TELAS.map((t) => t.titulo);
 
 export function CasoApp() {
   return (
@@ -51,6 +53,8 @@ export function CasoApp() {
 
 /** Critério pedagógico de conclusão de cada tela. */
 function telaConcluida(tela: number, estado: ReturnType<typeof useCaso>["estado"]) {
+  // enquanto a prática extra está aberta, a tela não avança
+  if (estado.ramos[tela] === "aberto") return false;
   switch (tela) {
     case 1:
       return estado.respostas["t1-visto"] === "sim";
@@ -76,12 +80,17 @@ function telaConcluida(tela: number, estado: ReturnType<typeof useCaso>["estado"
       });
     case 9:
       return MONTAGENS.every((m) => estado.montagens[m.id] === fraseDaMontagem(m));
-    case 10:
+    case TELA_EXTRA:
+      if (!estado.config.extensaoAtiva) return true;
+      if (estado.extensao === "pulada") return true;
+      return LACUNAS_EXTRA.every((l) => estado.respostas[l.id] === l.resposta);
+    case 11:
       return estado.medalha;
     default:
       return true;
   }
 }
+
 
 function Casca() {
   const { estado, despachar, avancar, voltar, reiniciar } = useCaso();
