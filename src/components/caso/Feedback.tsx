@@ -42,6 +42,7 @@ export function Feedback({
   message,
   onClose,
   autoClose = false,
+  semAudio = false,
   className,
 }: FeedbackProps) {
   useEffect(() => {
@@ -51,6 +52,7 @@ export function Feedback({
   }, [autoClose, onClose, message, type]);
 
   const Icone = icones[type];
+  const titulo = title ?? titulos[type];
 
   return (
     <div
@@ -64,9 +66,11 @@ export function Feedback({
     >
       <Icone className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
       <p className="flex-1 font-semibold">
-        <span className="mr-1 font-bold">{title ?? titulos[type]}</span>
+        <span className="mr-1 font-bold">{titulo}</span>
         {message}
       </p>
+      {semAudio ? null : <FalaLex texto={`${titulo}. ${message}`} rotulo="Ouvir o aviso da Lex" />}
+
       {onClose ? (
         <button
           type="button"
