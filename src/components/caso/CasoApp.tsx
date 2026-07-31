@@ -497,6 +497,7 @@ function Tela3() {
 function Tela6() {
   return (
     <div className="space-y-2">
+      <DialogoLex segmentos={FALAS.t6} id="t6" />
       <div className="cartao-pista flex flex-wrap items-center gap-2 border-pista px-3 py-1.5">
         <span aria-hidden="true" className="text-2xl">
           🐶
@@ -527,7 +528,8 @@ function Tela8() {
   const { estado, despachar } = useCaso();
   return (
     <div className="space-y-2">
-      <p className="text-[18px] font-semibold">Responda as duas perguntas do quadro da Lex.</p>
+      <DialogoLex segmentos={FALAS.t8} id="t8" />
+
 
       <div className="grid gap-3 sm:grid-cols-2">
         {PERGUNTAS_TELA8.map((q) => {
