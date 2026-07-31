@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Check, Search, Lightbulb, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { FalaLex } from "./DialogoLex";
+
 
 export type FeedbackType = "success" | "error" | "hint";
 
@@ -68,7 +68,7 @@ export function Feedback({
         <span className="mr-1 font-bold">{titulo}</span>
         {message}
       </p>
-      {semAudio ? null : <FalaLex texto={`${titulo}. ${message}`} rotulo="Ouvir o aviso da Lex" />}
+      
 
       {onClose ? (
         <button

@@ -1,47 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { Volume2, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import lex from "@/assets/lex.png";
-import { useCaso } from "./CasoProvider";
-
-/** Alto-falante das falas da Inspetora Lex (português). */
-export function FalaLex({
-  texto,
-  id,
-  rotulo,
-  className,
-}: {
-  texto: string;
-  id?: string;
-  rotulo?: string;
-  className?: string;
-}) {
-  const { estado, fala } = useCaso();
-  if (!fala.suportado || !estado.config.audioLex) return null;
-
-  const marca = id ?? texto;
-  const tocando = fala.falandoId === marca;
-
-  return (
-    <button
-      type="button"
-      onClick={() => fala.falarPt(texto, marca)}
-      aria-label={rotulo ?? "Ouvir a fala da Inspetora Lex"}
-      className={cn(
-        "inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-pista text-pista-foreground shadow-sm transition-transform hover:scale-105 focus-visible:ring-4 focus-visible:ring-investigacao/40 focus-visible:outline-none",
-        tocando && "pulsa",
-        className,
-      )}
-    >
-      <Volume2 className="size-5" aria-hidden="true" />
-    </button>
-  );
-}
 
 type Props = {
   /** Falas curtas da Lex: no máximo 2 frases por segmento. */
   segmentos: string[];
-  /** Identificador estável para o áudio e para reiniciar o diálogo. */
+  /** Identificador estável para reiniciar o diálogo. */
   id: string;
   tom?: "investigacao" | "acerto" | "pista";
   /** "compacta" mostra apenas um segmento por vez, sem a imagem da Lex. */
@@ -51,6 +16,7 @@ type Props = {
   className?: string;
 };
 
+
 const tons = {
   investigacao: "border-investigacao/40 bg-card",
   acerto: "border-acerto bg-acerto/10",
@@ -58,8 +24,8 @@ const tons = {
 } as const;
 
 /**
- * Diálogo da Inspetora Lex em segmentos, com narração em português e botão
- * "Continuar". A criança controla o ritmo da leitura.
+ * Diálogo da Inspetora Lex em segmentos, com botão "Continuar".
+ * A criança controla o ritmo da leitura.
  */
 export function DialogoLex({
   segmentos,
@@ -69,9 +35,7 @@ export function DialogoLex({
   aoTerminar,
   className,
 }: Props) {
-  const { estado, fala } = useCaso();
   const [indice, setIndice] = useState(0);
-  const narracao = estado.config.audioLex && fala.suportado;
 
   useEffect(() => {
     setIndice(0);
@@ -85,12 +49,6 @@ export function DialogoLex({
     // aoTerminar é chamado sempre que o último segmento aparece
   }, [ultimo, aoTerminar]);
 
-  useEffect(() => {
-    if (!narracao || !atual) return;
-    fala.falarPt(atual, `${id}-${indice}`);
-    // narra automaticamente cada segmento revelado
-  }, [atual, id, indice, narracao]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const balao = useMemo(
     () => (
       <div className={cn("cartao-pista relative flex-1 border-[3px] p-2.5", tons[tom])}>
@@ -99,8 +57,8 @@ export function DialogoLex({
             🕵️‍♀️
           </span>
           <p className="flex-1 text-[18px] leading-snug font-semibold">{atual}</p>
-          <FalaLex texto={atual} id={`${id}-${indice}`} />
         </div>
+
         <div className="mt-1.5 flex items-center gap-2">
           <span className="text-[14px] font-bold text-muted-foreground">
             {indice + 1}/{segmentos.length}
