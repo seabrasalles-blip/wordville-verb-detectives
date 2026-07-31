@@ -44,7 +44,9 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }
       despachar({ tipo: "responder", id: lacuna.id, valor: lacuna.resposta });
       setDica(null);
       setUltimoAcerto(lacuna);
-      fala.falar(`${lacuna.antes} ${lacuna.resposta} ${lacuna.depois}`, `frase-${lacuna.id}`);
+      if (estado.config.audioIngles) {
+        fala.falar(`${lacuna.antes} ${lacuna.resposta} ${lacuna.depois}`, `frase-${lacuna.id}`);
+      }
       return;
     }
 
@@ -71,7 +73,12 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }
     <div className="space-y-2">
       <p className="text-[18px] font-semibold text-foreground">{comando}</p>
 
-      <div className={cn("grid gap-2", lacunas.length >= 3 && "sm:grid-cols-2")}>
+      <div
+        className={cn(
+          "grid gap-2",
+          lacunas.length >= 3 && (colunas === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"),
+        )}
+      >
         {lacunas.map((lacuna) => {
           const certo = normalizar(estado.respostas[lacuna.id] ?? "") === normalizar(lacuna.resposta);
           const errada = dica?.id === lacuna.id && !certo;
