@@ -201,20 +201,38 @@ export function CacaPalavras() {
   const completo = achadas === total;
   const selecionadas = new Set(caminho.map((p) => chave(p.linha, p.coluna)));
   const erroAtivo = aviso?.tipo === "error";
+  const modoToque = estado.config.modoCaca === "toque";
 
   return (
     <div className="space-y-2">
-      <p className="text-[18px] font-semibold">
-        Encontre as palavras na horizontal ou na vertical. Leia da esquerda para a direita ou de
-        cima para baixo.
-
-      </p>
+      <div className="flex flex-wrap items-center gap-2">
+        <p className="flex-1 text-[18px] font-semibold">
+          {modoToque
+            ? "Toque na primeira letra e depois na última letra da palavra."
+            : "Arraste sobre as letras, da esquerda para a direita ou de cima para baixo."}
+        </p>
+        <button
+          type="button"
+          onClick={() => {
+            caminhoRef.current = [];
+            setCaminho([]);
+            setAviso(null);
+            despachar({
+              tipo: "config",
+              mudanca: { modoCaca: modoToque ? "arrasto" : "toque" },
+            });
+          }}
+          className="rounded-full border-2 border-investigacao/40 bg-card px-3 py-1 text-[16px] font-bold text-investigacao hover:bg-investigacao/10"
+        >
+          {modoToque ? "👆 Modo Toque (ativo)" : "👆 Usar Modo Toque"}
+        </button>
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-[auto_1fr]">
         <div
           className="mx-auto w-full max-w-[250px] touch-none rounded-2xl border-2 border-investigacao bg-card p-2 shadow-md select-none"
-          onPointerUp={finalizar}
-          onPointerLeave={finalizar}
+          onPointerUp={modoToque ? undefined : finalizar}
+          onPointerLeave={modoToque ? undefined : finalizar}
         >
           <div className="grid grid-cols-8 gap-1">
             {grade.letras.map((linha, l) =>
@@ -227,13 +245,22 @@ export function CacaPalavras() {
                     key={k}
                     type="button"
                     aria-label={`Letra ${letra}`}
-                    onPointerDown={(e) => {
-                      e.preventDefault();
-                      iniciar(l, c);
-                    }}
-                    onPointerEnter={() => {
-                      if (arrastando.current) marcar(l, c);
-                    }}
+                    onClick={modoToque ? () => tocar(l, c) : undefined}
+                    onPointerDown={
+                      modoToque
+                        ? undefined
+                        : (e) => {
+                            e.preventDefault();
+                            iniciar(l, c);
+                          }
+                    }
+                    onPointerEnter={
+                      modoToque
+                        ? undefined
+                        : () => {
+                            if (arrastando.current) marcar(l, c);
+                          }
+                    }
                     className={cn(
                       "aspect-square rounded-md text-[17px] font-bold transition-colors",
                       achada
@@ -251,6 +278,7 @@ export function CacaPalavras() {
               }),
             )}
           </div>
+
           <p className="mt-1.5 text-center text-[15px] font-semibold text-muted-foreground">
             {achadas}/{total} · GO · GOES · PLAY · PLAYS
           </p>
