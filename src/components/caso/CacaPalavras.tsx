@@ -51,63 +51,111 @@ export function CacaPalavras() {
     }, ms);
   };
 
+  const avaliar = useCallback(
+    (atual: Celula[], continuo: boolean, direcaoRuim: boolean) => {
+      if (atual.length < 2) {
+        caminhoRef.current = [];
+        setCaminho([]);
+        return;
+      }
+
+      if (!continuo) {
+        setAviso({
+          tipo: "error",
+          texto: direcaoRuim
+            ? "Leia da esquerda para a direita ou de cima para baixo."
+            : "As letras precisam estar ligadas e na ordem.",
+        });
+        limparDepois();
+        return;
+      }
+
+      // A validação é feita pelo caminho planejado, nunca só pelas letras:
+      // assim as letras iniciais de GOES nunca são registradas como GO
+      // (nem as de PLAYS como PLAY), e as duas palavras ficam independentes.
+      const alvo = grade.palavras.find((p) => mesmoCaminho(atual, p.caminho));
+
+      if (alvo && estado.encontradas.includes(alvo.palavra)) {
+        setAviso({ tipo: "hint", texto: "Essa evidência já está no mural. Procure outra palavra." });
+        limparDepois();
+        return;
+      }
+
+      if (alvo) {
+        caminhoRef.current = [];
+        setCaminho([]);
+        setAviso({ tipo: "success", texto: `Você encontrou ${alvo.palavra}!` });
+        despachar({ tipo: "encontrou", palavra: alvo.palavra, caminho: atual });
+        if (estado.config.audioIngles) fala.falar(EVIDENCIAS[alvo.palavra].fala, `evid-${alvo.palavra}`);
+        return;
+      }
+
+      const prefixo = grade.palavras.some((p) => prefixoDeCaminho(atual, p.caminho));
+      setAviso(
+        prefixo
+          ? {
+              tipo: "hint",
+              texto: "Você encontrou o começo de uma palavra. Observe se há mais alguma letra.",
+            }
+          : {
+              tipo: "error",
+              texto:
+                "Essa sequência ainda não é uma das palavras do mural. Observe as letras e tente novamente.",
+            },
+      );
+      limparDepois();
+    },
+    [despachar, estado.config.audioIngles, estado.encontradas, fala, grade],
+  );
+
   const finalizar = useCallback(() => {
     if (!arrastando.current) return;
     arrastando.current = false;
     const atual = caminhoRef.current;
     direcao.current = null;
-    if (atual.length < 2) {
-      caminhoRef.current = [];
-      setCaminho([]);
+    avaliar(atual, contínuo.current, direcaoInvalida.current);
+  }, [avaliar]);
+
+  /** Modo Toque: primeiro toque marca a letra inicial, segundo a letra final. */
+  const tocar = (linha: number, coluna: number) => {
+    if (limpando.current) window.clearTimeout(limpando.current);
+    const inicio = caminhoRef.current[0];
+
+    if (!inicio || caminhoRef.current.length === 0) {
+      setAviso({ tipo: "hint", texto: "Agora toque na última letra da palavra." });
+      atualizar([{ linha, coluna }]);
       return;
     }
 
-    if (!contínuo.current) {
+    if (inicio.linha === linha && inicio.coluna === coluna) {
+      caminhoRef.current = [];
+      setCaminho([]);
+      setAviso(null);
+      return;
+    }
+
+    const mesmaLinha = inicio.linha === linha && coluna > inicio.coluna;
+    const mesmaColuna = inicio.coluna === coluna && linha > inicio.linha;
+
+    if (!mesmaLinha && !mesmaColuna) {
       setAviso({
         tipo: "error",
-        texto: direcaoInvalida.current
-          ? "Leia da esquerda para a direita ou de cima para baixo."
-          : "As letras precisam estar ligadas e na ordem.",
+        texto: "Toque na primeira letra e depois numa letra à direita ou abaixo dela.",
       });
       limparDepois();
       return;
     }
 
-    // A validação é feita pelo caminho planejado, nunca só pelas letras:
-    // assim as letras iniciais de GOES nunca são registradas como GO
-    // (nem as de PLAYS como PLAY), e as duas palavras ficam independentes.
-    const alvo = grade.palavras.find((p) => mesmoCaminho(atual, p.caminho));
-
-    if (alvo && estado.encontradas.includes(alvo.palavra)) {
-      setAviso({ tipo: "hint", texto: "Essa evidência já está no mural. Procure outra palavra." });
-      limparDepois();
-      return;
+    const trilha: Celula[] = [];
+    if (mesmaLinha) {
+      for (let c = inicio.coluna; c <= coluna; c++) trilha.push({ linha, coluna: c });
+    } else {
+      for (let l = inicio.linha; l <= linha; l++) trilha.push({ linha: l, coluna });
     }
+    atualizar(trilha);
+    avaliar(trilha, true, false);
+  };
 
-    if (alvo) {
-      caminhoRef.current = [];
-      setCaminho([]);
-      setAviso({ tipo: "success", texto: `Você encontrou ${alvo.palavra}!` });
-      despachar({ tipo: "encontrou", palavra: alvo.palavra, caminho: atual });
-      fala.falar(EVIDENCIAS[alvo.palavra].fala, `evid-${alvo.palavra}`);
-      return;
-    }
-
-    const prefixo = grade.palavras.some((p) => prefixoDeCaminho(atual, p.caminho));
-    setAviso(
-      prefixo
-        ? {
-            tipo: "hint",
-            texto: "Você encontrou o começo de uma palavra. Observe se há mais alguma letra.",
-          }
-        : {
-            tipo: "error",
-            texto:
-              "Essa sequência ainda não é uma das palavras do mural. Observe as letras e tente novamente.",
-          },
-    );
-    limparDepois();
-  }, [despachar, estado.encontradas, fala, grade]);
 
 
   const marcar = (linha: number, coluna: number) => {
