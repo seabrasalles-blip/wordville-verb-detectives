@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, HelpCircle, Map, RotateCcw, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import wordville from "@/assets/wordville.jpg";
+import lex from "@/assets/lex.png";
 import medalha from "@/assets/medalha.png";
 import {
   BANCO_EXTRA,
@@ -452,84 +453,115 @@ function Tela3() {
   const explicou = revelado || etapa >= 2;
 
   return (
-    <div className="space-y-2">
-      <DialogoLex segmentos={FALAS.t3} id="t3" aoMudar={setEtapa} />
-      {!revelado ? (
-        <div className="grid gap-2 sm:grid-cols-2">
-          <CartazGuiado
-            icone="🙋‍♀️"
-            frase="I go to school."
-            audioId="t3-a"
-            marcado
-            destacarIcone={etapa === 0}
-            marcacao={{ sujeito: "I", verbo: "go", depois: "to school.", traducaoVerbo: "ir" }}
-          />
-          <CartazGuiado
-            icone="👧"
-            frase="She goes to school."
-            audioId="t3-b"
-            marcado={etapa >= 1}
-            destacarIcone={etapa === 1}
-            marcacao={{ sujeito: "She", verbo: "goes", depois: "to school.", traducaoVerbo: "ir" }}
-          />
-        </div>
-      ) : null}
+    <div className="flex h-full min-h-0 flex-col gap-3 md:flex-row">
+      {/* Zona A — Inspetora Lex */}
+      <aside className="flex w-full shrink-0 flex-col items-center gap-1.5 rounded-2xl bg-secondary/40 p-2 md:w-[300px] md:border-r-2 md:border-investigacao/15">
+        <img
+          src={lex}
+          alt="Inspetora Lex, a detetive de Wordville"
+          width={768}
+          height={1024}
+          className="hidden h-[150px] w-auto object-contain drop-shadow-xl md:block"
+        />
+        <DialogoLex
+          segmentos={revelado ? FALAS.t3fim : FALAS.t3}
+          id={revelado ? "t3fim" : "t3"}
+          tom={revelado ? "pista" : "investigacao"}
+          aoMudar={revelado ? undefined : setEtapa}
+          className="w-full"
+        />
+      </aside>
 
-
-      {!revelado ? (
-        <div className="space-y-2">
-          {explicou ? (
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                aria-pressed={escolha === "certa"}
-                onClick={() => {
-                  setEscolha("certa");
-                  setErro(false);
-                  despachar({ tipo: "observou" });
+      {/* Zona B — cartazes, pergunta e respostas */}
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        {!revelado ? (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <CartazGuiado
+                icone="🙋‍♀️"
+                frase="I go to school."
+                audioId="t3-a"
+                marcado
+                destacarIcone={etapa === 0}
+                marcacao={{ sujeito: "I", verbo: "go", depois: "to school.", traducaoVerbo: "ir" }}
+              />
+              <CartazGuiado
+                icone="👧"
+                frase="She goes to school."
+                audioId="t3-b"
+                marcado={etapa >= 1}
+                destacarIcone={etapa === 1}
+                marcacao={{
+                  sujeito: "She",
+                  verbo: "goes",
+                  depois: "to school.",
+                  traducaoVerbo: "ir",
                 }}
-                className={cn(
-                  neutro,
-                  escolha === "certa" && "border-pista bg-pista text-pista-foreground",
-                )}
-              >
-                go virou goes
-              </button>
-              <button
-                type="button"
-                aria-pressed={escolha === "errada"}
-                onClick={() => {
-                  setEscolha("errada");
-                  setErro(true);
-                }}
-                className={cn(
-                  neutro,
-                  escolha === "errada" && "border-reorienta bg-reorienta/20 text-reorienta",
-                )}
-              >
-                nada mudou
-              </button>
+              />
             </div>
-          ) : null}
 
-          <AreaFeedback>
-            {erro ? (
-              <Feedback type="error" message={FEEDBACK_T3.errado} onClose={() => setErro(false)} />
+            {explicou ? (
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <button
+                  type="button"
+                  aria-pressed={escolha === "certa"}
+                  onClick={() => {
+                    setEscolha("certa");
+                    setErro(false);
+                    despachar({ tipo: "observou" });
+                  }}
+                  className={cn(
+                    neutro,
+                    escolha === "certa" && "border-pista bg-pista text-pista-foreground",
+                  )}
+                >
+                  go virou goes
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={escolha === "errada"}
+                  onClick={() => {
+                    setEscolha("errada");
+                    setErro(true);
+                  }}
+                  className={cn(
+                    neutro,
+                    escolha === "errada" && "border-reorienta bg-reorienta/20 text-reorienta",
+                  )}
+                >
+                  nada mudou
+                </button>
+                {escolha === "errada" ? (
+                  <span aria-hidden="true" className="text-2xl">
+                    🔍
+                  </span>
+                ) : null}
+              </div>
             ) : null}
-          </AreaFeedback>
-        </div>
-      ) : (
-        <>
-          <AreaFeedback>
-            <Feedback type="success" message={FEEDBACK_T3.certo} />
-          </AreaFeedback>
-          <Grupos />
-          <DialogoLex segmentos={FALAS.t3fim} id="t3fim" tom="pista" />
-        </>
-      )}
+
+            <AreaFeedback>
+              {erro ? (
+                <Feedback
+                  type="error"
+                  message={FEEDBACK_T3.errado}
+                  onClose={() => setErro(false)}
+                />
+              ) : null}
+            </AreaFeedback>
+          </>
+        ) : (
+          <>
+            <AreaFeedback>
+              <Feedback type="success" message={FEEDBACK_T3.certo} />
+            </AreaFeedback>
+            <Grupos />
+          </>
+        )}
+      </div>
     </div>
   );
 }
+
 
 
 function Tela6() {
