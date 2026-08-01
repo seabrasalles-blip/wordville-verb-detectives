@@ -8,6 +8,8 @@ import {
   CARTOES_TELA5,
   FALAS,
   FALA_FINAL_EXTRA,
+  FEEDBACK_T3,
+
   GRUPOS,
   LACUNAS_EXTRA,
   LACUNAS_TELA4,
@@ -28,6 +30,8 @@ import { CasoProvider, useCaso } from "./CasoProvider";
 import { BalaoLex, Ingles } from "./BalaoLex";
 import { BarraProgresso } from "./BarraProgresso";
 import { BotaoAudio } from "./BotaoAudio";
+import { CartazGuiado } from "./PalavraMarcada";
+
 import { Capa } from "./Capa";
 import { ComoJogar } from "./ComoJogar";
 import { CacaPalavras } from "./CacaPalavras";
@@ -440,67 +444,82 @@ function Tela3() {
   const { estado, despachar } = useCaso();
   const [erro, setErro] = useState(false);
   const [escolha, setEscolha] = useState<"certa" | "errada" | null>(null);
+  const [etapa, setEtapa] = useState(0);
   const revelado = estado.observou;
   const neutro =
     "rounded-full border-2 border-investigacao/40 bg-card px-4 py-1.5 text-[18px] font-bold text-investigacao transition-colors hover:bg-investigacao/10";
 
+  const explicou = revelado || etapa >= 2;
+
   return (
     <div className="space-y-2">
-      <DialogoLex segmentos={FALAS.t3} id="t3" />
+      <DialogoLex segmentos={FALAS.t3} id="t3" aoMudar={setEtapa} />
       <div className="grid gap-2 sm:grid-cols-2">
-        <Cartaz frase="I go to school." icone="🙋‍♀️" audioId="t3-a" />
-        <Cartaz frase="She goes to school." icone="👧" audioId="t3-b" />
+        <CartazGuiado
+          icone="🙋‍♀️"
+          frase="I go to school."
+          audioId="t3-a"
+          marcado={revelado || etapa >= 0}
+          destacarIcone={!revelado && etapa === 0}
+          marcacao={{ sujeito: "I", verbo: "go", depois: "to school.", traducaoVerbo: "ir" }}
+        />
+        <CartazGuiado
+          icone="👧"
+          frase="She goes to school."
+          audioId="t3-b"
+          marcado={revelado || etapa >= 1}
+          destacarIcone={!revelado && etapa === 1}
+          marcacao={{ sujeito: "She", verbo: "goes", depois: "to school.", traducaoVerbo: "ir" }}
+        />
       </div>
 
       {!revelado ? (
         <div className="space-y-2">
-          <p className="text-[18px] font-semibold">
-            Compare os dois exemplos. O que mudou no verbo?
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              aria-pressed={escolha === "certa"}
-              onClick={() => {
-                setEscolha("certa");
-                setErro(false);
-                despachar({ tipo: "observou" });
-              }}
-              className={cn(
-                neutro,
-                escolha === "certa" && "border-pista bg-pista text-pista-foreground",
-              )}
-            >
-              go virou goes
-            </button>
-            <button
-              type="button"
-              aria-pressed={escolha === "errada"}
-              onClick={() => {
-                setEscolha("errada");
-                setErro(true);
-              }}
-              className={cn(
-                neutro,
-                escolha === "errada" && "border-reorienta bg-reorienta/20 text-reorienta",
-              )}
-            >
-              nada mudou
-            </button>
-          </div>
+          {explicou ? (
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                aria-pressed={escolha === "certa"}
+                onClick={() => {
+                  setEscolha("certa");
+                  setErro(false);
+                  despachar({ tipo: "observou" });
+                }}
+                className={cn(
+                  neutro,
+                  escolha === "certa" && "border-pista bg-pista text-pista-foreground",
+                )}
+              >
+                go virou goes
+              </button>
+              <button
+                type="button"
+                aria-pressed={escolha === "errada"}
+                onClick={() => {
+                  setEscolha("errada");
+                  setErro(true);
+                }}
+                className={cn(
+                  neutro,
+                  escolha === "errada" && "border-reorienta bg-reorienta/20 text-reorienta",
+                )}
+              >
+                nada mudou
+              </button>
+            </div>
+          ) : null}
 
           <AreaFeedback>
             {erro ? (
-              <Feedback
-                type="error"
-                message="Escute I go e She goes. O segundo tem um som a mais no final do verbo."
-                onClose={() => setErro(false)}
-              />
+              <Feedback type="error" message={FEEDBACK_T3.errado} onClose={() => setErro(false)} />
             ) : null}
           </AreaFeedback>
         </div>
       ) : (
         <>
+          <AreaFeedback>
+            <Feedback type="success" message={FEEDBACK_T3.certo} />
+          </AreaFeedback>
           <Grupos />
           <DialogoLex segmentos={FALAS.t3fim} id="t3fim" tom="pista" />
         </>
@@ -508,6 +527,7 @@ function Tela3() {
     </div>
   );
 }
+
 
 function Tela6() {
   return (

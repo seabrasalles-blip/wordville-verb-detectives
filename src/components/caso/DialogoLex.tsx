@@ -13,8 +13,11 @@ type Props = {
   variante?: "compacta" | "apresentacao";
   /** Chamado quando a criança revela o último segmento. */
   aoTerminar?: () => void;
+  /** Informa o índice do segmento visível a cada mudança. */
+  aoMudar?: (indice: number) => void;
   className?: string;
 };
+
 
 
 const tons = {
@@ -33,6 +36,7 @@ export function DialogoLex({
   tom = "investigacao",
   variante = "compacta",
   aoTerminar,
+  aoMudar,
   className,
 }: Props) {
   const [indice, setIndice] = useState(0);
@@ -48,6 +52,12 @@ export function DialogoLex({
     if (ultimo) aoTerminar?.();
     // aoTerminar é chamado sempre que o último segmento aparece
   }, [ultimo, aoTerminar]);
+
+  useEffect(() => {
+    aoMudar?.(indice);
+  }, [indice, aoMudar]);
+
+
 
   const balao = useMemo(
     () => (

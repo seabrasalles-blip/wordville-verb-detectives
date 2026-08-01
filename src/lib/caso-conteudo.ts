@@ -962,7 +962,16 @@ export function feedbackLacuna(lacuna: Lacuna, palavra: string, tentativa: numbe
  * Falas da Lex em segmentos de no máximo 2 frases curtas.
  * Tudo em português: é a língua de instrução das crianças.
  */
+/** Feedbacks da comparação guiada da tela 3. */
+export const FEEDBACK_T3 = {
+  certo:
+    "Isso! Quando o sujeito é \u201cShe\u201d (ela), o verbo \u201cgo\u201d vira \u201cgoes\u201d. Mas os dois significam \u201cir\u201d — só mudou a forma, não o significado. Boa observação, detetive!",
+  errado:
+    "Olhe de novo para os verbos que destacamos. Na primeira frase está \u201cgo\u201d. Na segunda está \u201cgoes\u201d. As palavras são diferentes, não? O que mudou entre elas?",
+} as const;
+
 export const FALAS: Record<string, string[]> = {
+
   t1: [
     "Olá! Eu sou a Inspetora Lex.",
     "Os verbos dos cartazes de Wordville estão errados. Você me ajuda?",
@@ -975,7 +984,12 @@ export const FALAS: Record<string, string[]> = {
     "Reunimos as quatro evidências!",
     "Escute o final de goes e de plays. Ouviu o som a mais?",
   ],
-  t3: ["Observe as duas frases com atenção.", "O que mudou no verbo? Compare go e goes."],
+  t3: [
+    "Vamos olhar a primeira frase com atenção de detetive. \u201cI go to school\u201d significa \u201cEu vou para a escola\u201d. Quem faz a ação é \u201cI\u201d — eu. Esse é o sujeito! E o verbo — a ação — é \u201cgo\u201d, que significa \u201cir\u201d.",
+    "Agora a segunda frase. \u201cShe goes to school\u201d significa \u201cEla vai para a escola\u201d. Quem faz a ação é \u201cShe\u201d — ela. O sujeito mudou! E o verbo também: virou \u201cgoes\u201d. Continua significando \u201cir\u201d, mas a palavra mudou. Estranho, não?",
+    "Compare os dois exemplos. O sujeito mudou de \u201cI\u201d para \u201cShe\u201d. E o verbo? O que mudou quando o sujeito virou \u201cShe\u201d?",
+  ],
+
   t3fim: [
     "Descobrimos a pista! Com he, she e it, o verbo ganha um som a mais.",
     "Na escrita: play recebe S e go recebe ES.",
