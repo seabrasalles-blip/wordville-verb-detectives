@@ -110,7 +110,7 @@ export function CartazGuiado({
         {marcado ? (
           <>
             {marcacao.antes ? <span lang="en">{marcacao.antes}</span> : null}
-            <PalavraMarcada variante="sujeito" etiqueta="Sujeito — quem faz a ação">
+            <PalavraMarcada variante="sujeito" etiqueta="Sujeito — quem faz a ação" nivel={1}>
               {marcacao.sujeito}
             </PalavraMarcada>
             {marcacao.meio ? <span lang="en">{marcacao.meio}</span> : null}
@@ -118,7 +118,6 @@ export function CartazGuiado({
               variante="verbo"
               etiqueta={`Verbo — a ação (${marcacao.traducaoVerbo})`}
               atraso={0.25}
-              nivel={1}
             >
               {marcacao.verbo}
             </PalavraMarcada>
