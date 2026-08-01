@@ -43,7 +43,7 @@ export function PalavraMarcada({
           "surge absolute bottom-full left-1/2 -translate-x-1/2 rounded-full border-2 px-2 py-[1px] text-[14px] leading-tight font-bold whitespace-nowrap",
           estilo.etiqueta,
         )}
-        style={{ animationDelay: `${atraso}s`, marginBottom: nivel === 1 ? 28 : 4 }}
+        style={{ animationDelay: `${atraso}s`, marginBottom: nivel === 1 ? 32 : 4 }}
       >
         {etiqueta}
       </span>
