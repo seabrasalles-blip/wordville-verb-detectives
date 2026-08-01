@@ -476,7 +476,14 @@ function Tela3() {
       <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
         {!revelado ? (
           <>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[14px] font-bold tracking-wide text-investigacao uppercase">
+                Tela 3 — Observação guiada
+              </p>
+              <LegendaCores />
+            </div>
+
+            <div className="flex flex-col gap-3">
               <CartazGuiado
                 icone="🙋‍♀️"
                 frase="I go to school."
@@ -499,6 +506,7 @@ function Tela3() {
                 }}
               />
             </div>
+
 
             {explicou ? (
               <div className="flex flex-wrap items-center justify-center gap-3">
