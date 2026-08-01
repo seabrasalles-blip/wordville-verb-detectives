@@ -530,28 +530,29 @@ function Tela3() {
                   >
                     go virou goes {escolha === "certa" ? "✅" : ""}
                   </button>
-
-                <button
-                  type="button"
-                  aria-pressed={escolha === "errada"}
-                  onClick={() => {
-                    setEscolha("errada");
-                    setErro(true);
-                  }}
-                  className={cn(
-                    neutro,
-                    escolha === "errada" && "border-reorienta bg-reorienta/20 text-reorienta",
-                  )}
-                >
-                  nada mudou
-                </button>
-                {escolha === "errada" ? (
-                  <span aria-hidden="true" className="text-2xl">
-                    🔍
-                  </span>
-                ) : null}
-              </div>
+                  <button
+                    type="button"
+                    aria-pressed={escolha === "errada"}
+                    onClick={() => {
+                      setEscolha("errada");
+                      setErro(true);
+                    }}
+                    className={cn(
+                      neutro,
+                      escolha === "errada" && "border-reorienta bg-reorienta/20 text-reorienta",
+                    )}
+                  >
+                    nada mudou
+                  </button>
+                  {escolha === "errada" ? (
+                    <span aria-hidden="true" className="text-2xl">
+                      🔍
+                    </span>
+                  ) : null}
+                </div>
+              </>
             ) : null}
+
 
             <AreaFeedback>
               {erro ? (
