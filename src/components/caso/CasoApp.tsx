@@ -507,24 +507,30 @@ function Tela3() {
               />
             </div>
 
-
             {explicou ? (
-              <div className="flex flex-wrap items-center justify-center gap-3">
-                <button
-                  type="button"
-                  aria-pressed={escolha === "certa"}
-                  onClick={() => {
-                    setEscolha("certa");
-                    setErro(false);
-                    despachar({ tipo: "observou" });
-                  }}
-                  className={cn(
-                    neutro,
-                    escolha === "certa" && "border-pista bg-pista text-pista-foreground",
-                  )}
-                >
-                  go virou goes
-                </button>
+              <>
+                <p className="mt-1 text-center text-[16px] font-bold text-investigacao">
+                  Compare os dois exemplos. O sujeito mudou de <Ingles>I</Ingles> para{" "}
+                  <Ingles>She</Ingles>. E o verbo? O que mudou quando o sujeito virou{" "}
+                  <Ingles>She</Ingles>?
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-5">
+                  <button
+                    type="button"
+                    aria-pressed={escolha === "certa"}
+                    onClick={() => {
+                      setEscolha("certa");
+                      setErro(false);
+                      despachar({ tipo: "observou" });
+                    }}
+                    className={cn(
+                      neutro,
+                      escolha === "certa" && "border-pista bg-pista text-pista-foreground",
+                    )}
+                  >
+                    go virou goes {escolha === "certa" ? "✅" : ""}
+                  </button>
+
                 <button
                   type="button"
                   aria-pressed={escolha === "errada"}
