@@ -31,7 +31,7 @@ import { CasoProvider, useCaso } from "./CasoProvider";
 import { BalaoLex, Ingles } from "./BalaoLex";
 import { BarraProgresso } from "./BarraProgresso";
 import { BotaoAudio } from "./BotaoAudio";
-import { CartazGuiado } from "./PalavraMarcada";
+import { CartazGuiado, LegendaCores } from "./PalavraMarcada";
 
 import { Capa } from "./Capa";
 import { ComoJogar } from "./ComoJogar";
@@ -476,7 +476,12 @@ function Tela3() {
       <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
         {!revelado ? (
           <>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="flex items-center justify-end">
+              <LegendaCores />
+            </div>
+
+
+            <div className="flex flex-col gap-3">
               <CartazGuiado
                 icone="🙋‍♀️"
                 frase="I go to school."
@@ -501,43 +506,51 @@ function Tela3() {
             </div>
 
             {explicou ? (
-              <div className="flex flex-wrap items-center justify-center gap-3">
-                <button
-                  type="button"
-                  aria-pressed={escolha === "certa"}
-                  onClick={() => {
-                    setEscolha("certa");
-                    setErro(false);
-                    despachar({ tipo: "observou" });
-                  }}
-                  className={cn(
-                    neutro,
-                    escolha === "certa" && "border-pista bg-pista text-pista-foreground",
-                  )}
-                >
-                  go virou goes
-                </button>
-                <button
-                  type="button"
-                  aria-pressed={escolha === "errada"}
-                  onClick={() => {
-                    setEscolha("errada");
-                    setErro(true);
-                  }}
-                  className={cn(
-                    neutro,
-                    escolha === "errada" && "border-reorienta bg-reorienta/20 text-reorienta",
-                  )}
-                >
-                  nada mudou
-                </button>
-                {escolha === "errada" ? (
-                  <span aria-hidden="true" className="text-2xl">
-                    🔍
-                  </span>
-                ) : null}
-              </div>
+              <>
+                <p className="mt-1 text-center text-[16px] font-bold text-investigacao">
+                  Compare os dois exemplos. O sujeito mudou de “I” para “She”. E o verbo? O que
+                  mudou quando o sujeito virou “She”?
+                </p>
+
+                <div className="flex flex-wrap items-center justify-center gap-5">
+                  <button
+                    type="button"
+                    aria-pressed={escolha === "certa"}
+                    onClick={() => {
+                      setEscolha("certa");
+                      setErro(false);
+                      despachar({ tipo: "observou" });
+                    }}
+                    className={cn(
+                      neutro,
+                      escolha === "certa" && "border-pista bg-pista text-pista-foreground",
+                    )}
+                  >
+                    go virou goes {escolha === "certa" ? "✅" : ""}
+                  </button>
+                  <button
+                    type="button"
+                    aria-pressed={escolha === "errada"}
+                    onClick={() => {
+                      setEscolha("errada");
+                      setErro(true);
+                    }}
+                    className={cn(
+                      neutro,
+                      escolha === "errada" && "border-reorienta bg-reorienta/20 text-reorienta",
+                    )}
+                  >
+                    nada mudou
+                  </button>
+                  {escolha === "errada" ? (
+                    <span aria-hidden="true" className="text-2xl">
+                      🔍
+                    </span>
+                  ) : null}
+                </div>
+              </>
             ) : null}
+
 
             <AreaFeedback>
               {erro ? (

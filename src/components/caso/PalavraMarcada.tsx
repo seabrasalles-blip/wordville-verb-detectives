@@ -3,57 +3,70 @@ import { BotaoAudio } from "./BotaoAudio";
 
 type Variante = "sujeito" | "verbo";
 
-const estilos: Record<Variante, { caixa: string; etiqueta: string }> = {
+const estilos: Record<Variante, { destaque: string; rotulo: string; bolinha: string }> = {
   sujeito: {
-    caixa: "border-investigacao bg-investigacao/10 text-investigacao",
-    etiqueta: "border-investigacao bg-investigacao/15 text-investigacao",
+    destaque: "destaque-sujeito",
+    rotulo: "text-investigacao",
+    bolinha: "bg-investigacao",
   },
   verbo: {
-    caixa: "border-pista bg-pista/40 text-foreground",
-    etiqueta: "border-pista bg-pista text-pista-foreground",
+    destaque: "destaque-verbo",
+    rotulo: "text-pista-foreground",
+    bolinha: "bg-pista",
   },
 };
 
 /**
- * Envolve uma palavra da frase com moldura colorida e etiqueta flutuante
- * ("Sujeito — quem faz a ação" / "Verbo — a ação").
- * A etiqueta fica em position absolute acima da palavra e nunca cobre o texto,
- * porque o cartaz reserva espaço no topo quando há marcações.
+ * Palavra com destaque de cor no próprio texto e minirrótulo logo abaixo,
+ * tudo em fluxo normal (sem etiquetas flutuantes).
  */
-export function PalavraMarcada({
+function PalavraDestacada({
   children,
   variante,
-  etiqueta,
+  rotulo,
   atraso = 0,
-  nivel = 0,
 }: {
   children: string;
   variante: Variante;
-  etiqueta: string;
+  rotulo: string;
   /** Atraso do fade-in, em segundos. */
   atraso?: number;
-  /** 0 = etiqueta logo acima da palavra; 1 = uma fileira mais alta (evita sobreposição). */
-  nivel?: 0 | 1;
 }) {
   const estilo = estilos[variante];
   return (
-    <span className="relative inline-block align-baseline">
-      <span
-        className={cn(
-          "surge absolute bottom-full left-1/2 -translate-x-1/2 rounded-full border-2 px-2 py-[1px] text-[14px] leading-tight font-bold whitespace-nowrap",
-          estilo.etiqueta,
-        )}
-        style={{ animationDelay: `${atraso}s`, marginBottom: nivel === 1 ? 32 : 4 }}
-      >
-        {etiqueta}
-      </span>
-      <span
-        className={cn("rounded-lg border-2 px-1.5 py-[1px] font-bold", estilo.caixa)}
-        lang="en"
-      >
+    <span
+      className="surge inline-flex flex-col items-center leading-tight"
+      style={{ animationDelay: `${atraso}s` }}
+    >
+      <span className={cn("font-bold", estilo.destaque)} lang="en">
         {children}
       </span>
+      <span className={cn("mt-0.5 text-[11px] font-bold whitespace-nowrap", estilo.rotulo)}>
+        {rotulo}
+      </span>
     </span>
+  );
+}
+
+/** Barra de legenda: bolinha azul = Sujeito, bolinha amarela = Verbo. */
+export function LegendaCores({ className }: { className?: string }) {
+  return (
+    <div className={cn("flex items-center gap-4", className)}>
+      {(
+        [
+          ["sujeito", "Sujeito"],
+          ["verbo", "Verbo"],
+        ] as const
+      ).map(([variante, texto]) => (
+        <span key={variante} className="inline-flex items-center gap-1.5">
+          <span
+            aria-hidden="true"
+            className={cn("size-3 rounded-full", estilos[variante].bolinha)}
+          />
+          <span className={cn("text-[12px] font-bold", estilos[variante].rotulo)}>{texto}</span>
+        </span>
+      ))}
+    </div>
   );
 }
 
@@ -71,8 +84,8 @@ export type Marcacao = {
 };
 
 /**
- * Cartaz de frase da observação guiada: mostra a frase com marcações de
- * sujeito e verbo quando `marcado`, e destaca o ícone durante a explicação.
+ * Cartaz de frase da observação guiada, em largura total:
+ * [emoji] — frase com palavras destacadas — [botão de áudio].
  */
 export function CartazGuiado({
   icone,
@@ -90,37 +103,32 @@ export function CartazGuiado({
   audioId?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "cartao-pista border-investigacao p-2 text-center transition-[padding]",
-        marcado && "pt-12",
-      )}
-    >
+    <div className="cartao-pista flex items-center gap-3 border-investigacao px-3 py-2.5">
       <span
         aria-hidden="true"
         className={cn(
-          "inline-block rounded-full text-2xl",
+          "inline-flex size-[50px] shrink-0 items-center justify-center rounded-full bg-secondary/60 text-2xl",
           destacarIcone && "pulsa ring-2 ring-investigacao",
         )}
       >
         {icone}
       </span>
 
-      <p className="mt-0.5 flex flex-wrap items-baseline justify-center gap-x-1.5 gap-y-2 text-[20px] font-bold text-investigacao">
+      <p className="flex flex-1 flex-wrap items-start justify-center gap-x-2 gap-y-1 text-center text-[24px] font-bold text-investigacao">
         {marcado ? (
           <>
             {marcacao.antes ? <span lang="en">{marcacao.antes}</span> : null}
-            <PalavraMarcada variante="sujeito" etiqueta="Sujeito — quem faz a ação" nivel={1}>
+            <PalavraDestacada variante="sujeito" rotulo="sujeito">
               {marcacao.sujeito}
-            </PalavraMarcada>
+            </PalavraDestacada>
             {marcacao.meio ? <span lang="en">{marcacao.meio}</span> : null}
-            <PalavraMarcada
+            <PalavraDestacada
               variante="verbo"
-              etiqueta={`Verbo — a ação (${marcacao.traducaoVerbo})`}
+              rotulo={`verbo = ${marcacao.traducaoVerbo}`}
               atraso={0.25}
             >
               {marcacao.verbo}
-            </PalavraMarcada>
+            </PalavraDestacada>
             {marcacao.depois ? <span lang="en">{marcacao.depois}</span> : null}
           </>
         ) : (
@@ -128,9 +136,7 @@ export function CartazGuiado({
         )}
       </p>
 
-      <div className="mt-1.5 flex justify-center">
-        <BotaoAudio texto={frase} id={audioId} tamanho="sm" />
-      </div>
+      <BotaoAudio texto={frase} id={audioId} tamanho="sm" className="shrink-0" />
     </div>
   );
 }
