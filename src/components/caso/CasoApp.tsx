@@ -454,24 +454,27 @@ function Tela3() {
   return (
     <div className="space-y-2">
       <DialogoLex segmentos={FALAS.t3} id="t3" aoMudar={setEtapa} />
-      <div className="grid gap-2 sm:grid-cols-2">
-        <CartazGuiado
-          icone="🙋‍♀️"
-          frase="I go to school."
-          audioId="t3-a"
-          marcado={revelado || etapa >= 0}
-          destacarIcone={!revelado && etapa === 0}
-          marcacao={{ sujeito: "I", verbo: "go", depois: "to school.", traducaoVerbo: "ir" }}
-        />
-        <CartazGuiado
-          icone="👧"
-          frase="She goes to school."
-          audioId="t3-b"
-          marcado={revelado || etapa >= 1}
-          destacarIcone={!revelado && etapa === 1}
-          marcacao={{ sujeito: "She", verbo: "goes", depois: "to school.", traducaoVerbo: "ir" }}
-        />
-      </div>
+      {!revelado ? (
+        <div className="grid gap-2 sm:grid-cols-2">
+          <CartazGuiado
+            icone="🙋‍♀️"
+            frase="I go to school."
+            audioId="t3-a"
+            marcado
+            destacarIcone={etapa === 0}
+            marcacao={{ sujeito: "I", verbo: "go", depois: "to school.", traducaoVerbo: "ir" }}
+          />
+          <CartazGuiado
+            icone="👧"
+            frase="She goes to school."
+            audioId="t3-b"
+            marcado={etapa >= 1}
+            destacarIcone={etapa === 1}
+            marcacao={{ sujeito: "She", verbo: "goes", depois: "to school.", traducaoVerbo: "ir" }}
+          />
+        </div>
+      ) : null}
+
 
       {!revelado ? (
         <div className="space-y-2">
