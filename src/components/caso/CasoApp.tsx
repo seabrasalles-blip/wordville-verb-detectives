@@ -31,7 +31,7 @@ import { CasoProvider, useCaso } from "./CasoProvider";
 import { BalaoLex, Ingles } from "./BalaoLex";
 import { BarraProgresso } from "./BarraProgresso";
 import { BotaoAudio } from "./BotaoAudio";
-import { CartazGuiado } from "./PalavraMarcada";
+import { CartazGuiado, LegendaCores } from "./PalavraMarcada";
 
 import { Capa } from "./Capa";
 import { ComoJogar } from "./ComoJogar";
