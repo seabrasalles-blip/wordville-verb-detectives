@@ -508,10 +508,10 @@ function Tela3() {
             {explicou ? (
               <>
                 <p className="mt-1 text-center text-[16px] font-bold text-investigacao">
-                  Compare os dois exemplos. O sujeito mudou de <Ingles>I</Ingles> para{" "}
-                  <Ingles>She</Ingles>. E o verbo? O que mudou quando o sujeito virou{" "}
-                  <Ingles>She</Ingles>?
+                  Compare os dois exemplos. O sujeito mudou de “I” para “She”. E o verbo? O que
+                  mudou quando o sujeito virou “She”?
                 </p>
+
                 <div className="flex flex-wrap items-center justify-center gap-5">
                   <button
                     type="button"
