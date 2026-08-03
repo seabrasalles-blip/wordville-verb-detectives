@@ -19,7 +19,7 @@ import {
 } from "@/lib/caso-conteudo";
 import { useFala } from "@/hooks/use-fala";
 
-const CHAVE = "caso-verbos-desaparecidos-v1";
+const CHAVE = "caso-verbos-desaparecidos-v2";
 
 export type ModoCaca = "arrasto" | "toque";
 export type Dificuldade = "facilitada" | "padrao" | "desafio";
@@ -33,7 +33,7 @@ export type ConfigCaso = {
   modoCaca: ModoCaca;
   /** "facilitada" abre prática extra com 1 erro; "desafio" desliga a prática extra. */
   dificuldade: Dificuldade;
-  /** Mostra a tela opcional de novos verbos (like, watch, read). */
+  /** Mostra a tela opcional de novos cartazes de go e play. */
   extensaoAtiva: boolean;
 };
 
