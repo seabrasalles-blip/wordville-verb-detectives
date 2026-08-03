@@ -44,7 +44,7 @@ import { DialogoReiniciar } from "./DialogoReiniciar";
 import { AreaFeedback, Feedback } from "./Feedback";
 import { LigarColunas } from "./LigarColunas";
 import { MapaCaso } from "./MapaCaso";
-import { ModoProfessor } from "./ModoProfessor";
+
 import { MontarFrase } from "./MontarFrase";
 import { PraticaExtra } from "./PraticaExtra";
 import { TelaLacunas } from "./TelaLacunas";
@@ -107,7 +107,7 @@ function Casca() {
   const [confirmando, setConfirmando] = useState(false);
   const [ajuda, setAjuda] = useState(false);
   const [mapa, setMapa] = useState(false);
-  const [professor, setProfessor] = useState(false);
+  
   const [processando, setProcessando] = useState(false);
   const travaRef = useRef(false);
 
@@ -174,13 +174,6 @@ function Casca() {
                     className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-bold text-investigacao hover:bg-investigacao/10"
                   >
                     <HelpCircle className="size-4" aria-hidden="true" /> Como jogar
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setProfessor(true)}
-                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-semibold text-muted-foreground hover:bg-secondary"
-                  >
-                    <GraduationCap className="size-4" aria-hidden="true" /> Professor
                   </button>
                   <button
                     type="button"
@@ -304,7 +297,7 @@ function Casca() {
 
             <ComoJogar aberto={ajuda} aoFechar={() => setAjuda(false)} />
             <MapaCaso aberto={mapa} aoFechar={() => setMapa(false)} concluidas={concluidas} />
-            <ModoProfessor aberto={professor} aoFechar={() => setProfessor(false)} />
+            
           </>
         )}
 
