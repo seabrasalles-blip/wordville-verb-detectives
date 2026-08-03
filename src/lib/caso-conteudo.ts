@@ -1,8 +1,10 @@
-/** 9 telas do caso + caso extra (10) + fechamento (11). */
-export const TOTAL_TELAS = 11;
-/** Tela opcional de extensão (novos verbos). */
+/** 9 telas do caso + caso extra (10) + novos cenários (11) + fechamento (12). */
+export const TOTAL_TELAS = 12;
+/** Tela opcional de extensão (novos cartazes de go e play). */
 export const TELA_EXTRA = 10;
-export const TELA_FINAL = 11;
+/** Tela bônus opcional: os novos cenários de Wordville. */
+export const TELA_CENARIOS = 11;
+export const TELA_FINAL = 12;
 
 export const PALAVRAS_CACA = ["GO", "GOES", "PLAY", "PLAYS"] as const;
 export type PalavraCaca = (typeof PALAVRAS_CACA)[number];
@@ -565,7 +567,7 @@ export const GRUPOS = [
 
 export type TipoDica = "conceitual" | "procedimental" | "atencional";
 
-export type FamiliaVerbal = "go" | "play" | "like" | "watch" | "read";
+export type FamiliaVerbal = "go" | "play";
 
 export type Lacuna = {
   id: string;
@@ -577,6 +579,8 @@ export type Lacuna = {
   /** Ação descrita pela frase, usada nos feedbacks de significado. */
   acao: string;
   ilustracao: string;
+  /** Cenário ilustrado do cartaz (ver src/lib/ilustracoes.ts). */
+  imagem?: CenarioId;
   acertoTexto: string;
   dicas: Partial<Record<TipoDica, string>>;
 };
@@ -588,11 +592,12 @@ export const LACUNAS_TELA4: Lacuna[] = [
   {
     id: "t4-he",
     antes: "He",
-    depois: "to the park on Sundays.",
+    depois: "to the beach on Sundays.",
     resposta: "goes",
     familia: "go",
-    acao: "ir ao parque",
-    ilustracao: "👦",
+    acao: "ir à praia",
+    ilustracao: "🏖️",
+    imagem: "beach",
     acertoTexto: "Muito bem! 'He' está no grupo de he, she e it. Por isso: go recebe ES → goes.",
     dicas: {
       conceitual:
@@ -604,11 +609,12 @@ export const LACUNAS_TELA4: Lacuna[] = [
   {
     id: "t4-we",
     antes: "We",
-    depois: "to the park on Sundays.",
+    depois: "to the zoo on Sundays.",
     resposta: "go",
     familia: "go",
-    acao: "ir ao parque",
-    ilustracao: "👨‍👩‍👧",
+    acao: "ir ao zoológico",
+    ilustracao: "🦁",
+    imagem: "zoo",
     acertoTexto: "Muito bem! 'We' está no grupo de I, you, we e they. O verbo fica 'go'.",
     dicas: {
       conceitual:
@@ -620,11 +626,12 @@ export const LACUNAS_TELA4: Lacuna[] = [
   {
     id: "t4-she",
     antes: "She",
-    depois: "to the park on Sundays.",
+    depois: "to the park with her family.",
     resposta: "goes",
     familia: "go",
     acao: "ir ao parque",
-    ilustracao: "👧",
+    ilustracao: "🌳",
+    imagem: "park",
     acertoTexto: "Muito bem! 'She' está no grupo de he, she e it. Por isso: go recebe ES → goes.",
     dicas: {
       conceitual:
@@ -639,11 +646,12 @@ export const LACUNAS_TELA6: Lacuna[] = [
   {
     id: "t6-she",
     antes: "She",
-    depois: "soccer every weekend.",
+    depois: "basketball every weekend.",
     resposta: "plays",
     familia: "play",
-    acao: "jogar futebol",
-    ilustracao: "👧⚽️",
+    acao: "jogar basquete",
+    ilustracao: "🏀",
+    imagem: "basketball",
     acertoTexto: "Isso! 'She' está no grupo de he, she e it. Na escrita, play recebe S → plays.",
     dicas: {
       conceitual:
@@ -654,11 +662,12 @@ export const LACUNAS_TELA6: Lacuna[] = [
   {
     id: "t6-i",
     antes: "I",
-    depois: "soccer every weekend.",
+    depois: "tennis with my brother.",
     resposta: "play",
     familia: "play",
-    acao: "jogar futebol",
-    ilustracao: "🧒⚽️",
+    acao: "jogar tênis",
+    ilustracao: "🎾",
+    imagem: "tennis",
     acertoTexto: "Isso! 'I' está no grupo de I, you, we e they. O verbo fica 'play'.",
     dicas: {
       conceitual:
@@ -673,7 +682,8 @@ export const LACUNAS_TELA6: Lacuna[] = [
     resposta: "plays",
     familia: "play",
     acao: "brincar no jardim",
-    ilustracao: "🐶",
+    ilustracao: "🌼",
+    imagem: "garden",
     acertoTexto: "Isso mesmo! Com it, usamos plays.",
     dicas: {
       conceitual: "Observe o sujeito: it pertence ao grupo de he e she.",
@@ -686,11 +696,12 @@ export const LACUNAS_TELA7: Lacuna[] = [
   {
     id: "t7-1",
     antes: "He",
-    depois: "to school every day.",
+    depois: "to the beach every Saturday.",
     resposta: "goes",
     familia: "go",
-    acao: "ir à escola",
-    ilustracao: "👦🏫",
+    acao: "ir à praia",
+    ilustracao: "🏖️",
+    imagem: "beach",
     acertoTexto: "Cartaz consertado! 'He' pede 'goes'.",
     dicas: {
       conceitual: "Quem pratica a ação é 'He'. Ele está no grupo de he, she e it.",
@@ -700,11 +711,12 @@ export const LACUNAS_TELA7: Lacuna[] = [
   {
     id: "t7-2",
     antes: "We",
-    depois: "to the park on Sundays.",
+    depois: "to the zoo on Sundays.",
     resposta: "go",
     familia: "go",
-    acao: "ir ao parque",
-    ilustracao: "👨‍👩‍👧🌳",
+    acao: "ir ao zoológico",
+    ilustracao: "🦁",
+    imagem: "zoo",
     acertoTexto: "Cartaz consertado! 'We' pede 'go'.",
     dicas: {
       conceitual: "Quem pratica a ação é 'We'. Ele está no grupo de I, you, we e they.",
@@ -714,11 +726,12 @@ export const LACUNAS_TELA7: Lacuna[] = [
   {
     id: "t7-3",
     antes: "She",
-    depois: "soccer every weekend.",
+    depois: "the piano at home.",
     resposta: "plays",
     familia: "play",
-    acao: "jogar futebol",
-    ilustracao: "👧⚽️",
+    acao: "tocar piano",
+    ilustracao: "🎹",
+    imagem: "piano",
     acertoTexto: "Cartaz consertado! 'She' pede 'plays'.",
     dicas: {
       conceitual: "Quem pratica a ação é 'She'. Ela está no grupo de he, she e it.",
@@ -728,11 +741,12 @@ export const LACUNAS_TELA7: Lacuna[] = [
   {
     id: "t7-4",
     antes: "I",
-    depois: "soccer every weekend.",
+    depois: "hide and seek in the yard.",
     resposta: "play",
     familia: "play",
-    acao: "jogar futebol",
-    ilustracao: "🧒⚽️",
+    acao: "brincar de esconde-esconde",
+    ilustracao: "🌳",
+    imagem: "hide",
     acertoTexto: "Cartaz consertado! 'I' pede 'play'.",
     dicas: {
       conceitual: "Quem pratica a ação é 'I'. Ele está no grupo de I, you, we e they.",
@@ -878,9 +892,6 @@ export function grupoDoSujeito(sujeito: string): "base" | "terceira" {
 export const FLEXAO: Record<FamiliaVerbal, { forma: string; sufixo: string }> = {
   go: { forma: "goes", sufixo: "ES" },
   play: { forma: "plays", sufixo: "S" },
-  like: { forma: "likes", sufixo: "S" },
-  watch: { forma: "watches", sufixo: "ES" },
-  read: { forma: "reads", sufixo: "S" },
 };
 
 const FAMILIA_POR_PALAVRA: Record<string, FamiliaVerbal> = {
@@ -888,12 +899,6 @@ const FAMILIA_POR_PALAVRA: Record<string, FamiliaVerbal> = {
   goes: "go",
   play: "play",
   plays: "play",
-  like: "like",
-  likes: "like",
-  watch: "watch",
-  watches: "watch",
-  read: "read",
-  reads: "read",
 };
 
 export function familiaDaPalavra(palavra: string): FamiliaVerbal {
@@ -903,9 +908,6 @@ export function familiaDaPalavra(palavra: string): FamiliaVerbal {
 const IDEIAS: Record<FamiliaVerbal, string> = {
   go: "ir",
   play: "jogar",
-  like: "gostar",
-  watch: "assistir",
-  read: "ler",
 };
 
 /** Sentido do verbo dentro da frase, em português. */
@@ -1004,14 +1006,14 @@ export const FALAS: Record<string, string[]> = {
   t8: ["Vamos anotar o que você descobriu.", "Responda as duas perguntas do meu quadro."],
   t9: ["Última missão: montar as frases.", "Coloque os blocos na ordem certa."],
   t10: [
-    "Detetive, encontramos mais cartazes com verbos diferentes!",
-    "Será que a mesma regra funciona para eles?",
-  ],
-  t10watch: [
-    "Olha esse: watch vira watches! Ganhou e-s no final, não só s.",
-    "Mas escute o som: é o mesmo som das nossas pistas.",
+    "Detetive, achamos mais cartazes espalhados por Wordville!",
+    "São os mesmos verbos, go e play, agora em lugares novos.",
   ],
   t11: [
+    "Novos lugares, mesma regra!",
+    "Descubra qual verbo combina com cada cartaz.",
+  ],
+  t12: [
     "Caso resolvido, detetive! O verbo muda com he, she e it.",
     "Com I, you, we e they, o verbo fica do jeito simples.",
   ],
@@ -1021,10 +1023,10 @@ export const FALAS: Record<string, string[]> = {
   ],
 };
 
-/** Fechamento quando a criança também resolveu o caso extra. */
+/** Fechamento quando a criança também resolveu os cartazes e cenários extras. */
 export const FALA_FINAL_EXTRA = [
-  "Você descobriu que o verbo muda com he, she e it.",
-  "E isso vale para go, play, like, watch e read!",
+  "Você resolveu o caso em todos os cantos de Wordville!",
+  "A regra funciona em qualquer lugar.",
 ];
 
 /* ===================== Prática extra (ramificação) ===================== */
@@ -1155,97 +1157,142 @@ export const RAMOS: Record<number, { titulo: string; itens: ItemPratica[] }> = {
 
 export const TELAS_COM_RAMO = [4, 5, 6, 7];
 
-/* ===================== Caso extra: novos verbos ===================== */
+/* ============ Caso extra (tela 10): novos cartazes de go e play ============ */
 
 export const LACUNAS_EXTRA: Lacuna[] = [
   {
-    id: "tx-likes",
-    antes: "She",
-    depois: "ice cream.",
-    resposta: "likes",
-    familia: "like",
-    acao: "gostar de sorvete",
-    ilustracao: "🍦",
-    acertoTexto: "Isso! Com she, like recebe S → likes.",
-    dicas: {
-      conceitual:
-        "Quem pratica a ação é 'She', do grupo de he, she e it. O verbo ganha um som a mais.",
-      atencional: "Ouça like e likes. O som a mais no final é a nossa pista.",
-    },
-  },
-  {
-    id: "tx-like",
-    antes: "I",
-    depois: "ice cream.",
-    resposta: "like",
-    familia: "like",
-    acao: "gostar de sorvete",
-    ilustracao: "🧒🍦",
-    acertoTexto: "Isso! Com I, o verbo fica like.",
-    dicas: {
-      conceitual: "Quem pratica a ação é 'I', do grupo de I, you, we e they.",
-      atencional: "Ouça I like e She likes. Só o segundo tem o som a mais.",
-    },
-  },
-  {
-    id: "tx-watches",
+    id: "tx-guitar",
     antes: "He",
-    depois: "TV.",
-    resposta: "watches",
-    familia: "watch",
-    acao: "assistir TV",
-    ilustracao: "📺",
-    acertoTexto: "Muito bem! Watch recebe ES → watches, com o mesmo som das outras pistas.",
+    depois: "the guitar in the band.",
+    resposta: "plays",
+    familia: "play",
+    acao: "tocar violão",
+    ilustracao: "🎸",
+    imagem: "guitar",
+    acertoTexto: "Isso! Com he, play recebe S → plays.",
     dicas: {
-      conceitual: "Quem pratica a ação é 'He'. Esse verbo recebe ES, não só S.",
-      atencional: "Ouça watch e watches. O som a mais está no final.",
+      conceitual: "Quem pratica a ação é 'He', do grupo de he, she e it.",
+      atencional: "Compare: I play the guitar / He plays the guitar.",
     },
   },
   {
-    id: "tx-watch",
+    id: "tx-violin",
     antes: "We",
-    depois: "TV.",
-    resposta: "watch",
-    familia: "watch",
-    acao: "assistir TV",
-    ilustracao: "👨‍👩‍👧📺",
-    acertoTexto: "Isso! Com we, o verbo fica watch.",
+    depois: "the violin on Fridays.",
+    resposta: "play",
+    familia: "play",
+    acao: "tocar violino",
+    ilustracao: "🎻",
+    imagem: "violin",
+    acertoTexto: "Isso! Com we, o verbo fica play.",
     dicas: {
       conceitual: "Quem pratica a ação é 'We', do grupo de I, you, we e they.",
-      atencional: "Ouça We watch e He watches. Compare o final.",
+      atencional: "Compare: We play / She plays. Só o segundo tem o som a mais.",
     },
   },
   {
-    id: "tx-reads",
+    id: "tx-swim",
     antes: "She",
-    depois: "books.",
-    resposta: "reads",
-    familia: "read",
-    acao: "ler livros",
-    ilustracao: "📚",
-    acertoTexto: "Boa! Com she, read recebe S → reads.",
+    depois: "swimming at the beach.",
+    resposta: "goes",
+    familia: "go",
+    acao: "ir nadar na praia",
+    ilustracao: "🏊",
+    imagem: "swimming",
+    acertoTexto: "Muito bem! Com she, go recebe ES → goes.",
     dicas: {
       conceitual: "Quem pratica a ação é 'She', do grupo de he, she e it.",
-      atencional: "Ouça read e reads. O som a mais é a pista.",
+      atencional: "Compare: I go swimming / She goes swimming.",
     },
   },
   {
-    id: "tx-read",
+    id: "tx-zoo",
     antes: "I",
-    depois: "books.",
-    resposta: "read",
-    familia: "read",
-    acao: "ler livros",
-    ilustracao: "🧒📚",
-    acertoTexto: "Boa! Com I, o verbo fica read.",
+    depois: "to the zoo with my family.",
+    resposta: "go",
+    familia: "go",
+    acao: "ir ao zoológico",
+    ilustracao: "🦁",
+    imagem: "zoo",
+    acertoTexto: "Isso! Com I, o verbo fica go.",
     dicas: {
       conceitual: "Quem pratica a ação é 'I', do grupo de I, you, we e they.",
-      atencional: "Ouça I read e She reads. Compare o final.",
+      atencional: "Compare: I go to the zoo / He goes to the zoo.",
     },
   },
 ];
 
-export const BANCO_EXTRA = ["like", "likes", "watch", "watches", "read", "reads"];
+export const BANCO_EXTRA = ["go", "goes", "play", "plays"];
+
+/* ========== Tela bônus (11): O Caso dos Novos Cenários ========== */
+
+export const LACUNAS_TELA11: Lacuna[] = [
+  {
+    id: "t11-beach",
+    antes: "He",
+    depois: "to the beach on Sundays.",
+    resposta: "goes",
+    familia: "go",
+    acao: "ir à praia",
+    ilustracao: "🏖️",
+    imagem: "beach",
+    acertoTexto: "Cartaz da praia resolvido! Com he, go vira goes.",
+    dicas: {
+      conceitual: "Quem pratica a ação é 'He', do grupo de he, she e it.",
+      procedimental: DICA_SUJEITO,
+    },
+  },
+  {
+    id: "t11-zoo",
+    antes: "They",
+    depois: "to the zoo on Sundays.",
+    resposta: "go",
+    familia: "go",
+    acao: "ir ao zoológico",
+    ilustracao: "🦁",
+    imagem: "zoo",
+    acertoTexto: "Cartaz do zoológico resolvido! Com they, o verbo fica go.",
+    dicas: {
+      conceitual: "Quem pratica a ação é 'They', do grupo de I, you, we e they.",
+      procedimental: DICA_SUJEITO,
+    },
+  },
+  {
+    id: "t11-violin",
+    antes: "She",
+    depois: "the violin on Fridays.",
+    resposta: "plays",
+    familia: "play",
+    acao: "tocar violino",
+    ilustracao: "🎻",
+    imagem: "violin",
+    acertoTexto: "Cartaz da música resolvido! Com she, play vira plays.",
+    dicas: {
+      conceitual: "Quem pratica a ação é 'She', do grupo de he, she e it.",
+      procedimental: DICA_SUJEITO,
+    },
+  },
+  {
+    id: "t11-hide",
+    antes: "We",
+    depois: "hide and seek in the yard.",
+    resposta: "play",
+    familia: "play",
+    acao: "brincar de esconde-esconde",
+    ilustracao: "🌳",
+    imagem: "hide",
+    acertoTexto: "Cartaz do quintal resolvido! Com we, o verbo fica play.",
+    dicas: {
+      conceitual: "Quem pratica a ação é 'We', do grupo de I, you, we e they.",
+      procedimental: DICA_SUJEITO,
+    },
+  },
+];
+
+export const BANCO_TELA11 = ["go", "goes", "play", "plays"];
+
+export const FALA_FIM_CENARIOS =
+  "Você resolveu o caso em todos os cantos de Wordville! A regra funciona em qualquer lugar.";
 
 /* ===================== Nomes das telas (mapa do caso) ===================== */
 
@@ -1259,6 +1306,7 @@ export const TELAS = [
   { n: 7, titulo: "Revisão mista", icone: "🧩", pratica: true },
   { n: 8, titulo: "O que você aprendeu", icone: "📝", pratica: false },
   { n: 9, titulo: "Monte a frase", icone: "🧱", pratica: true },
-  { n: 10, titulo: "Caso extra: novos suspeitos", icone: "🌟", pratica: true },
-  { n: 11, titulo: "Caso resolvido", icone: "🏅", pratica: false },
+  { n: 10, titulo: "Caso extra: novos cartazes", icone: "🌟", pratica: true },
+  { n: 11, titulo: "Novos cenários", icone: "🌍", pratica: true },
+  { n: 12, titulo: "Caso resolvido", icone: "🏅", pratica: false },
 ] as const;
