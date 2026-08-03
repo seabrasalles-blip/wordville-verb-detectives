@@ -7,6 +7,7 @@ import { AreaFeedback, Feedback } from "./Feedback";
 import { Fantasma, useArrasto } from "./useArrasto";
 import { familiaDaPalavra, feedbackLacuna } from "@/lib/caso-conteudo";
 import type { Lacuna, TipoDica } from "@/lib/caso-conteudo";
+import { ALT_CENARIO, ILUSTRACOES } from "@/lib/ilustracoes";
 
 const ORDEM_DICAS: TipoDica[] = ["conceitual", "procedimental", "atencional"];
 
@@ -94,9 +95,20 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }
               )}
             >
               <div className="flex flex-wrap items-center gap-2">
-                <span aria-hidden="true" className="text-xl">
-                  {lacuna.ilustracao}
-                </span>
+                {lacuna.imagem ? (
+                  <img
+                    src={ILUSTRACOES[lacuna.imagem]}
+                    alt={ALT_CENARIO[lacuna.imagem]}
+                    width={512}
+                    height={512}
+                    loading="lazy"
+                    className="size-9 shrink-0 object-contain"
+                  />
+                ) : (
+                  <span aria-hidden="true" className="text-xl">
+                    {lacuna.ilustracao}
+                  </span>
+                )}
                 <p className="flex flex-wrap items-center gap-1.5 text-[20px] font-semibold">
                   <span>{lacuna.antes}</span>
                   <button

@@ -6,13 +6,14 @@ import lex from "@/assets/lex.png";
 import medalha from "@/assets/medalha.png";
 import {
   BANCO_EXTRA,
+  BANCO_TELA11,
   CARTOES_TELA5,
   FALAS,
   FALA_FINAL_EXTRA,
   FEEDBACK_T3,
-
   GRUPOS,
   LACUNAS_EXTRA,
+  LACUNAS_TELA11,
   LACUNAS_TELA4,
   LACUNAS_TELA6,
   LACUNAS_TELA7,
@@ -22,7 +23,9 @@ import {
   PERGUNTAS_TELA8,
   TELAS,
   TELAS_COM_RAMO,
+  TELA_CENARIOS,
   TELA_EXTRA,
+  TELA_FINAL,
   TOTAL_TELAS,
   fraseDaMontagem,
 } from "@/lib/caso-conteudo";
@@ -89,7 +92,9 @@ function telaConcluida(tela: number, estado: ReturnType<typeof useCaso>["estado"
       if (!estado.config.extensaoAtiva) return true;
       if (estado.extensao === "pulada") return true;
       return LACUNAS_EXTRA.every((l) => estado.respostas[l.id] === l.resposta);
-    case 11:
+    case TELA_CENARIOS:
+      return true;
+    case TELA_FINAL:
       return estado.medalha;
     default:
       return true;
@@ -242,7 +247,8 @@ function Casca() {
                     </>
                   ) : null}
                   {tela === TELA_EXTRA ? <TelaExtra /> : null}
-                  {tela === 11 ? <TelaFinal /> : null}
+                  {tela === TELA_CENARIOS ? <TelaCenarios /> : null}
+                  {tela === TELA_FINAL ? <TelaFinal /> : null}
                 </>
               )}
             </main>
@@ -658,11 +664,10 @@ function Tela8() {
   );
 }
 
-/** Tela opcional: a mesma regra com like, watch e read. */
+/** Tela opcional: novos cartazes de go e play em outros contextos. */
 function TelaExtra() {
   const { estado, despachar } = useCaso();
   const feita = LACUNAS_EXTRA.every((l) => estado.respostas[l.id] === l.resposta);
-  const watchOk = estado.respostas["tx-watches"] === "watches";
 
   useEffect(() => {
     if (feita && estado.extensao !== "feita") despachar({ tipo: "extensao", valor: "feita" });
@@ -682,17 +687,29 @@ function TelaExtra() {
 
   return (
     <div className="space-y-2">
-      <DialogoLex
-        segmentos={watchOk ? FALAS.t10watch : FALAS.t10}
-        id={watchOk ? "t10w" : "t10"}
-        tom="pista"
-      />
+      <DialogoLex segmentos={FALAS.t10} id="t10" tom="pista" />
       <TelaLacunas
         lacunas={LACUNAS_EXTRA}
         banco={BANCO_EXTRA}
-        colunas={3}
-        comando="Novos verbos, mesma regra: observe quem pratica a ação."
-        aoConcluir="Você provou que a regra vale para outros verbos também!"
+        colunas={2}
+        comando="Novos cartazes, mesma regra: observe quem pratica a ação."
+        aoConcluir="Você provou que a regra vale em qualquer cartaz de Wordville!"
+      />
+    </div>
+  );
+}
+
+/** Tela bônus: O Caso dos Novos Cenários (praia, zoológico, música, quintal). */
+function TelaCenarios() {
+  return (
+    <div className="space-y-2">
+      <DialogoLex segmentos={FALAS.t11} id="t11" tom="pista" />
+      <TelaLacunas
+        lacunas={LACUNAS_TELA11}
+        banco={BANCO_TELA11}
+        colunas={2}
+        comando="Novos cenários de Wordville: escolha go, goes, play ou plays."
+        aoConcluir="Explorador de Wordville! Você resolveu os cartazes de todos os cenários."
       />
     </div>
   );
@@ -700,7 +717,9 @@ function TelaExtra() {
 
 function TelaFinal() {
   const { estado, despachar, fala } = useCaso();
-  const comExtra = estado.extensao === "feita";
+  const comExtra =
+    estado.extensao === "feita" ||
+    LACUNAS_TELA11.every((l) => estado.respostas[l.id] === l.resposta);
 
   return (
     <div className="space-y-2">
@@ -714,10 +733,11 @@ function TelaFinal() {
       />
       <Grupos />
       <DialogoLex
-        segmentos={comExtra ? FALA_FINAL_EXTRA : FALAS.t11}
-        id={comExtra ? "t11x" : "t11"}
+        segmentos={comExtra ? FALA_FINAL_EXTRA : FALAS.t12}
+        id={comExtra ? "t12x" : "t12"}
         tom="acerto"
       />
+
 
       {estado.medalha ? (
         <div className="medalha-anima flex items-center justify-center gap-3">
