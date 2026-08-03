@@ -1,3 +1,5 @@
+import type { CenarioId } from "./ilustracoes";
+
 /** 9 telas do caso + caso extra (10) + novos cenários (11) + fechamento (12). */
 export const TOTAL_TELAS = 12;
 /** Tela opcional de extensão (novos cartazes de go e play). */
@@ -912,7 +914,11 @@ const IDEIAS: Record<FamiliaVerbal, string> = {
 
 /** Sentido do verbo dentro da frase, em português. */
 function ideiaDoVerbo(lacuna: Lacuna) {
-  if (lacuna.familia === "play") return lacuna.acao.includes("jogar") ? "jogar" : "brincar";
+  if (lacuna.familia === "play") {
+    if (lacuna.acao.includes("jogar")) return "jogar";
+    if (lacuna.acao.includes("tocar")) return "tocar";
+    return "brincar";
+  }
   return IDEIAS[lacuna.familia];
 }
 
