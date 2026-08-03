@@ -1,6 +1,7 @@
 import {
   CARTOES_TELA5,
   LACUNAS_EXTRA,
+  LACUNAS_TELA11,
   LACUNAS_TELA4,
   LACUNAS_TELA6,
   LACUNAS_TELA7,
@@ -37,6 +38,7 @@ export const IDS_POR_TELA: Record<number, string[]> = {
   8: PERGUNTAS_TELA8.map((q) => q.id),
   9: MONTAGENS.map((m) => m.id),
   10: LACUNAS_EXTRA.map((l) => l.id),
+  11: LACUNAS_TELA11.map((l) => l.id),
 };
 
 export function errosDaTela(estado: EstadoRelatorio, tela: number) {
@@ -69,6 +71,8 @@ export function acertosDaTela(estado: EstadoRelatorio, tela: number) {
       return MONTAGENS.filter((m) => estado.montagens[m.id] === fraseDaMontagem(m)).length;
     case 10:
       return LACUNAS_EXTRA.filter((l) => estado.respostas[l.id] === l.resposta).length;
+    case 11:
+      return LACUNAS_TELA11.filter((l) => estado.respostas[l.id] === l.resposta).length;
     default:
       return 0;
   }
@@ -96,7 +100,7 @@ export function estrelasDaTela(estado: EstadoRelatorio, tela: number) {
   return 1;
 }
 
-export const TELAS_COM_ESTRELA = [2, 4, 5, 6, 7, 8, 9, 10];
+export const TELAS_COM_ESTRELA = [2, 4, 5, 6, 7, 8, 9, 10, 11];
 
 export function estrelasTotais(estado: EstadoRelatorio) {
   return TELAS_COM_ESTRELA.reduce((s, t) => s + estrelasDaTela(estado, t), 0);
@@ -139,9 +143,15 @@ export function selos(estado: EstadoRelatorio) {
     },
     {
       id: "extra",
-      titulo: "Detetive de novos verbos",
+      titulo: "Detetive dos novos cartazes",
       icone: "🌟",
       conquistado: estrelasDaTela(estado, 10) > 0,
+    },
+    {
+      id: "explorador",
+      titulo: "Explorador de Wordville",
+      icone: "🌍",
+      conquistado: estrelasDaTela(estado, 11) > 0,
     },
   ];
   return lista;
