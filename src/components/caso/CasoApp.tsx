@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, HelpCircle, Map, RotateCcw, GraduationCap } from "lucide-react";
+import { ArrowLeft, ArrowRight, HelpCircle, Map, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import wordville from "@/assets/wordville.jpg";
 import lex from "@/assets/lex.png";
