@@ -7,6 +7,7 @@ import { AreaFeedback, Feedback } from "./Feedback";
 import { Fantasma, useArrasto } from "./useArrasto";
 import { familiaDaPalavra, feedbackLacuna } from "@/lib/caso-conteudo";
 import type { Lacuna, TipoDica } from "@/lib/caso-conteudo";
+import { ALT_CENARIO, ILUSTRACOES } from "@/lib/ilustracoes";
 
 const ORDEM_DICAS: TipoDica[] = ["conceitual", "procedimental", "atencional"];
 
