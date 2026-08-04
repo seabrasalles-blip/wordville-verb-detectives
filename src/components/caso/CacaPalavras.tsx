@@ -16,9 +16,9 @@ type Celula = { linha: number; coluna: number };
 /** Elogios curtos e temporários por palavra encontrada. */
 const ELOGIOS: Record<string, string> = {
   GO: "Você encontrou GO.",
-  GOES: "Muito bem! Você encontrou GOES.",
-  PLAY: "Ótima pista! Você encontrou PLAY.",
-  PLAYS: "Excelente! Você encontrou PLAYS.",
+  GOES: "Você encontrou GOES, com S no final.",
+  PLAY: "Você encontrou PLAY.",
+  PLAYS: "Você encontrou PLAYS, com S no final.",
 };
 
 function chave(l: number, c: number) {
