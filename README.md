@@ -38,7 +38,25 @@ Progresso salvo em localStorage (ou window.storage se disponível), permitindo �
 
 Estrutura de estado centralizada (ex.: um objeto de estado único por tela, ou Context/Zustand se for React) para evitar bugs entre as telas de arrastar-e-soltar e ligar-colunas.
 
-9 telas ao todo, navegação linear com possibilidade de voltar.
+12 telas ao todo, navegação linear com possibilidade de voltar.
+
+Estrutura atual (12 telas)
+
+1. Abertura investigativa — percurso principal (registro de hipótese, sem correção)
+2. Caça-palavras — percurso principal
+3. Observação guiada — percurso principal
+4. Go ou goes — percurso principal (com prática adaptativa)
+5. Sujeito e forma verbal — percurso principal (com prática adaptativa)
+6. Play ou plays — percurso principal (com prática adaptativa)
+7. Revisão mista — percurso principal (com prática adaptativa)
+8. Metacognição — percurso principal
+9. Montagem de frases — percurso principal
+10. Extensão com novos cartazes — extensão opcional
+11. Novos cenários — novos cenários (conclusão obrigatória dos itens)
+12. Encerramento e medalha — encerramento
+
+As estrelas indicam conclusão (0 ou 3 por tela); erros não reduzem estrelas, mas
+tentativas, tempo e prática adicional continuam registrados no relatório.
 
 Escopo de conteúdo (IMPORTANTE — não expandir)
 
@@ -132,11 +150,11 @@ Cenário: Três cartazes com frases incompletas, blocos arrastáveis go e goes a
 
 Frases:
 
-"He ___ to the park on Sundays."
+"He \_\_\_ to the park on Sundays."
 
-"We ___ to the park on Sundays."
+"We \_\_\_ to the park on Sundays."
 
-"She ___ to the park on Sundays."
+"She \_\_\_ to the park on Sundays."
 
 Comando: "Arraste 'go' ou 'goes' para completar cada frase. Você pode ouvir as opções antes de decidir."
 
@@ -144,7 +162,7 @@ Ao acertar: a frase completa é lida em voz alta automaticamente, e aparece um b
 
 Feedback — Correto:
 
-"Muito bem! Você colocou '[goes]' em 'He ___'. Lembre-se: quando falamos de he, she ou it, o verbo ganha um som a mais no final — vira 'goes'."
+"Muito bem! Você colocou '[goes]' em 'He \_\_\_'. Lembre-se: quando falamos de he, she ou it, o verbo ganha um som a mais no final — vira 'goes'."
 
 Feedback — Incorreto (Conceitual):
 
@@ -182,9 +200,9 @@ TELA 6 — Completar Lacunas: Generalizando para plays
 
 Cenário: Novos cartazes.
 
-Cartaz 1: "She ___ soccer every weekend." (menina chutando bola)
+Cartaz 1: "She \_\_\_ soccer every weekend." (menina chutando bola)
 
-Cartaz 2: "I ___ soccer every weekend." (outra criança com bola)
+Cartaz 2: "I \_\_\_ soccer every weekend." (outra criança com bola)
 
 Blocos arrastáveis: play · plays (cada um com botão de escuta).
 
@@ -198,7 +216,7 @@ Feedback — Correto:
 
 Feedback — Incorreto (Conceitual):
 
-"Vamos pensar: quem faz a ação na frase 'She ___ soccer'? É 'She'. E o que aprendemos sobre 'she' e o verbo? Ele ganha algo no final..."
+"Vamos pensar: quem faz a ação na frase 'She \_\_\_ soccer'? É 'She'. E o que aprendemos sobre 'she' e o verbo? Ele ganha algo no final..."
 
 Feedback — Incorreto (Atencional):
 
@@ -210,13 +228,13 @@ Cenário: Últimos cartazes da cidade, banco único de blocos: go · goes · pla
 
 Frases:
 
-"He ___ to school every day." → goes
+"He \_\_\_ to school every day." → goes
 
-"We ___ to the park on Sundays." → go
+"We \_\_\_ to the park on Sundays." → go
 
-"She ___ soccer every weekend." → plays
+"She \_\_\_ soccer every weekend." → plays
 
-"I ___ soccer every weekend." → play
+"I \_\_\_ soccer every weekend." → play
 
 Comando: "Últimos cartazes da cidade! Use tudo o que você descobriu. Cada cartaz precisa da palavra certa."
 

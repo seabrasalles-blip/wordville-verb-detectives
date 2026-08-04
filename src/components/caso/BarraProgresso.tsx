@@ -5,7 +5,7 @@ import { useCaso } from "./CasoProvider";
 
 /**
  * Barra de progresso do caso com estrelas por tela e total conquistado.
- * As estrelas dependem do número de erros: 3 sem erros, 2 com um, 1 com dois+.
+ * As estrelas indicam conclusão: 3 quando a tela está completa, 0 enquanto falta algo.
  */
 export function BarraProgresso({ concluidas }: { concluidas: boolean[] }) {
   const { estado } = useCaso();
@@ -47,12 +47,12 @@ export function BarraProgresso({ concluidas }: { concluidas: boolean[] }) {
         })}
       </div>
       <span
-        className="inline-flex items-center gap-1 rounded-full bg-pista px-2.5 py-0.5 text-[14px] font-bold text-pista-foreground"
+        className="inline-flex items-center gap-1 rounded-full bg-pista px-2.5 py-0.5 text-[16px] font-bold text-pista-foreground"
         aria-label={`${estrelas} de ${ESTRELAS_MAXIMAS} estrelas conquistadas`}
       >
         <Star className="size-3.5 fill-current" aria-hidden="true" /> {estrelas}/{ESTRELAS_MAXIMAS}
       </span>
-      <span className="rounded-full bg-investigacao px-2.5 py-0.5 text-[14px] font-bold text-investigacao-foreground">
+      <span className="rounded-full bg-investigacao px-2.5 py-0.5 text-[16px] font-bold text-investigacao-foreground">
         {porcento}%
       </span>
     </div>

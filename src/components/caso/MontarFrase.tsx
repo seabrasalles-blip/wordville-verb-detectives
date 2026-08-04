@@ -86,7 +86,7 @@ function Situacao({ montagem, bloqueada }: { montagem: Montagem; bloqueada: bool
         <span aria-hidden="true" className="text-2xl">
           {montagem.icone}
         </span>
-        <p className="text-[15px] text-muted-foreground">{montagem.contexto}</p>
+        <p className="text-[16px] text-muted-foreground">{montagem.contexto}</p>
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-1.5">
@@ -114,7 +114,7 @@ function Situacao({ montagem, bloqueada }: { montagem: Montagem; bloqueada: bool
 
       {pronta ? (
         <div className="mt-2 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-acerto px-2.5 py-0.5 text-[15px] font-bold text-acerto-foreground">
+          <span className="inline-flex items-center gap-1 rounded-full bg-acerto px-2.5 py-0.5 text-[16px] font-bold text-acerto-foreground">
             <Check className="size-4" aria-hidden="true" /> {montagem.acerto}
           </span>
           <BotaoAudio texto={frase} id={`montagem-${montagem.id}`} tamanho="sm" />
@@ -137,7 +137,7 @@ function Situacao({ montagem, bloqueada }: { montagem: Montagem; bloqueada: bool
 
       <AreaFeedback>
         {bloqueada ? (
-          <p className="mt-2 text-[15px] text-muted-foreground">
+          <p className="mt-2 text-[16px] text-muted-foreground">
             Monte a primeira frase para liberar esta.
           </p>
         ) : erro && !pronta ? (

@@ -203,13 +203,16 @@ export function CacaPalavras() {
   const modoToque = estado.config.modoCaca === "toque";
 
   return (
-    <div className="space-y-2">
+    <div className="flex min-h-0 flex-1 flex-col gap-2">
       <div className="flex flex-wrap items-center gap-2">
         <p className="flex-1 text-[18px] font-semibold">
           {modoToque
             ? "Toque na primeira letra e depois na última letra da palavra."
             : "Arraste sobre as letras, da esquerda para a direita ou de cima para baixo."}
         </p>
+        <span className="text-[16px] font-bold text-investigacao">
+          {achadas}/{total} · GO · GOES · PLAY · PLAYS
+        </span>
         <button
           type="button"
           onClick={() => {
@@ -227,13 +230,13 @@ export function CacaPalavras() {
         </button>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[auto_1fr]">
+      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[auto_1fr]">
         <div
-          className="mx-auto w-full max-w-[250px] touch-none rounded-2xl border-2 border-investigacao bg-card p-2 shadow-md select-none"
+          className="mx-auto size-[348px] shrink-0 touch-none rounded-2xl border-2 border-investigacao bg-card p-1.5 shadow-md select-none"
           onPointerUp={modoToque ? undefined : finalizar}
           onPointerLeave={modoToque ? undefined : finalizar}
         >
-          <div className="grid grid-cols-8 gap-1">
+          <div className="grid h-full grid-cols-8 grid-rows-8 gap-1">
             {grade.letras.map((linha, l) =>
               linha.map((letra, c) => {
                 const k = chave(l, c);
@@ -261,7 +264,7 @@ export function CacaPalavras() {
                           }
                     }
                     className={cn(
-                      "aspect-square rounded-md text-[17px] font-bold transition-colors",
+                      "min-h-[34px] rounded-lg text-[20px] font-extrabold transition-colors focus-visible:ring-4 focus-visible:ring-investigacao/40 focus-visible:outline-none sm:text-[22px]",
                       achada
                         ? "bg-acerto text-acerto-foreground"
                         : ativa
@@ -277,13 +280,9 @@ export function CacaPalavras() {
               }),
             )}
           </div>
-
-          <p className="mt-1.5 text-center text-[15px] font-semibold text-muted-foreground">
-            {achadas}/{total} · GO · GOES · PLAY · PLAYS
-          </p>
         </div>
 
-        <div className="rounded-2xl border-2 border-dashed border-pista bg-pista/15 p-2.5">
+        <div className="min-h-0 overflow-auto rounded-2xl border-2 border-dashed border-pista bg-pista/15 p-2.5">
           <h2 className="mb-1.5 text-[17px] font-bold">🔎 Mural de evidências</h2>
           {achadas === 0 ? (
             <p className="text-[17px] text-muted-foreground">
@@ -305,7 +304,7 @@ export function CacaPalavras() {
                       <p className="text-[17px] font-bold text-investigacao">
                         {palavra.toLowerCase()}
                       </p>
-                      <p className="text-[15px]">{ev.texto}</p>
+                      <p className="text-[16px]">{ev.texto}</p>
                     </div>
                     <BotaoAudio texto={ev.fala} id={`evid-${palavra}`} tamanho="sm" />
                   </li>

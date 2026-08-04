@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Check, Search, Lightbulb, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-
 export type FeedbackType = "success" | "error" | "hint";
 
 export interface FeedbackProps {
@@ -68,7 +67,6 @@ export function Feedback({
         <span className="mr-1 font-bold">{titulo}</span>
         {message}
       </p>
-      
 
       {onClose ? (
         <button
