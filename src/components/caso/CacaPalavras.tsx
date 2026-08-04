@@ -237,8 +237,6 @@ export function CacaPalavras() {
           onPointerLeave={modoToque ? undefined : finalizar}
         >
           <div className="grid h-full grid-cols-8 grid-rows-8 gap-1">
-
-
             {grade.letras.map((linha, l) =>
               linha.map((letra, c) => {
                 const k = chave(l, c);
@@ -285,7 +283,6 @@ export function CacaPalavras() {
         </div>
 
         <div className="min-h-0 overflow-auto rounded-2xl border-2 border-dashed border-pista bg-pista/15 p-2.5">
-
           <h2 className="mb-1.5 text-[17px] font-bold">🔎 Mural de evidências</h2>
           {achadas === 0 ? (
             <p className="text-[17px] text-muted-foreground">
