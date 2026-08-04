@@ -85,12 +85,14 @@ export function CacaPalavras() {
       if (alvo) {
         caminhoRef.current = [];
         setCaminho([]);
-        setAviso({ tipo: "success", texto: `Você encontrou ${alvo.palavra}!` });
+        setAviso({ tipo: "success", texto: ELOGIOS[alvo.palavra] ?? `Você encontrou ${alvo.palavra}.` });
+        limparDepois(2800);
         despachar({ tipo: "encontrou", palavra: alvo.palavra, caminho: atual });
         if (estado.config.audioIngles)
           fala.falar(EVIDENCIAS[alvo.palavra].fala, `evid-${alvo.palavra}`);
         return;
       }
+
 
       const prefixo = grade.palavras.some((p) => prefixoDeCaminho(atual, p.caminho));
       setAviso(
