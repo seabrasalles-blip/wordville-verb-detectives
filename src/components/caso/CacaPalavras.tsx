@@ -9,9 +9,17 @@ import {
 } from "@/lib/caso-conteudo";
 import { useCaso } from "./CasoProvider";
 import { BotaoAudio } from "./BotaoAudio";
-import { AreaFeedback, Feedback } from "./Feedback";
+import { Feedback, FeedbackSlot } from "./Feedback";
 
 type Celula = { linha: number; coluna: number };
+
+/** Elogios curtos e temporários por palavra encontrada. */
+const ELOGIOS: Record<string, string> = {
+  GO: "Você encontrou GO.",
+  GOES: "Você encontrou GOES, com S no final.",
+  PLAY: "Você encontrou PLAY.",
+  PLAYS: "Você encontrou PLAYS, com S no final.",
+};
 
 function chave(l: number, c: number) {
   return `${l}-${c}`;
@@ -85,7 +93,11 @@ export function CacaPalavras() {
       if (alvo) {
         caminhoRef.current = [];
         setCaminho([]);
-        setAviso({ tipo: "success", texto: `Você encontrou ${alvo.palavra}!` });
+        setAviso({
+          tipo: "success",
+          texto: ELOGIOS[alvo.palavra] ?? `Você encontrou ${alvo.palavra}.`,
+        });
+        limparDepois(2800);
         despachar({ tipo: "encontrou", palavra: alvo.palavra, caminho: atual });
         if (estado.config.audioIngles)
           fala.falar(EVIDENCIAS[alvo.palavra].fala, `evid-${alvo.palavra}`);
@@ -232,7 +244,11 @@ export function CacaPalavras() {
 
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[auto_1fr]">
         <div
-          className="mx-auto size-[348px] shrink-0 touch-none rounded-2xl border-2 border-investigacao bg-card p-1.5 shadow-md select-none"
+          style={{
+            width: "clamp(300px, 42vh, 348px)",
+            height: "clamp(300px, 42vh, 348px)",
+          }}
+          className="mx-auto shrink-0 touch-none rounded-2xl border-2 border-investigacao bg-card p-1.5 shadow-md select-none"
           onPointerUp={modoToque ? undefined : finalizar}
           onPointerLeave={modoToque ? undefined : finalizar}
         >
@@ -282,49 +298,52 @@ export function CacaPalavras() {
           </div>
         </div>
 
-        <div className="min-h-0 overflow-auto rounded-2xl border-2 border-dashed border-pista bg-pista/15 p-2.5">
-          <h2 className="mb-1.5 text-[17px] font-bold">🔎 Mural de evidências</h2>
-          {achadas === 0 ? (
-            <p className="text-[17px] text-muted-foreground">
-              Nenhuma evidência ainda. Encontre as palavras na grade!
-            </p>
-          ) : (
-            <ul className="space-y-1.5">
-              {estado.encontradas.map((palavra) => {
-                const ev = EVIDENCIAS[palavra];
-                return (
-                  <li
-                    key={palavra}
-                    className="surge flex items-start gap-2 rounded-xl bg-card p-1.5 shadow-sm"
-                  >
-                    <span aria-hidden="true" className="text-xl">
-                      {ev.icone}
-                    </span>
-                    <div className="flex-1">
-                      <p className="text-[17px] font-bold text-investigacao">
-                        {palavra.toLowerCase()}
-                      </p>
-                      <p className="text-[16px]">{ev.texto}</p>
-                    </div>
-                    <BotaoAudio texto={ev.fala} id={`evid-${palavra}`} tamanho="sm" />
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+        <div className="flex min-h-0 flex-col overflow-hidden rounded-2xl border-2 border-dashed border-pista bg-pista/15 p-2.5">
+          <h2 className="mb-1 text-[17px] font-bold">🔎 Mural de evidências</h2>
+
+          <FeedbackSlot tom={erroAtivo ? "assertive" : "polite"} className="mb-1">
+            {completo ? (
+              <Feedback
+                type="success"
+                message="Todas as evidências reunidas! Repare no final de 'goes' e 'plays'."
+              />
+            ) : aviso ? (
+              <Feedback type={aviso.tipo} message={aviso.texto} onClose={() => setAviso(null)} />
+            ) : null}
+          </FeedbackSlot>
+
+          <div className="min-h-0 flex-1 overflow-auto">
+            {achadas === 0 ? (
+              <p className="text-[17px] text-muted-foreground">
+                Nenhuma evidência ainda. Encontre as palavras na grade!
+              </p>
+            ) : (
+              <ul className="space-y-1.5">
+                {estado.encontradas.map((palavra) => {
+                  const ev = EVIDENCIAS[palavra];
+                  return (
+                    <li
+                      key={palavra}
+                      className="surge flex items-start gap-2 rounded-xl bg-card p-1.5 shadow-sm"
+                    >
+                      <span aria-hidden="true" className="text-xl">
+                        {ev.icone}
+                      </span>
+                      <div className="flex-1">
+                        <p className="text-[17px] font-bold text-investigacao">
+                          {palavra.toLowerCase()}
+                        </p>
+                        <p className="text-[16px]">{ev.texto}</p>
+                      </div>
+                      <BotaoAudio texto={ev.fala} id={`evid-${palavra}`} tamanho="sm" />
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
-
-      <AreaFeedback>
-        {completo ? (
-          <Feedback
-            type="success"
-            message="Todas as evidências reunidas! Repare no final de 'goes' e 'plays'."
-          />
-        ) : aviso ? (
-          <Feedback type={aviso.tipo} message={aviso.texto} onClose={() => setAviso(null)} />
-        ) : null}
-      </AreaFeedback>
     </div>
   );
 }
