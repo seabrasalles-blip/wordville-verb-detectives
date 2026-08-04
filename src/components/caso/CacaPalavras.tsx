@@ -25,7 +25,6 @@ function chave(l: number, c: number) {
   return `${l}-${c}`;
 }
 
-
 export function CacaPalavras() {
   const { estado, despachar, fala } = useCaso();
   const grade = gradePorId(estado.gradeId);
@@ -94,14 +93,16 @@ export function CacaPalavras() {
       if (alvo) {
         caminhoRef.current = [];
         setCaminho([]);
-        setAviso({ tipo: "success", texto: ELOGIOS[alvo.palavra] ?? `Você encontrou ${alvo.palavra}.` });
+        setAviso({
+          tipo: "success",
+          texto: ELOGIOS[alvo.palavra] ?? `Você encontrou ${alvo.palavra}.`,
+        });
         limparDepois(2800);
         despachar({ tipo: "encontrou", palavra: alvo.palavra, caminho: atual });
         if (estado.config.audioIngles)
           fala.falar(EVIDENCIAS[alvo.palavra].fala, `evid-${alvo.palavra}`);
         return;
       }
-
 
       const prefixo = grade.palavras.some((p) => prefixoDeCaminho(atual, p.caminho));
       setAviso(
@@ -252,7 +253,6 @@ export function CacaPalavras() {
           onPointerLeave={modoToque ? undefined : finalizar}
         >
           <div className="grid h-full grid-cols-8 grid-rows-8 gap-1">
-
             {grade.letras.map((linha, l) =>
               linha.map((letra, c) => {
                 const k = chave(l, c);
@@ -344,7 +344,6 @@ export function CacaPalavras() {
           </div>
         </div>
       </div>
-
     </div>
   );
 }
