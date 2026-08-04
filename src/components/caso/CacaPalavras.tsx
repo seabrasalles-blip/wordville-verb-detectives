@@ -232,11 +232,12 @@ export function CacaPalavras() {
 
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[auto_1fr]">
         <div
-          className="mx-auto aspect-square h-full max-h-full w-auto max-w-[400px] touch-none rounded-2xl border-2 border-investigacao bg-card p-1.5 shadow-md select-none"
+          className="mx-auto size-[348px] max-h-full touch-none rounded-2xl border-2 border-investigacao bg-card p-1.5 shadow-md select-none"
           onPointerUp={modoToque ? undefined : finalizar}
           onPointerLeave={modoToque ? undefined : finalizar}
         >
           <div className="grid h-full grid-cols-8 grid-rows-8 gap-1">
+
 
             {grade.letras.map((linha, l) =>
               linha.map((letra, c) => {
