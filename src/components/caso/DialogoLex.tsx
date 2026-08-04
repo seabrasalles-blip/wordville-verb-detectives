@@ -75,7 +75,7 @@ export function DialogoLex({
               onClick={() => setIndice((i) => Math.min(segmentos.length - 1, i + 1))}
               className="botao-fofo ml-auto inline-flex items-center gap-1 bg-investigacao px-4 py-1 text-[16px] text-investigacao-foreground"
             >
-              Continuar <ArrowRight className="size-4" aria-hidden="true" />
+              Próxima fala <ArrowRight className="size-4" aria-hidden="true" />
             </button>
           ) : segmentos.length > 1 ? (
             <button
