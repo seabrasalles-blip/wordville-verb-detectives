@@ -298,49 +298,53 @@ export function CacaPalavras() {
           </div>
         </div>
 
-        <div className="min-h-0 overflow-auto rounded-2xl border-2 border-dashed border-pista bg-pista/15 p-2.5">
-          <h2 className="mb-1.5 text-[17px] font-bold">🔎 Mural de evidências</h2>
-          {achadas === 0 ? (
-            <p className="text-[17px] text-muted-foreground">
-              Nenhuma evidência ainda. Encontre as palavras na grade!
-            </p>
-          ) : (
-            <ul className="space-y-1.5">
-              {estado.encontradas.map((palavra) => {
-                const ev = EVIDENCIAS[palavra];
-                return (
-                  <li
-                    key={palavra}
-                    className="surge flex items-start gap-2 rounded-xl bg-card p-1.5 shadow-sm"
-                  >
-                    <span aria-hidden="true" className="text-xl">
-                      {ev.icone}
-                    </span>
-                    <div className="flex-1">
-                      <p className="text-[17px] font-bold text-investigacao">
-                        {palavra.toLowerCase()}
-                      </p>
-                      <p className="text-[16px]">{ev.texto}</p>
-                    </div>
-                    <BotaoAudio texto={ev.fala} id={`evid-${palavra}`} tamanho="sm" />
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+        <div className="flex min-h-0 flex-col overflow-hidden rounded-2xl border-2 border-dashed border-pista bg-pista/15 p-2.5">
+          <h2 className="mb-1 text-[17px] font-bold">🔎 Mural de evidências</h2>
+
+          <FeedbackSlot tom={erroAtivo ? "assertive" : "polite"} className="mb-1">
+            {completo ? (
+              <Feedback
+                type="success"
+                message="Todas as evidências reunidas! Repare no final de 'goes' e 'plays'."
+              />
+            ) : aviso ? (
+              <Feedback type={aviso.tipo} message={aviso.texto} onClose={() => setAviso(null)} />
+            ) : null}
+          </FeedbackSlot>
+
+          <div className="min-h-0 flex-1 overflow-auto">
+            {achadas === 0 ? (
+              <p className="text-[17px] text-muted-foreground">
+                Nenhuma evidência ainda. Encontre as palavras na grade!
+              </p>
+            ) : (
+              <ul className="space-y-1.5">
+                {estado.encontradas.map((palavra) => {
+                  const ev = EVIDENCIAS[palavra];
+                  return (
+                    <li
+                      key={palavra}
+                      className="surge flex items-start gap-2 rounded-xl bg-card p-1.5 shadow-sm"
+                    >
+                      <span aria-hidden="true" className="text-xl">
+                        {ev.icone}
+                      </span>
+                      <div className="flex-1">
+                        <p className="text-[17px] font-bold text-investigacao">
+                          {palavra.toLowerCase()}
+                        </p>
+                        <p className="text-[16px]">{ev.texto}</p>
+                      </div>
+                      <BotaoAudio texto={ev.fala} id={`evid-${palavra}`} tamanho="sm" />
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
 
-      <AreaFeedback>
-        {completo ? (
-          <Feedback
-            type="success"
-            message="Todas as evidências reunidas! Repare no final de 'goes' e 'plays'."
-          />
-        ) : aviso ? (
-          <Feedback type={aviso.tipo} message={aviso.texto} onClose={() => setAviso(null)} />
-        ) : null}
-      </AreaFeedback>
     </div>
   );
 }
