@@ -9,7 +9,7 @@ import {
 } from "@/lib/caso-conteudo";
 import { useCaso } from "./CasoProvider";
 import { BotaoAudio } from "./BotaoAudio";
-import { AreaFeedback, Feedback } from "./Feedback";
+import { Feedback, FeedbackSlot } from "./Feedback";
 
 type Celula = { linha: number; coluna: number };
 
