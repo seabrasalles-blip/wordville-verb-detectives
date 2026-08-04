@@ -232,7 +232,7 @@ export function CacaPalavras() {
 
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[auto_1fr]">
         <div
-          className="mx-auto size-[348px] max-h-full touch-none rounded-2xl border-2 border-investigacao bg-card p-1.5 shadow-md select-none"
+          className="mx-auto size-[348px] shrink-0 touch-none rounded-2xl border-2 border-investigacao bg-card p-1.5 shadow-md select-none"
           onPointerUp={modoToque ? undefined : finalizar}
           onPointerLeave={modoToque ? undefined : finalizar}
         >
