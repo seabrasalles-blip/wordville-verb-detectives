@@ -243,11 +243,16 @@ export function CacaPalavras() {
 
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[auto_1fr]">
         <div
-          className="mx-auto size-[348px] shrink-0 touch-none rounded-2xl border-2 border-investigacao bg-card p-1.5 shadow-md select-none"
+          style={{
+            width: "clamp(300px, 42vh, 348px)",
+            height: "clamp(300px, 42vh, 348px)",
+          }}
+          className="mx-auto shrink-0 touch-none rounded-2xl border-2 border-investigacao bg-card p-1.5 shadow-md select-none"
           onPointerUp={modoToque ? undefined : finalizar}
           onPointerLeave={modoToque ? undefined : finalizar}
         >
           <div className="grid h-full grid-cols-8 grid-rows-8 gap-1">
+
             {grade.letras.map((linha, l) =>
               linha.map((letra, c) => {
                 const k = chave(l, c);
