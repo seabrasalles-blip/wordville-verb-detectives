@@ -326,3 +326,20 @@
   border-bottom: 3px solid var(--color-pista);
   color: var(--color-pista-foreground);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .tremula,
+  .pulsa,
+  .flutua,
+  .surge,
+  .medalha-anima {
+    animation: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
