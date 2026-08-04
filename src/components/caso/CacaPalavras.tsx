@@ -13,9 +13,18 @@ import { AreaFeedback, Feedback } from "./Feedback";
 
 type Celula = { linha: number; coluna: number };
 
+/** Elogios curtos e temporários por palavra encontrada. */
+const ELOGIOS: Record<string, string> = {
+  GO: "Você encontrou GO.",
+  GOES: "Muito bem! Você encontrou GOES.",
+  PLAY: "Ótima pista! Você encontrou PLAY.",
+  PLAYS: "Excelente! Você encontrou PLAYS.",
+};
+
 function chave(l: number, c: number) {
   return `${l}-${c}`;
 }
+
 
 export function CacaPalavras() {
   const { estado, despachar, fala } = useCaso();
