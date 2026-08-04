@@ -100,7 +100,7 @@ export function MapaCaso({
             <li
               key={s.id}
               className={cn(
-                "etiqueta border-2 text-[15px]",
+                "etiqueta border-2 text-[16px]",
                 s.conquistado
                   ? "border-acerto bg-acerto/15 text-acerto"
                   : "border-muted bg-muted text-muted-foreground",

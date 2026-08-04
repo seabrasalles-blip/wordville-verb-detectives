@@ -88,16 +88,13 @@ export function totalDaTela(tela: number) {
 }
 
 /**
- * Estrelas da tela: 3 sem erros, 2 com um erro, 1 com dois ou mais.
- * A tela só recebe estrelas quando todos os itens estão corretos.
+ * Estrelas da tela: 3 quando todos os itens estão corretos, 0 enquanto falta algo.
+ * Erros não reduzem estrelas — as tentativas seguem registradas no relatório.
  */
 export function estrelasDaTela(estado: EstadoRelatorio, tela: number) {
   const total = totalDaTela(tela);
   if (total === 0 || acertosDaTela(estado, tela) < total) return 0;
-  const erros = errosDaTela(estado, tela) + (estado.errosRamo[tela] ?? 0);
-  if (erros === 0) return 3;
-  if (erros === 1) return 2;
-  return 1;
+  return 3;
 }
 
 export const TELAS_COM_ESTRELA = [2, 4, 5, 6, 7, 8, 9, 10, 11];

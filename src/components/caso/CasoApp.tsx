@@ -30,6 +30,7 @@ import {
   fraseDaMontagem,
 } from "@/lib/caso-conteudo";
 import { errosDaTela } from "@/lib/relatorio";
+import { telaConcluida } from "@/lib/conclusao";
 import { CasoProvider, useCaso } from "./CasoProvider";
 import { BalaoLex, Ingles } from "./BalaoLex";
 import { BarraProgresso } from "./BarraProgresso";
@@ -59,55 +60,13 @@ export function CasoApp() {
   );
 }
 
-/** Critério pedagógico de conclusão de cada tela. */
-function telaConcluida(tela: number, estado: ReturnType<typeof useCaso>["estado"]) {
-  // enquanto a prática extra está aberta, a tela não avança
-  if (estado.ramos[tela] === "aberto") return false;
-  switch (tela) {
-    case 1:
-      return estado.respostas["t1-visto"] === "sim";
-    case 2:
-      return estado.encontradas.length === PALAVRAS_CACA.length;
-    case 3:
-      return estado.observou;
-    case 4:
-      return LACUNAS_TELA4.every((l) => estado.respostas[l.id] === l.resposta);
-    case 5:
-      return PARES_TELA5.every((p) => {
-        const cartao = CARTOES_TELA5.find((c) => c.id === estado.conexoes[p.id]);
-        return cartao?.forma === p.forma;
-      });
-    case 6:
-      return LACUNAS_TELA6.every((l) => estado.respostas[l.id] === l.resposta);
-    case 7:
-      return LACUNAS_TELA7.every((l) => estado.respostas[l.id] === l.resposta);
-    case 8:
-      return PERGUNTAS_TELA8.every((q) => {
-        const i = estado.metacognicao[q.id];
-        return i !== undefined && q.opcoes[i]?.correta === true;
-      });
-    case 9:
-      return MONTAGENS.every((m) => estado.montagens[m.id] === fraseDaMontagem(m));
-    case TELA_EXTRA:
-      if (!estado.config.extensaoAtiva) return true;
-      if (estado.extensao === "pulada") return true;
-      return LACUNAS_EXTRA.every((l) => estado.respostas[l.id] === l.resposta);
-    case TELA_CENARIOS:
-      return true;
-    case TELA_FINAL:
-      return estado.medalha;
-    default:
-      return true;
-  }
-}
-
 function Casca() {
   const { estado, despachar, avancar, voltar, reiniciar } = useCaso();
   const tela = estado.tela;
   const [confirmando, setConfirmando] = useState(false);
   const [ajuda, setAjuda] = useState(false);
   const [mapa, setMapa] = useState(false);
-  
+
   const [processando, setProcessando] = useState(false);
   const travaRef = useRef(false);
 
@@ -157,28 +116,28 @@ function Casca() {
                 <h1 className="flex items-center gap-2 text-lg font-extrabold text-investigacao">
                   <span aria-hidden="true">🕵️‍♀️</span> O Caso dos Verbos Desaparecidos
                 </h1>
-                <span className="etiqueta hidden border-pista bg-pista text-[14px] text-pista-foreground sm:inline-block">
+                <span className="etiqueta hidden border-pista bg-pista text-[16px] text-pista-foreground sm:inline-block">
                   Wordville
                 </span>
                 <div className="ml-auto flex items-center gap-1">
                   <button
                     type="button"
                     onClick={() => setMapa(true)}
-                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-bold text-investigacao hover:bg-investigacao/10"
+                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[16px] font-bold text-investigacao hover:bg-investigacao/10"
                   >
                     <Map className="size-4" aria-hidden="true" /> Mapa do Caso
                   </button>
                   <button
                     type="button"
                     onClick={() => setAjuda(true)}
-                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-bold text-investigacao hover:bg-investigacao/10"
+                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[16px] font-bold text-investigacao hover:bg-investigacao/10"
                   >
                     <HelpCircle className="size-4" aria-hidden="true" /> Como jogar
                   </button>
                   <button
                     type="button"
                     onClick={() => setConfirmando(true)}
-                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[15px] font-semibold text-muted-foreground hover:bg-secondary"
+                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[16px] font-semibold text-muted-foreground hover:bg-secondary"
                   >
                     <RotateCcw className="size-4" aria-hidden="true" /> Recomeçar
                   </button>
@@ -188,7 +147,7 @@ function Casca() {
             </header>
 
             <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col overflow-hidden px-4 py-1.5">
-              <p className="mb-1 flex items-center gap-2 text-[13px] font-extrabold tracking-wide text-investigacao uppercase">
+              <p className="mb-1 flex items-center gap-2 text-[16px] font-extrabold tracking-wide text-investigacao uppercase">
                 <span aria-hidden="true">🔎</span> Tela {tela} — {TITULOS[tela - 1]}
                 {ramoAberto ? " · prática extra" : ""}
               </p>
@@ -260,10 +219,14 @@ function Casca() {
                 {tela < TOTAL_TELAS ? (
                   <div className="ml-auto flex items-center gap-2">
                     {!liberado ? (
-                      <span className="text-[15px] font-semibold text-muted-foreground">
+                      <span className="text-[16px] font-semibold text-muted-foreground">
                         {ramoAberto
                           ? "Termine a prática extra para continuar"
-                          : "Termine a investigação desta tela para continuar"}
+                          : tela === TELA_CENARIOS
+                            ? "Complete todos os cartazes dos novos cenários para continuar."
+                            : tela === 1
+                              ? "Escolha uma hipótese para continuar"
+                              : "Termine a investigação desta tela para continuar"}
                       </span>
                     ) : null}
                     {tela === TELA_EXTRA &&
@@ -287,7 +250,7 @@ function Casca() {
                       aria-disabled={!liberado || processando}
                       className="botao-fofo inline-flex items-center gap-1.5 bg-investigacao px-6 py-2 text-[17px] text-investigacao-foreground disabled:cursor-not-allowed disabled:opacity-40"
                     >
-                      {tela === 1 ? "Vamos investigar!" : "Continuar"}
+                      {tela === 1 ? "Procurar pistas" : "Continuar"}
                       <ArrowRight className="size-4" aria-hidden="true" />
                     </button>
                   </div>
@@ -297,7 +260,6 @@ function Casca() {
 
             <ComoJogar aberto={ajuda} aoFechar={() => setAjuda(false)} />
             <MapaCaso aberto={mapa} aoFechar={() => setMapa(false)} concluidas={concluidas} />
-            
           </>
         )}
 
@@ -342,7 +304,7 @@ function Cartaz({
       <p className="mt-0.5 text-[20px] font-bold text-investigacao">
         <Ingles>{frase}</Ingles>
       </p>
-      {legenda ? <p className="mt-0.5 text-[15px] text-muted-foreground">{legenda}</p> : null}
+      {legenda ? <p className="mt-0.5 text-[16px] text-muted-foreground">{legenda}</p> : null}
       {semAudio ? null : (
         <div className="mt-1.5 flex justify-center">
           <BotaoAudio texto={frase} id={audioId} tamanho="sm" />
@@ -378,11 +340,25 @@ function Grupos() {
   );
 }
 
+/** Hipóteses possíveis da abertura: diagnóstico informal, sem certo nem errado. */
+const HIPOTESES_T1 = [
+  { valor: "he", rotulo: "He" },
+  { valor: "go", rotulo: "go" },
+  { valor: "to-school", rotulo: "to school" },
+  { valor: "nao-sei", rotulo: "Ainda não sei" },
+] as const;
+
 function Tela1() {
   const { estado, despachar } = useCaso();
-  const visto = estado.respostas["t1-visto"] === "sim";
+  const hipotese = estado.respostas["t1-hipotese"] ?? "";
   const [ouviuTudo, setOuviuTudo] = useState(false);
   const terminar = useCallback(() => setOuviuTudo(true), []);
+
+  function escolher(valor: string) {
+    despachar({ tipo: "responder", id: "t1-hipotese", valor });
+    despachar({ tipo: "responder", id: "t1-investigou", valor: "sim" });
+  }
+
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-2">
       <img
@@ -393,14 +369,19 @@ function Tela1() {
         className="h-[74px] w-full shrink-0 rounded-3xl border-4 border-pista object-cover shadow-md"
       />
       <div className="grid min-h-0 flex-1 grid-cols-[38%_1fr] gap-4">
-        <DialogoLex segmentos={FALAS.t1} id="t1" variante="apresentacao" aoTerminar={terminar} />
+        <DialogoLex
+          segmentos={hipotese ? FALAS.t1hipotese : FALAS.t1}
+          id={hipotese ? "t1-registrada" : "t1"}
+          variante="apresentacao"
+          aoTerminar={terminar}
+        />
 
         <div className="flex min-h-0 items-center">
           <section className="cartao-pista w-full rotate-[-0.6deg] border-investigacao bg-card p-4">
             <p className="etiqueta inline-block border-pista bg-pista text-[16px] text-pista-foreground">
               <span aria-hidden="true">🔎</span> Evidência encontrada
             </p>
-            <div className="mt-3 rounded-3xl border-[3px] border-dashed border-reorienta/70 bg-reorienta/10 px-4 py-3 text-center">
+            <div className="mt-2 rounded-3xl border-[3px] border-dashed border-reorienta/70 bg-reorienta/10 px-4 py-2 text-center">
               <span aria-hidden="true" className="text-2xl">
                 🏫
               </span>
@@ -408,31 +389,49 @@ function Tela1() {
                 <Ingles>He go to school.</Ingles>
               </p>
             </div>
-            <p className="mt-3 text-center text-[18px] font-semibold text-reorienta">
-              Algo está errado nesta frase. Você consegue descobrir o quê?
+
+            <fieldset className="mt-2">
+              <legend className="text-center text-[17px] font-semibold text-reorienta">
+                Algo está estranho neste cartaz. Qual parte chama mais a sua atenção?
+              </legend>
+              <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
+                {HIPOTESES_T1.map((h) => {
+                  const marcada = hipotese === h.valor;
+                  return (
+                    <label
+                      key={h.valor}
+                      className={cn(
+                        "botao-fofo inline-flex items-center gap-2 border-2 px-4 py-1.5 text-[18px] font-bold focus-within:ring-4 focus-within:ring-investigacao/40",
+                        ouviuTudo ? "cursor-pointer" : "cursor-not-allowed opacity-50",
+                        marcada
+                          ? "border-investigacao bg-investigacao/15 text-investigacao"
+                          : "border-investigacao/40 bg-card text-investigacao",
+                      )}
+                    >
+                      <input
+                        type="radio"
+                        name="t1-hipotese"
+                        value={h.valor}
+                        checked={marcada}
+                        disabled={!ouviuTudo}
+                        onChange={() => escolher(h.valor)}
+                        className="size-4 accent-[hsl(var(--investigacao,220_80%_45%))]"
+                      />
+                      <span aria-hidden="true">{marcada ? "🔎" : "▫️"}</span>
+                      <span>{h.rotulo}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
+
+            <p className="mt-2 min-h-[26px] text-center text-[16px] font-semibold text-muted-foreground">
+              {hipotese
+                ? "Hipótese registrada! Agora vamos procurar pistas pela cidade."
+                : ouviuTudo
+                  ? "Escolha uma hipótese para continuar a investigação."
+                  : "Ouça a Inspetora Lex primeiro."}
             </p>
-            <div className="mt-3 flex min-h-[74px] items-center justify-center">
-              {!visto ? (
-                <button
-                  type="button"
-                  disabled={!ouviuTudo}
-                  onClick={() => despachar({ tipo: "responder", id: "t1-visto", valor: "sim" })}
-                  className="botao-fofo bg-pista px-6 py-2.5 text-[18px] text-pista-foreground disabled:cursor-not-allowed disabled:opacity-45"
-                >
-                  {ouviuTudo ? "Ver a frase correta" : "Ouça a Inspetora Lex primeiro"}
-                </button>
-              ) : (
-                <div className="surge flex w-full items-center justify-center gap-3 rounded-3xl border-[3px] border-acerto bg-acerto/10 px-4 py-2">
-                  <span aria-hidden="true" className="text-2xl">
-                    ✅
-                  </span>
-                  <p className="text-[24px] font-extrabold text-investigacao">
-                    <Ingles>He goes to school.</Ingles>
-                  </p>
-                  <BotaoAudio texto="He goes to school." id="cartaz-correto" tamanho="sm" />
-                </div>
-              )}
-            </div>
           </section>
         </div>
       </div>
@@ -478,7 +477,6 @@ function Tela3() {
             <div className="flex items-center justify-end">
               <LegendaCores />
             </div>
-
 
             <div className="flex flex-col gap-3">
               <CartazGuiado
@@ -550,7 +548,6 @@ function Tela3() {
               </>
             ) : null}
 
-
             <AreaFeedback>
               {erro ? (
                 <Feedback
@@ -573,8 +570,6 @@ function Tela3() {
     </div>
   );
 }
-
-
 
 function Tela6() {
   return (
@@ -730,7 +725,6 @@ function TelaFinal() {
         id={comExtra ? "t12x" : "t12"}
         tom="acerto"
       />
-
 
       {estado.medalha ? (
         <div className="medalha-anima flex items-center justify-center gap-3">

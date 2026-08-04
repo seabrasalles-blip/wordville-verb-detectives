@@ -1,6 +1,9 @@
 import type { CenarioId } from "./ilustracoes";
 
-/** 9 telas do caso + caso extra (10) + novos cenários (11) + fechamento (12). */
+/**
+ * 12 telas: percurso principal (1-9), extensão de novos cartazes (10),
+ * novos cenários (11) e encerramento com medalha (12).
+ */
 export const TOTAL_TELAS = 12;
 /** Tela opcional de extensão (novos cartazes de go e play). */
 export const TELA_EXTRA = 10;
@@ -603,7 +606,7 @@ export const LACUNAS_TELA4: Lacuna[] = [
     acertoTexto: "Muito bem! 'He' está no grupo de he, she e it. Por isso: go recebe ES → goes.",
     dicas: {
       conceitual:
-        "Quem pratica a ação é 'He'. Ele está no grupo de he, she e it. Qual forma usamos?",
+        "O sujeito da frase é 'He'. Esse sujeito pertence ao grupo de he, she e it. Nesta frase, o verbo é go. Qual forma usamos?",
       procedimental: DICA_SUJEITO,
       atencional: "Compare os grupos: I, you, we, they → go. He, she, it → goes.",
     },
@@ -620,7 +623,7 @@ export const LACUNAS_TELA4: Lacuna[] = [
     acertoTexto: "Muito bem! 'We' está no grupo de I, you, we e they. O verbo fica 'go'.",
     dicas: {
       conceitual:
-        "Quem pratica a ação é 'We'. Ele está no grupo de I, you, we e they. Qual forma usamos?",
+        "O sujeito da frase é 'We'. Esse sujeito pertence ao grupo de I, you, we e they. Nesta frase, o verbo é go. Qual forma usamos?",
       procedimental: DICA_SUJEITO,
       atencional: "Compare os grupos: I, you, we, they → go. He, she, it → goes.",
     },
@@ -637,7 +640,7 @@ export const LACUNAS_TELA4: Lacuna[] = [
     acertoTexto: "Muito bem! 'She' está no grupo de he, she e it. Por isso: go recebe ES → goes.",
     dicas: {
       conceitual:
-        "Quem pratica a ação é 'She'. Ela está no grupo de he, she e it. Qual forma usamos?",
+        "O sujeito da frase é 'She'. Esse sujeito pertence ao grupo de he, she e it. Nesta frase, o verbo é go. Qual forma usamos?",
       procedimental: DICA_SUJEITO,
       atencional: "Compare os grupos: I, you, we, they → go. He, she, it → goes.",
     },
@@ -657,7 +660,7 @@ export const LACUNAS_TELA6: Lacuna[] = [
     acertoTexto: "Isso! 'She' está no grupo de he, she e it. Na escrita, play recebe S → plays.",
     dicas: {
       conceitual:
-        "Quem pratica a ação é 'She'. Ela está no grupo de he, she e it. Qual forma usamos?",
+        "O sujeito da frase é 'She'. Esse sujeito pertence ao grupo de he, she e it. Nesta frase, o verbo é play. Qual forma usamos?",
       atencional: "Compare com 'She goes'. Escolha o verbo correto para 'She'.",
     },
   },
@@ -673,7 +676,7 @@ export const LACUNAS_TELA6: Lacuna[] = [
     acertoTexto: "Isso! 'I' está no grupo de I, you, we e they. O verbo fica 'play'.",
     dicas: {
       conceitual:
-        "Quem pratica a ação é 'I'. Ele está no grupo de I, you, we e they. Qual forma usamos?",
+        "O sujeito da frase é 'I'. Esse sujeito pertence ao grupo de I, you, we e they. Nesta frase, o verbo é play. Qual forma usamos?",
       atencional: "Compare com 'I go'. Escolha o verbo correto para 'I'.",
     },
   },
@@ -704,9 +707,10 @@ export const LACUNAS_TELA7: Lacuna[] = [
     acao: "ir à praia",
     ilustracao: "🏖️",
     imagem: "beach",
-    acertoTexto: "Cartaz consertado! 'He' pede 'goes'.",
+    acertoTexto: "Cartaz consertado! Nesta frase, com he, usamos goes.",
     dicas: {
-      conceitual: "Quem pratica a ação é 'He'. Ele está no grupo de he, she e it.",
+      conceitual:
+        "O sujeito da frase é 'He'. Esse sujeito pertence ao grupo de he, she e it. Nesta frase, o verbo é go.",
       procedimental: DICA_SUJEITO,
     },
   },
@@ -719,9 +723,10 @@ export const LACUNAS_TELA7: Lacuna[] = [
     acao: "ir ao zoológico",
     ilustracao: "🦁",
     imagem: "zoo",
-    acertoTexto: "Cartaz consertado! 'We' pede 'go'.",
+    acertoTexto: "Cartaz consertado! Nesta frase, com we, usamos go.",
     dicas: {
-      conceitual: "Quem pratica a ação é 'We'. Ele está no grupo de I, you, we e they.",
+      conceitual:
+        "O sujeito da frase é 'We'. Esse sujeito pertence ao grupo de I, you, we e they. Nesta frase, o verbo é go.",
       procedimental: DICA_SUJEITO,
     },
   },
@@ -734,9 +739,10 @@ export const LACUNAS_TELA7: Lacuna[] = [
     acao: "tocar piano",
     ilustracao: "🎹",
     imagem: "piano",
-    acertoTexto: "Cartaz consertado! 'She' pede 'plays'.",
+    acertoTexto: "Cartaz consertado! Nesta frase, com she, usamos plays.",
     dicas: {
-      conceitual: "Quem pratica a ação é 'She'. Ela está no grupo de he, she e it.",
+      conceitual:
+        "O sujeito da frase é 'She'. Esse sujeito pertence ao grupo de he, she e it. Nesta frase, o verbo é play.",
       procedimental: DICA_SUJEITO,
     },
   },
@@ -749,9 +755,10 @@ export const LACUNAS_TELA7: Lacuna[] = [
     acao: "brincar de esconde-esconde",
     ilustracao: "🌳",
     imagem: "hide",
-    acertoTexto: "Cartaz consertado! 'I' pede 'play'.",
+    acertoTexto: "Cartaz consertado! Nesta frase, com I, usamos play.",
     dicas: {
-      conceitual: "Quem pratica a ação é 'I'. Ele está no grupo de I, you, we e they.",
+      conceitual:
+        "O sujeito da frase é 'I'. Esse sujeito pertence ao grupo de I, you, we e they. Nesta frase, o verbo é play.",
       procedimental: DICA_SUJEITO,
     },
   },
@@ -949,7 +956,7 @@ export function feedbackLacuna(lacuna: Lacuna, palavra: string, tentativa: numbe
   // 2) Terminação já combina com o sujeito, mas o verbo é o outro.
   const marcada = escolha === FLEXAO[familiaEscolhida].forma;
   if (marcada === terceira && tentativa === 0) {
-    return `Você percebeu que ${sujeito} pede essa forma, mas observe a ação: a frase fala sobre ${lacuna.acao}. O verbo necessário é ${base}.`;
+    return `Você percebeu que essa forma serve para o sujeito ${sujeito}, mas observe a ação: a frase fala sobre ${lacuna.acao}. O verbo necessário é ${base}.`;
   }
 
   // 3) Erro de significado, com progressão pedagógica.
@@ -979,10 +986,13 @@ export const FEEDBACK_T3 = {
 } as const;
 
 export const FALAS: Record<string, string[]> = {
-
   t1: [
-    "Olá! Eu sou a Inspetora Lex.",
-    "Os verbos dos cartazes de Wordville estão errados. Você me ajuda?",
+    "Olá! Eu sou a Inspetora Lex. Alguns cartazes de Wordville estão com palavras estranhas.",
+    "Observe este cartaz com atenção. Não precisamos consertá-lo agora: primeiro, vamos registrar uma hipótese e procurar pistas pela cidade.",
+  ],
+  t1hipotese: [
+    "Hipótese registrada! Ainda não vamos corrigir o cartaz.",
+    "Primeiro, precisamos procurar pistas e comparar outras frases.",
   ],
   t2: [
     "Nossa primeira pista está escondida nesta grade.",
@@ -1015,10 +1025,7 @@ export const FALAS: Record<string, string[]> = {
     "Detetive, achamos mais cartazes espalhados por Wordville!",
     "São os mesmos verbos, go e play, agora em lugares novos.",
   ],
-  t11: [
-    "Novos lugares, mesma regra!",
-    "Descubra qual verbo combina com cada cartaz.",
-  ],
+  t11: ["Novos lugares, mesma regra!", "Descubra qual verbo combina com cada cartaz."],
   t12: [
     "Caso resolvido, detetive! O verbo muda com he, she e it.",
     "Com I, you, we e they, o verbo fica do jeito simples.",
@@ -1082,7 +1089,7 @@ export const RAMOS: Record<number, { titulo: string; itens: ItemPratica[] }> = {
         resposta: "goes",
         opcoes: ["go", "goes"],
         ilustracao: "🐶",
-        ajuda: "Vou te ajudar: it sempre combina com goes.",
+        ajuda: "Nesta frase, o verbo é go. Com it, go muda para goes.",
       },
       {
         id: "r5-he",
@@ -1091,7 +1098,7 @@ export const RAMOS: Record<number, { titulo: string; itens: ItemPratica[] }> = {
         resposta: "goes",
         opcoes: ["go", "goes"],
         ilustracao: "👦",
-        ajuda: "Vou te ajudar: he sempre combina com goes. Vamos colocar juntos!",
+        ajuda: "Nesta frase, o verbo é go. Com he, go muda para goes. Vamos completar juntos!",
       },
     ],
   },
@@ -1105,7 +1112,7 @@ export const RAMOS: Record<number, { titulo: string; itens: ItemPratica[] }> = {
         resposta: "plays",
         opcoes: ["play", "plays"],
         ilustracao: "👦⚽️",
-        ajuda: "Vou te ajudar: he combina com plays.",
+        ajuda: "Nesta frase, o verbo é play. Com he, acrescentamos -s: play vira plays.",
       },
       {
         id: "r6-we",
@@ -1114,7 +1121,7 @@ export const RAMOS: Record<number, { titulo: string; itens: ItemPratica[] }> = {
         resposta: "play",
         opcoes: ["play", "plays"],
         ilustracao: "👨‍👩‍👧⚽️",
-        ajuda: "Vou te ajudar: we combina com play.",
+        ajuda: "Nesta frase, o verbo é play. Com we, usamos a forma simples: play.",
       },
     ],
   },

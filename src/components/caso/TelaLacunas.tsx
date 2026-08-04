@@ -144,14 +144,13 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }
                   />
                 ) : null}
               </div>
-
             </div>
           );
         })}
       </div>
 
       <div className="rounded-2xl border-2 border-dashed border-investigacao/40 bg-secondary/60 p-2">
-        <p className="mb-1.5 text-[15px] font-semibold text-muted-foreground">
+        <p className="mb-1.5 text-[16px] font-semibold text-muted-foreground">
           Arraste o bloco até a lacuna ou toque no bloco e depois na lacuna.
         </p>
 
@@ -179,12 +178,7 @@ export function TelaLacunas({ lacunas, banco, comando, aoConcluir, colunas = 2 }
 
       <AreaFeedback>
         {dica && !tudoCerto ? (
-          <Feedback
-            type="hint"
-            message={dica.texto}
-            onClose={() => setDica(null)}
-            autoClose
-          />
+          <Feedback type="hint" message={dica.texto} onClose={() => setDica(null)} autoClose />
         ) : tudoCerto ? (
           <Feedback
             type="success"

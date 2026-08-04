@@ -18,8 +18,6 @@ type Props = {
   className?: string;
 };
 
-
-
 const tons = {
   investigacao: "border-investigacao/40 bg-card",
   acerto: "border-acerto bg-acerto/10",
@@ -57,8 +55,6 @@ export function DialogoLex({
     aoMudar?.(indice);
   }, [indice, aoMudar]);
 
-
-
   const balao = useMemo(
     () => (
       <div className={cn("cartao-pista relative flex-1 border-[3px] p-2.5", tons[tom])}>
@@ -70,7 +66,7 @@ export function DialogoLex({
         </div>
 
         <div className="mt-1.5 flex items-center gap-2">
-          <span className="text-[14px] font-bold text-muted-foreground">
+          <span className="text-[16px] font-bold text-muted-foreground">
             {indice + 1}/{segmentos.length}
           </span>
           {!ultimo ? (
@@ -85,7 +81,7 @@ export function DialogoLex({
             <button
               type="button"
               onClick={() => setIndice(0)}
-              className="ml-auto rounded-full px-3 py-1 text-[15px] font-bold text-investigacao hover:bg-investigacao/10"
+              className="ml-auto rounded-full px-3 py-1 text-[16px] font-bold text-investigacao hover:bg-investigacao/10"
             >
               Ler de novo
             </button>
